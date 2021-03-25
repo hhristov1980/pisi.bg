@@ -3,12 +3,11 @@ package pisibg.model.pojo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
+import org.hibernate.annotations.SQLDelete;
 import pisibg.model.dto.UserRegisterRequestDTO;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @NoArgsConstructor
 @Setter
@@ -27,7 +26,6 @@ public class User {
     private String phoneNumber;
     @Transient
     private double turnover;
-    @Transient
     private int personalDiscount;
     private String townName;
     private String address;
@@ -47,6 +45,7 @@ public class User {
         address = userDTO.getAddress();
         createdAt = LocalDateTime.now();
         isSubscribed = userDTO.isSubscribed();
+        personalDiscount=5;
         isAdmin = false;
     }
 }

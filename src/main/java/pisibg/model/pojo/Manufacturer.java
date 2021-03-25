@@ -1,6 +1,6 @@
 package pisibg.model.pojo;
 
-public class Manufatcurer {
+public class Manufacturer {
     private int id;
     private String name;
 }

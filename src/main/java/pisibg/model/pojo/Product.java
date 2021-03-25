@@ -6,7 +6,7 @@ public class Product {
     private int id;
     private String name;
     private String description;
-    private Manufatcurer manufatcurer;
+    private Manufacturer manufacturer;
     private Subcategory subcategory;
     private double price;
     private Discount discount;
