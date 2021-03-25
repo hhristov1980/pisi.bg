@@ -11,5 +11,5 @@ import org.springframework.stereotype.Component;
 @Component
 public class CategoryRequestDTO {
 
-    private String categoryName;
+    private String name;
 }

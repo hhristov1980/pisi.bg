@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Entity
-@Table(name="categories")
+@Table(name="manufacturer")
 public class Manufacturer {
 
     @Id

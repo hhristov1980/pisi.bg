@@ -1,7 +1,6 @@
 package pisibg.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pisibg.exceptions.BadRequestException;
 import pisibg.model.dto.CategoryRequestDTO;
@@ -15,16 +14,15 @@ import pisibg.model.repository.ManufacturerRepository;
 
 @Service
 public class CategoryService {
-
     @Autowired
     private CategoryRepository categoryRepository;
 
     public CategoryResponseDTO addCategory(CategoryRequestDTO categoryRequestDTO){
 
-        String name = categoryRequestDTO.getCategoryName();
+        String name = categoryRequestDTO.getName();
 
-        if(categoryRepository.findByCategoryName(name) != null){
-            throw new BadRequestException("Manufacturer already exists");
+        if(categoryRepository.findByName(name) != null){
+            throw new BadRequestException("Category already exists");
         }
         Category category = new Category(categoryRequestDTO);
         category = categoryRepository.save(category);

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.BadRequestException;
+import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.NotFoundException;
 import pisibg.model.dto.ManufacturerRequestDTO;
 import pisibg.model.dto.ManufacturerResponseDTO;
@@ -19,20 +20,26 @@ import java.util.Optional;
 public class ManufacturerController {
     @Autowired
     private ManufacturerService manufacturerService;
+    @Autowired
+    private UserRepository userRepository;
 
 
 
     @PutMapping("/users/{user_id}/manufacturers/add")
     public ManufacturerResponseDTO addNewManufacturer(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody ManufacturerRequestDTO manufacturerRequestDTO){
-//        if(ses.getAttribute("LoggedUser")==null){
-//            throw new AuthenticationException("You have to be logged in!");
-//        }
-//        else {
-//            int loggedId = (int)ses.getAttribute("LoggedUser");
-//            if(userId!=loggedId){
-//                throw new BadRequestException("You don't have permission for that!");
-//            }
-//        }
+        if(ses.getAttribute("LoggedUser")==null){
+            throw new AuthenticationException("You have to be logged in!");
+        }
+        else {
+            int loggedId = (int)ses.getAttribute("LoggedUser");
+            if(loggedId!=userId){
+                throw new BadRequestException("Users mismatch!");
+            }
+            User user  = userRepository.findById(userId).get();
+            if(!user.isAdmin()){
+                throw new DeniedPermissionException("You don't have permission for that!");
+            }
+        }
         return manufacturerService.addManufacturer(manufacturerRequestDTO);
     }
 

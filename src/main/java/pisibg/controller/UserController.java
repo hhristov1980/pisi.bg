@@ -20,7 +20,7 @@ import java.sql.SQLException;
 @RestController
 public class UserController extends AbstractController {
     @Autowired
-   private UserService userService;
+    private UserService userService;
 
     @PutMapping("/users")
     public UserRegisterResponseDTO register(@RequestBody UserRegisterRequestDTO userDTO){

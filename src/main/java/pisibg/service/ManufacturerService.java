@@ -25,15 +25,15 @@ public class ManufacturerService {
         manufacturer = manufacturerRepository.save(manufacturer);
         return new ManufacturerResponseDTO(manufacturer);
     }
-    public ManufacturerResponseDTO еdit(ManufacturerRequestDTO manufacturerRequestDTO){
-
-        String name = manufacturerRequestDTO.getProducerName();
-
-        if(manufacturerRepository.findByProducerName(name) == null){
-            throw new NotFoundException("Manufacturer not found");
-        }
-        Manufacturer manufacturer = new Manufacturer(manufacturerRequestDTO);
-        manufacturer = manufacturerRepository.save(manufacturer);
-        return new ManufacturerResponseDTO(manufacturer);
-    }
+//    public ManufacturerResponseDTO еdit(ManufacturerRequestDTO manufacturerRequestDTO){
+//
+//        String name = manufacturerRequestDTO.getProducerName();
+//
+//        if(manufacturerRepository.findByProducerName(name) == null){
+//            throw new NotFoundException("Manufacturer not found");
+//        }
+//        Manufacturer manufacturer = new Manufacturer(manufacturerRequestDTO);
+//        manufacturer = manufacturerRepository.save(manufacturer);
+//        return new ManufacturerResponseDTO(manufacturer);
+//    }
 }

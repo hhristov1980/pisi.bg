@@ -12,10 +12,10 @@ import pisibg.model.pojo.Category;
 @Component
 public class CategoryResponseDTO {
 
-    private String categoryName;
+    private String name;
 
     public  CategoryResponseDTO(Category category){
-        categoryName = category.getCategoryName();
+        name = category.getName();
     }
 
 }
