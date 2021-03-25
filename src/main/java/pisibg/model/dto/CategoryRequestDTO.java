@@ -10,5 +10,6 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Component
 public class CategoryRequestDTO {
+
     private String categoryName;
 }

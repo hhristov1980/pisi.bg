@@ -3,6 +3,7 @@ package pisibg.model.pojo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pisibg.model.dto.CategoryRequestDTO;
 
 import javax.persistence.*;
 
@@ -15,6 +16,10 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
+    private String categoryName;
+
+    public Category(CategoryRequestDTO categoryRequestDTO){
+        categoryName = categoryRequestDTO.getCategoryName();
+    }
 
 }

@@ -3,7 +3,7 @@ package pisibg.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import pisibg.exceptions.BadRequestException;
+import pisibg.exceptions.*;
 import pisibg.model.dto.ErrorDTO;
 
 public class AbstractController {
@@ -14,5 +14,27 @@ public class AbstractController {
         return new ErrorDTO(e.getMessage());
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDTO handleNotFound(NotFoundException e){
+        return new ErrorDTO(e.getMessage());
+    }
 
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO handleAuthentication(AuthenticationException e){
+        return new ErrorDTO(e.getMessage());
+    }
+
+    @ExceptionHandler(DeniedPermissionException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorDTO handlePermission(DeniedPermissionException e){
+        return new ErrorDTO(e.getMessage());
+    }
+
+    @ExceptionHandler(MySQLException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ErrorDTO handleSQL(MySQLException e){
+        return new ErrorDTO(e.getMessage());
+    }
 }

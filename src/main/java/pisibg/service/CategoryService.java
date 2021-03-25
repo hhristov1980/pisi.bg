@@ -19,15 +19,15 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public CategoryResponseDTO addManufacturer(CategoryRequestDTO categoryRequestDTO){
+    public CategoryResponseDTO addCategory(CategoryRequestDTO categoryRequestDTO){
 
-        String name = categoryRequestDTO();
+        String name = categoryRequestDTO.getCategoryName();
 
-        if(categoryRepository.findByProducerName(name) != null){
+        if(categoryRepository.findByCategoryName(name) != null){
             throw new BadRequestException("Manufacturer already exists");
         }
         Category category = new Category(categoryRequestDTO);
         category = categoryRepository.save(category);
-        return new ManufacturerResponseDTO(category);
+        return new CategoryResponseDTO(category);
     }
 }

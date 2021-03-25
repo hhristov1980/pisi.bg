@@ -1,6 +1,5 @@
 package pisibg.model.pojo;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,8 +11,9 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Entity
-@Table(name="manufacturer")
+@Table(name="categories")
 public class Manufacturer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -22,6 +22,4 @@ public class Manufacturer {
     public Manufacturer(ManufacturerRequestDTO manufacturerRequestDTO){
         producerName = manufacturerRequestDTO.getProducerName();
     }
-
-
 }
