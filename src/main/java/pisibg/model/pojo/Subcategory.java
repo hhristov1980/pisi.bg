@@ -1,12 +1,14 @@
 package pisibg.model.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pisibg.model.dto.SubCategoryRequestDTO;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @NoArgsConstructor
 @Setter
@@ -22,6 +24,9 @@ public class Subcategory {
     @JoinColumn(name = "category_id")
     @JsonBackReference
     private Category category;
+    @OneToMany(mappedBy = "subcategory")
+    @JsonManagedReference
+    private Set<Product> products;
 
     public Subcategory(SubCategoryRequestDTO subCategoryRequestDTO){
         name = subCategoryRequestDTO.getName();
