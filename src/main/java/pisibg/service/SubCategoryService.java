@@ -10,6 +10,8 @@ import pisibg.model.pojo.Subcategory;
 import pisibg.model.repository.CategoryRepository;
 import pisibg.model.repository.SubCategoryRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -65,6 +67,32 @@ public class SubCategoryService {
                     }
                 }
             }
+        }
+    }
+
+    public List<SubcategoryResponseDTO> getAll() {
+        List<Subcategory> subcategories = subCategoryRepository.findAll();
+        List<SubcategoryResponseDTO> subcategoryResponseDTOList = new ArrayList<>();
+        if(subcategories.isEmpty()){
+            throw new NotFoundException("Subcategories not found");
+        }
+        else {
+            for(Subcategory s: subcategories){
+                subcategoryResponseDTOList.add(new SubcategoryResponseDTO(s));
+            }
+            return subcategoryResponseDTOList;
+        }
+
+    }
+    public SubcategoryResponseDTO getById(int subcategory_id) {
+        Optional<Subcategory> temp = subCategoryRepository.findById(subcategory_id);
+        if(!temp.isPresent()){
+            throw new NotFoundException("Subcategory not found");
+        }
+        else {
+            Subcategory subcategory = temp.get();
+            SubcategoryResponseDTO subcategoryResponseDTO = new SubcategoryResponseDTO(subcategory);
+            return subcategoryResponseDTO;
         }
     }
 

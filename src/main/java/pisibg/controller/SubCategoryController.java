@@ -11,6 +11,7 @@ import pisibg.model.repository.UserRepository;
 import pisibg.service.SubCategoryService;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RestController
 public class SubCategoryController extends AbstractController{
@@ -54,5 +55,13 @@ public class SubCategoryController extends AbstractController{
             }
         }
         return subCategoryService.edit(subCategoryEditRequestDTO);
+    }
+    @GetMapping("/subcategory")
+    public List<SubcategoryResponseDTO> getAll(){
+        return subCategoryService.getAll();
+    }
+    @GetMapping("/subcategory/{id}")
+    public SubcategoryResponseDTO getById(@PathVariable(name = "id") int subCategory_id){
+        return subCategoryService.getById(subCategory_id);
     }
 }
