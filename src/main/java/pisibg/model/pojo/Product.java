@@ -1,6 +1,12 @@
 package pisibg.model.pojo;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
 import java.util.ArrayList;
+
 
 public class Product {
     private int id;
