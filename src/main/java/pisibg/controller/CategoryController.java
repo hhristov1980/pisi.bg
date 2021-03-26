@@ -1,22 +1,18 @@
 package pisibg.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
-import pisibg.model.dto.CategoryRequestDTO;
-import pisibg.model.dto.CategoryResponseDTO;
-import pisibg.model.dto.ManufacturerRequestDTO;
-import pisibg.model.dto.ManufacturerResponseDTO;
+import pisibg.model.dto.*;
 import pisibg.model.pojo.User;
 import pisibg.model.repository.UserRepository;
 import pisibg.service.CategoryService;
 
 import javax.servlet.http.HttpSession;
+import java.awt.*;
+import java.util.List;
 
 
 @RestController
@@ -27,8 +23,8 @@ public class CategoryController extends AbstractController{
     @Autowired
     private UserRepository userRepository;
 
-    @PutMapping("/users/{user_id}/category/add")
-    public CategoryResponseDTO addNewCategory(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody CategoryRequestDTO categoryRequestDTO){
+    @PostMapping("/users/{user_id}/category/add")
+    public CategoryResponseDTO add(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody CategoryRequestDTO categoryRequestDTO){
         if(ses.getAttribute("LoggedUser")==null){
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -42,6 +38,31 @@ public class CategoryController extends AbstractController{
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
         }
-        return categoryService.addCategory(categoryRequestDTO);
+        return categoryService.add(categoryRequestDTO);
+    }
+    @PutMapping("/users/{user_id}/category/edit")
+    public CategoryResponseDTO edit(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody CategoryEditRequestDTO categoryEditRequestDTO){
+        if(ses.getAttribute("LoggedUser")==null){
+            throw new AuthenticationException("You have to be logged in!");
+        }
+        else {
+            int loggedId = (int)ses.getAttribute("LoggedUser");
+            if(loggedId!=userId){
+                throw new BadRequestException("Users mismatch!");
+            }
+            User user  = userRepository.findById(userId).get();
+            if(!user.isAdmin()){
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+        }
+        return categoryService.edit(categoryEditRequestDTO);
+    }
+    @GetMapping("/category")
+    public List<CategoryResponseDTO> getAll(){
+        return categoryService.getAll();
+    }
+    @GetMapping("/category/{id}")
+    public CategoryResponseDTO getById(@PathVariable(name = "id") int category_id){
+        return categoryService.getById(category_id);
     }
 }

@@ -13,10 +13,10 @@ import pisibg.model.pojo.Subcategory;
 @Component
 public class SubcategoryResponseDTO {
     String name;
-    Category category;
+    String categoryName;
 
     public SubcategoryResponseDTO (Subcategory subcategory){
         name = subcategory.getName();
-        category = subcategory.getCategory();
+        categoryName = subcategory.getCategory().getName();
     }
 }

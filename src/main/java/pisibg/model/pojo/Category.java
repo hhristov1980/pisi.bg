@@ -8,9 +8,8 @@ import pisibg.model.dto.CategoryRequestDTO;
 
 import javax.persistence.*;
 import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 @NoArgsConstructor
 @Setter
@@ -28,6 +27,7 @@ public class Category {
 
     public Category(CategoryRequestDTO categoryRequestDTO){
         name = categoryRequestDTO.getName();
+        subcategories = new TreeSet<>(((o1, o2) -> Integer.compare(o1.getId(),o2.getId())));
     }
 
 

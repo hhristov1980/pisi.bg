@@ -8,4 +8,5 @@ import pisibg.model.pojo.Subcategory;
 @Repository
 public interface SubCategoryRepository extends JpaRepository<Subcategory,Integer> {
     Subcategory findByName(String name);
+    Subcategory getByNameAndCategory_Id(String name, int categoryId);
 }

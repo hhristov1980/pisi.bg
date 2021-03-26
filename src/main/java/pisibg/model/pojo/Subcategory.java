@@ -27,4 +27,5 @@ public class Subcategory {
         name = subCategoryRequestDTO.getName();
     }
 
+
 }
