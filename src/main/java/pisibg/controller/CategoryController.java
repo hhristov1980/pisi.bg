@@ -22,27 +22,29 @@ public class CategoryController extends AbstractController{
     private CategoryService categoryService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SessionManager sessionManager;
 
     @PostMapping("/users/{user_id}/category/add")
     public CategoryResponseDTO add(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody CategoryRequestDTO categoryRequestDTO){
-        if(ses.getAttribute("LoggedUser")==null){
+        if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
-            int loggedId = (int)ses.getAttribute("LoggedUser");
-            if(loggedId!=userId){
-                throw new BadRequestException("Users mismatch!");
-            }
-            User user  = userRepository.findById(userId).get();
+            User user = sessionManager.getLoggedUser(ses);
             if(!user.isAdmin()){
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
+            }
+            else {
+                return categoryService.add(categoryRequestDTO);
             }
         }
-        return categoryService.add(categoryRequestDTO);
     }
+
+
     @PutMapping("/users/{user_id}/category/edit")
     public CategoryResponseDTO edit(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody CategoryEditRequestDTO categoryEditRequestDTO){
-        if(ses.getAttribute("LoggedUser")==null){
+        if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
@@ -62,7 +64,7 @@ public class CategoryController extends AbstractController{
         return categoryService.getAll();
     }
     @GetMapping("/category/{id}")
-    public CategoryResponseDTO getById(@PathVariable(name = "id") int category_id){
-        return categoryService.getById(category_id);
+    public CategoryResponseDTO getById(@PathVariable(name = "id") int categoryId){
+        return categoryService.getById(categoryId);
     }
 }

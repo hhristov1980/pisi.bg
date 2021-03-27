@@ -19,27 +19,28 @@ public class DiscountController extends AbstractController{
     private UserRepository userRepository;
     @Autowired
     private DiscountService discountService;
+    @Autowired
+    private SessionManager sessionManager;
 
     @PostMapping("/users/{user_id}/discounts/add")
     public DiscountResponseDTO add(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody DiscountRequestDTO discountRequestDTO){
-        if(ses.getAttribute("LoggedUser")==null){
+        if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
-            int loggedId = (int)ses.getAttribute("LoggedUser");
-            if(loggedId!=userId){
-                throw new BadRequestException("Users mismatch!");
-            }
-            User user  = userRepository.findById(userId).get();
+            User user = sessionManager.getLoggedUser(ses);
             if(!user.isAdmin()){
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
+            }
+            else {
+                return discountService.add(discountRequestDTO);
             }
         }
-        return discountService.add(discountRequestDTO);
+
     }
     @PutMapping("/users/{user_id}/discounts/edit")
     public DiscountResponseDTO edit(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody DiscountEditRequestDTO discountEditRequestDTO){
-        if(ses.getAttribute("LoggedUser")==null){
+        if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
@@ -59,7 +60,7 @@ public class DiscountController extends AbstractController{
         return discountService.getAll();
     }
     @GetMapping("/discounts/{id}")
-    public DiscountResponseDTO getById(@PathVariable(name = "id") int discount_id){
-        return discountService.getById(discount_id);
+    public DiscountResponseDTO getById(@PathVariable(name = "id") int discountId){
+        return discountService.getById(discountId);
     }
 }

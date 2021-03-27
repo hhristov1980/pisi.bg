@@ -25,30 +25,30 @@ public class ManufacturerController {
     private ManufacturerService manufacturerService;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private SessionManager sessionManager;
 
 
     @PostMapping("/users/{user_id}/manufacturers/add")
     public ManufacturerResponseDTO add(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody ManufacturerRequestDTO manufacturerRequestDTO){
-        if(ses.getAttribute("LoggedUser")==null){
+        if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
-            int loggedId = (int)ses.getAttribute("LoggedUser");
-            if(loggedId!=userId){
-                throw new BadRequestException("Users mismatch!");
-            }
-            User user  = userRepository.findById(userId).get();
+            User user = sessionManager.getLoggedUser(ses);
             if(!user.isAdmin()){
                 throw new DeniedPermissionException("You don't have permission for that!");
             }
+            else{
+                return manufacturerService.add(manufacturerRequestDTO);
+            }
         }
-        return manufacturerService.add(manufacturerRequestDTO);
+
     }
 
     @PutMapping("/users/{user_id}/manufacturers/edit")
     public ManufacturerResponseDTO editManufacturer(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody ManufacturerEditRequestDTO manufacturerEditRequestDTO){
-        if(ses.getAttribute("LoggedUser")==null){
+        if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
@@ -69,7 +69,7 @@ public class ManufacturerController {
     }
     //TODO FIX EXCEPTION
     @GetMapping("/manufacturers/{id}")
-    public ManufacturerResponseDTO getById(@PathVariable(name = "id") int manufacturer_id){
-        return manufacturerService.getById(manufacturer_id);
+    public ManufacturerResponseDTO getById(@PathVariable(name = "id") int manufacturerId){
+        return manufacturerService.getById(manufacturerId);
     }
 }

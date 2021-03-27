@@ -20,28 +20,29 @@ public class SubCategoryController extends AbstractController{
     private UserRepository userRepository;
     @Autowired
     private SubCategoryService subCategoryService;
+    @Autowired
+    private SessionManager sessionManager;
 
     @PostMapping("/users/{user_id}/subcategories/add")
     public SubcategoryResponseDTO addNewSubcategory(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody SubCategoryRequestDTO subCategoryRequestDTO){
-        if(ses.getAttribute("LoggedUser")==null){
+        if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
-            int loggedId = (int)ses.getAttribute("LoggedUser");
-            if(loggedId!=userId){
-                throw new BadRequestException("Users mismatch!");
-            }
-            User user  = userRepository.findById(userId).get();
+            User user = sessionManager.getLoggedUser(ses);
             if(!user.isAdmin()){
                 throw new DeniedPermissionException("You don't have permission for that!");
             }
+            else {
+                return subCategoryService.addSubCategory(subCategoryRequestDTO);
+            }
         }
-        return subCategoryService.addSubCategory(subCategoryRequestDTO);
+
     }
 
     @PutMapping("/users/{user_id}/subcategories/edit")
     public SubcategoryResponseDTO edit(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody SubCategoryEditRequestDTO subCategoryEditRequestDTO){
-        if(ses.getAttribute("LoggedUser")==null){
+        if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
@@ -61,7 +62,7 @@ public class SubCategoryController extends AbstractController{
         return subCategoryService.getAll();
     }
     @GetMapping("/subcategory/{id}")
-    public SubcategoryResponseDTO getById(@PathVariable(name = "id") int subCategory_id){
-        return subCategoryService.getById(subCategory_id);
+    public SubcategoryResponseDTO getById(@PathVariable(name = "id") int subCategoryId){
+        return subCategoryService.getById(subCategoryId);
     }
 }

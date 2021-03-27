@@ -1,11 +1,13 @@
 package pisibg.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pisibg.model.dto.DiscountRequestDTO;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @NoArgsConstructor
 @Setter
@@ -21,6 +23,9 @@ public class Discount {
     private LocalDateTime fromDate;
     private LocalDateTime toDate;
     private boolean isActive;
+    @OneToMany(mappedBy = "discount")
+    @JsonManagedReference
+    private Set<Product> products;
 
     public Discount(DiscountRequestDTO discountRequestDTO){
         description = discountRequestDTO.getDescription();

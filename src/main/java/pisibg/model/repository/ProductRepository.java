@@ -4,11 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pisibg.model.pojo.Discount;
 import pisibg.model.pojo.Manufacturer;
-import pisibg.model.pojo.User;
+import pisibg.model.pojo.Product;
 
 @Repository
-public interface ManufacturerRepository extends JpaRepository<Manufacturer,Integer> {
-
-    Manufacturer findByProducerName(String producerName);
-    Manufacturer findById(int manufacturerId);
+public interface ProductRepository extends JpaRepository<Product,Integer> {
+    Product findByName(String productName);
+    Product findById(int productId);
 }
