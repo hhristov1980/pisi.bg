@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Entity
-@Table(name="products")
+@Table(name="images")
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

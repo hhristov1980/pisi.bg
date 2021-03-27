@@ -11,6 +11,7 @@ import pisibg.model.dto.ManufacturerResponseDTO;
 import pisibg.model.pojo.Category;
 import pisibg.model.pojo.Manufacturer;
 import pisibg.model.repository.ManufacturerRepository;
+import pisibg.utility.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,35 +25,54 @@ public class ManufacturerService {
     public ManufacturerResponseDTO add(ManufacturerRequestDTO manufacturerRequestDTO) {
 
         String name = manufacturerRequestDTO.getProducerName();
-
-        if (manufacturerRepository.findByProducerName(name) != null) {
-            throw new BadRequestException("Manufacturer already exists");
+        if(!Validator.isValidString(name)){
+            throw new BadRequestException("You have entered an empty text!");
         }
         else {
-            Manufacturer manufacturer = new Manufacturer(manufacturerRequestDTO);
-            manufacturer = manufacturerRepository.save(manufacturer);
-            return new ManufacturerResponseDTO(manufacturer);
+            if (manufacturerRepository.findByProducerName(name) != null) {
+                throw new BadRequestException("Manufacturer already exists");
+            }
+            else {
+                Manufacturer manufacturer = new Manufacturer(manufacturerRequestDTO);
+                manufacturer = manufacturerRepository.save(manufacturer);
+                return new ManufacturerResponseDTO(manufacturer);
+            }
         }
     }
     public ManufacturerResponseDTO edit (ManufacturerEditRequestDTO manufacturerEditRequestDTO){
-
-        if(manufacturerEditRequestDTO.getCurrentProducerName().equals(manufacturerEditRequestDTO.getNewProducerName())){
-            throw new BadRequestException("You didn't make any change!");
+        if(!(Validator.isValidString(manufacturerEditRequestDTO.getCurrentProducerName())||(!Validator.isValidString(manufacturerEditRequestDTO.getNewProducerName())))){
+            throw new BadRequestException("You have entered and empty text!");
         }
         else {
-            if(manufacturerRepository.findById(manufacturerEditRequestDTO.getId()).isPresent()){
-                throw new NotFoundException("Manufacturer not found");
+            if(manufacturerEditRequestDTO.getCurrentProducerName().equals(manufacturerEditRequestDTO.getNewProducerName())){
+                throw new BadRequestException("You didn't make any change!");
             }
             else {
-                if(manufacturerRepository.findByProducerName(manufacturerEditRequestDTO.getNewProducerName()) != null){
-                    throw new NotFoundException("Manufacturer with this name already exists");
+                if(!Validator.isValidInteger(manufacturerEditRequestDTO.getId())){
+                    throw new BadRequestException("Please put number greater than 0!");
                 }
-                else {
-                    Manufacturer manufacturer = new Manufacturer();
-                    manufacturer.setId(manufacturerEditRequestDTO.getId());
-                    manufacturer.setProducerName(manufacturerEditRequestDTO.getNewProducerName());
-                    manufacturerRepository.save(manufacturer);
-                    return new ManufacturerResponseDTO(manufacturer);
+                else{
+                    if(manufacturerRepository.findById(manufacturerEditRequestDTO.getId())==null){
+                        throw new NotFoundException("Manufacturer not found");
+                    }
+                    else {
+                        if(!Validator.isValidString(manufacturerEditRequestDTO.getNewProducerName())){
+                            throw new BadRequestException("You have entered an empty text!");
+                        }
+                        else {
+                            if(manufacturerRepository.findByProducerName(manufacturerEditRequestDTO.getNewProducerName()) != null){
+                                throw new NotFoundException("Manufacturer with this name already exists");
+                            }
+                            else {
+                                Manufacturer manufacturer = new Manufacturer();
+                                manufacturer.setId(manufacturerEditRequestDTO.getId());
+                                manufacturer.setProducerName(manufacturerEditRequestDTO.getNewProducerName());
+                                manufacturerRepository.save(manufacturer);
+                                return new ManufacturerResponseDTO(manufacturer);
+                            }
+                        }
+
+                    }
                 }
             }
         }
@@ -74,12 +94,11 @@ public class ManufacturerService {
     }
     //TODO FIX EXCEPTION
     public ManufacturerResponseDTO getById(int manufacturer_id) {
-        Optional<Manufacturer> temp = manufacturerRepository.findById(manufacturer_id);
-        if(!temp.isPresent()){
+        Manufacturer manufacturer = manufacturerRepository.findById(manufacturer_id);
+        if(manufacturer==null){
             throw new NotFoundException("Manufacturer not found");
         }
         else {
-            Manufacturer manufacturer = temp.get();
             ManufacturerResponseDTO manufacturerResponseDTO = new ManufacturerResponseDTO(manufacturer);
             return manufacturerResponseDTO;
         }

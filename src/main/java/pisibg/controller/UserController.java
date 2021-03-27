@@ -7,12 +7,10 @@ import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.MySQLException;
-import pisibg.model.dto.UserLoginDTO;
-import pisibg.model.dto.UserRegisterRequestDTO;
-import pisibg.model.dto.UserRegisterResponseDTO;
-import pisibg.model.dto.UserWithoutPassDTO;
+import pisibg.model.dto.*;
 import pisibg.model.pojo.User;
 import pisibg.service.UserService;
+import pisibg.utility.EmailServiceImpl;
 
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
@@ -22,47 +20,153 @@ public class UserController extends AbstractController {
     @Autowired
     private UserService userService;
 
-    @PutMapping("/users")
-    public UserRegisterResponseDTO register(@RequestBody UserRegisterRequestDTO userDTO){
+    @Autowired
+    private EmailServiceImpl emailService;
+
+    @Autowired
+    private SessionManager sessionManager;
+
+    @PostMapping("/users")
+    public UserRegisterResponseDTO register(@RequestBody UserRegisterRequestDTO userDTO) {
         return userService.addUser(userDTO);
     }
-    @PostMapping("/users")
-    public UserWithoutPassDTO login(@RequestBody UserLoginDTO dto, HttpSession ses){
+
+    @PutMapping("/users")
+    public UserWithoutPassDTO login(@RequestBody UserLoginDTO dto, HttpSession ses) {
         UserWithoutPassDTO responseDto = userService.login(dto);
-        ses.setAttribute("LoggedUser", responseDto.getId());
+        sessionManager.loginUser(ses, responseDto.getId());
+        emailService.sendSimpleMessage("hristo_ih@abv.bg","Test","Test Test");
         return responseDto;
     }
 
-    @GetMapping("/users/{id}")
-    public UserWithoutPassDTO getById(@PathVariable int id, HttpSession ses){
-        if(ses.getAttribute("LoggedUser")==null){
-            throw new AuthenticationException("You have to be logged in!");
-        }
-        else {
-            int loggedId = (int)ses.getAttribute("LoggedUser");
-            if(id!=loggedId){
-                throw new DeniedPermissionException("You dont have permission for that!");
-            }
-        }
-        return userService.getById(id);
+    @PostMapping("/logout")
+    public void logout(HttpSession ses) {
+        sessionManager.logoutUser(ses);
     }
 
-    @DeleteMapping("/user/{id}")
-    public void softDelete(@PathVariable int id, HttpSession ses){
-        if(ses.getAttribute("LoggedUser")==null){
+//    @GetMapping("/users/{id}/subscribe")
+//    public UserWithoutPassDTO subscribe(@PathVariable int id, HttpSession ses) {
+//        if (sessionManager.getLoggedUser(ses) == null) {
+//            throw new AuthenticationException("You have to be logged in!");
+//        } else {
+//            User user = sessionManager.getLoggedUser(ses);
+//            if (id != user.getId()) {
+//                throw new DeniedPermissionException("You dont have permission for that!");
+//            }
+//            return userService.subscribe(id);
+//        }
+//    }
+
+    @PutMapping("/users/{id}/edit")
+    public UserEditResponseDTO editUser(@PathVariable int id, @RequestBody UserEditRequestDTO userDto, HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
-        }
-        else {
-            int loggedId = (int)ses.getAttribute("LoggedUser");
-            if(id!=loggedId){
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (id != user.getId()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
+            return userService.edit(userDto,id);
         }
-        try {
-            userService.softDelete(id);
-            ses.invalidate();
-        } catch (SQLException throwables) {
-            System.out.println(throwables.getMessage());
+    }
+    @PostMapping("/users/{id}/edit")
+    public String editUser(@PathVariable int id, @RequestBody UserEditPasswordDTO userDto, HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (id != user.getId()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            return userService.editPassword(userDto,id);
+        }
+    }
+
+    @PostMapping("/users/{id_admin}/admin/{id_user}")
+    public UserRegisterResponseDTO makeAdmin(@PathVariable int id_admin,@PathVariable int id_user, HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (id_admin != user.getId()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            return userService.makeAdmin(id_admin,id_user);
+        }
+    }
+
+    @PutMapping("/users/{id_admin}/admin/{id_user}")
+    public UserRegisterResponseDTO removeAdmin(@PathVariable int id_admin,@PathVariable int id_user, HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (id_admin != user.getId()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            return userService.removeAdmin(id_admin,id_user);
+        }
+    }
+
+    @DeleteMapping("/users/{id_admin}/admin/{id_user}")
+    public void deleteUser(@PathVariable int id_admin,@PathVariable int id_user, HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (id_admin != user.getId()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            try {
+                userService.deleteUser(id_admin,id_user);
+                ses.invalidate();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+    }
+
+//    @GetMapping("/users/{id}/unsubscribe")
+//    public UserWithoutPassDTO unsubscribe(@PathVariable int id, HttpSession ses) {
+//        if (sessionManager.getLoggedUser(ses) == null) {
+//            throw new AuthenticationException("You have to be logged in!");
+//        } else {
+//            User user = sessionManager.getLoggedUser(ses);
+//            if (id != user.getId()) {
+//                throw new DeniedPermissionException("You dont have permission for that!");
+//            }
+//            return userService.unsubscribe(id);
+//        }
+//    }
+
+    @GetMapping("/users/{id}")
+    public UserWithoutPassDTO getById(@PathVariable int id, HttpSession ses) {
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (id != user.getId()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            return userService.getById(id);
+        }
+    }
+
+    @DeleteMapping("/users/{id}")
+    public void softDelete(@PathVariable int id, HttpSession ses) {
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (id != user.getId()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            try {
+                userService.softDelete(id);
+                ses.invalidate();
+            } catch (SQLException throwables) {
+                System.out.println(throwables.getMessage());
+            }
         }
     }
 }

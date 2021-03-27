@@ -8,6 +8,7 @@ import pisibg.model.dto.*;
 import pisibg.model.pojo.Category;
 import pisibg.model.pojo.Discount;
 import pisibg.model.repository.DiscountRepository;
+import pisibg.utility.Validator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,17 +23,34 @@ public class DiscountService {
     public DiscountResponseDTO add(DiscountRequestDTO discountRequestDTO){
 
         String description = discountRequestDTO.getDescription();
-
-        if(discountRepository.findByDescription(description) != null){
-            throw new BadRequestException("Discount already exists");
+        if(!Validator.isValidString(description)){
+            throw new BadRequestException("You have entered empty text!");
         }
-        else{
-            if(discountRequestDTO.getFromDate().isAfter(discountRequestDTO.getToDate())){
-                throw new BadRequestException("You cannot put end date before start date!");
+        else {
+            if(discountRepository.findByDescription(description) != null){
+                throw new BadRequestException("Discount already exists");
             }
-            Discount discount = new Discount(discountRequestDTO);
-            discount = discountRepository.save(discount);
-            return new DiscountResponseDTO(discount);
+            else{
+                if(!Validator.isValidInteger(discountRequestDTO.getPercent())){
+                    throw new BadRequestException("You put wrong percent!");
+                }
+                else{
+                    if(!Validator.isValidDate(discountRequestDTO.getFromDate())&&!Validator.isValidDate(discountRequestDTO.getToDate())){
+                        throw new BadRequestException("You put invalid data!");
+                    }
+                    else {
+                        if(discountRequestDTO.getFromDate().isAfter(discountRequestDTO.getToDate())){
+                            throw new BadRequestException("You cannot put end date before start date!");
+                        }
+                        else {
+
+                            Discount discount = new Discount(discountRequestDTO);
+                            discount = discountRepository.save(discount);
+                            return new DiscountResponseDTO(discount);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -47,28 +65,48 @@ public class DiscountService {
             throw new BadRequestException("You didn't make any change!");
         }
         else {
-            if(!discountRepository.findById(discountEditRequestDTO.getId()).isPresent()){
-                throw new NotFoundException("Discount not found");
+            if(!Validator.isValidInteger(discountEditRequestDTO.getId())){
+                throw new BadRequestException("Please put number greater than 0!");
             }
             else {
-                //TODO to think about more checks if needed
-                if(discountEditRequestDTO.getNewFromDate().isAfter(discountEditRequestDTO.getNewToDate())){
-                    throw new BadRequestException("You cannot put end date before start date!");
+                if(discountRepository.findById(discountEditRequestDTO.getId())==null){
+                    throw new NotFoundException("Discount not found");
                 }
-                else{
-                    Discount discount = new Discount();
-                    discount.setId(discountEditRequestDTO.getId());
-                    discount.setDescription(discountEditRequestDTO.getNewDescription());
-                    discount.setPercent(discountEditRequestDTO.getNewPercent());
-                    discount.setFromDate(discountEditRequestDTO.getNewFromDate());
-                    discount.setToDate(discountEditRequestDTO.getNewToDate());
-                    discount.setActive(discountEditRequestDTO.isNewIsActive());
-                    discountRepository.save(discount);
-                    return new DiscountResponseDTO(discount);
+                else {
+                    String description = discountEditRequestDTO.getNewDescription();
+                    if(!Validator.isValidString(description)){
+                        throw new BadRequestException("You have entered empty text!");
+                    }
+                    else {
+                        if(!Validator.isValidInteger(discountEditRequestDTO.getNewPercent())){
+                            throw new BadRequestException("You put wrong percent!");
+                        }
+                        else {
+                            if(!Validator.isValidDate(discountEditRequestDTO.getNewFromDate())&&!Validator.isValidDate(discountEditRequestDTO.getNewToDate())){
+                                throw new BadRequestException("You put invalid data!");
+                            }
+                            else {
+                                if(discountEditRequestDTO.getNewFromDate().isAfter(discountEditRequestDTO.getNewToDate())){
+                                    throw new BadRequestException("You cannot put end date before start date!");
+                                }
+                                else{
+                                    Discount discount = new Discount();
+                                    discount.setId(discountEditRequestDTO.getId());
+                                    discount.setDescription(discountEditRequestDTO.getNewDescription());
+                                    discount.setPercent(discountEditRequestDTO.getNewPercent());
+                                    discount.setFromDate(discountEditRequestDTO.getNewFromDate());
+                                    discount.setToDate(discountEditRequestDTO.getNewToDate());
+                                    discount.setActive(discountEditRequestDTO.isNewIsActive());
+                                    discountRepository.save(discount);
+                                    return new DiscountResponseDTO(discount);
 
+                                }
+                            }
+                        }
+                    }
                 }
-
             }
+
         }
     }
     public List<DiscountResponseDTO> getAll() {
@@ -95,12 +133,11 @@ public class DiscountService {
 
     }
     public DiscountResponseDTO getById(int discount_id) {
-        Optional<Discount> temp = discountRepository.findById(discount_id);
-        if(!temp.isPresent()){
+        Discount discount = discountRepository.findById(discount_id);
+        if(discount == null){
             throw new NotFoundException("Discount not found");
         }
         else {
-            Discount discount = temp.get();
             DiscountResponseDTO discountResponseDTO = new DiscountResponseDTO(discount);
             return discountResponseDTO;
         }

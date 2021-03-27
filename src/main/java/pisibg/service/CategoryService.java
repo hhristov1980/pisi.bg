@@ -9,6 +9,7 @@ import pisibg.model.pojo.Category;
 import pisibg.model.pojo.Manufacturer;
 import pisibg.model.repository.CategoryRepository;
 import pisibg.model.repository.ManufacturerRepository;
+import pisibg.utility.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,38 +23,55 @@ public class CategoryService {
     public CategoryResponseDTO add(CategoryRequestDTO categoryRequestDTO){
 
         String name = categoryRequestDTO.getName();
+        if(!Validator.isValidString(name)){
+            throw new BadRequestException("You have entered empty text!");
+        }
+        else {
+            if(categoryRepository.findByName(name) != null){
+                throw new BadRequestException("Category already exists");
+            }
+            else{
+                Category category = new Category(categoryRequestDTO);
+                category = categoryRepository.save(category);
+                return new CategoryResponseDTO(category);
+            }
+        }
 
-        if(categoryRepository.findByName(name) != null){
-            throw new BadRequestException("Category already exists");
-        }
-        else{
-            Category category = new Category(categoryRequestDTO);
-            category = categoryRepository.save(category);
-            return new CategoryResponseDTO(category);
-        }
     }
     public CategoryResponseDTO edit (CategoryEditRequestDTO categoryEditRequestDTO){
 
-        if(categoryEditRequestDTO.getCurrentCategoryName().equals(categoryEditRequestDTO.getNewCategoryName())){
-            throw new BadRequestException("You didn't make any change!");
+        if(!Validator.isValidString(categoryEditRequestDTO.getNewCategoryName())){
+            throw new BadRequestException("You have entered empty text!");
         }
         else {
-            if(!categoryRepository.findById(categoryEditRequestDTO.getId()).isPresent()){
-                throw new NotFoundException("Category not found");
+            if(categoryEditRequestDTO.getCurrentCategoryName().equals(categoryEditRequestDTO.getNewCategoryName())){
+                throw new BadRequestException("You didn't make any change!");
             }
             else {
-                if(categoryRepository.findByName(categoryEditRequestDTO.getNewCategoryName()) != null){
-                    throw new NotFoundException("Category with this name already exists");
+                if(!Validator.isValidInteger(categoryEditRequestDTO.getId())){
+                    throw new BadRequestException("Please put number greater than 0!");
                 }
                 else {
-                    Category category = new Category();
-                    category.setId(categoryEditRequestDTO.getId());
-                    category.setName(categoryEditRequestDTO.getNewCategoryName());
-                    categoryRepository.save(category);
-                    return new CategoryResponseDTO(category);
+                    if(!categoryRepository.findById(categoryEditRequestDTO.getId()).isPresent()){
+                        throw new NotFoundException("Category not found");
+                    }
+                    else {
+                        if(categoryRepository.findByName(categoryEditRequestDTO.getNewCategoryName()) != null){
+                            throw new NotFoundException("Category with this name already exists");
+                        }
+                        else {
+                            Category category = new Category();
+                            category.setId(categoryEditRequestDTO.getId());
+                            category.setName(categoryEditRequestDTO.getNewCategoryName());
+                            categoryRepository.save(category);
+                            return new CategoryResponseDTO(category);
+                        }
+                    }
                 }
+
             }
         }
+
     }
     public List<CategoryResponseDTO> getAll() {
         List<Category> categories = categoryRepository.findAll();
