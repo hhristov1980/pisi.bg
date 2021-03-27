@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../FinalProject/pisi_bg/pisi_bg/pisi_bg.iml" filepath="$PROJECT_DIR$/../FinalProject/pisi_bg/pisi_bg/pisi_bg.iml" />
       <module fileurl="file://$PROJECT_DIR$/pisibg.iml" filepath="$PROJECT_DIR$/pisibg.iml" />
     </modules>
   </component>

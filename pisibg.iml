@@ -14,9 +14,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping>
-          <factory-entry name="entityManagerFactory" />
-        </datasource-mapping>
+        <datasource-mapping />
         <naming-strategy-map />
       </configuration>
     </facet>
@@ -90,10 +88,6 @@
     <orderEntry type="library" name="Maven: org.springframework.hateoas:spring-hateoas:1.2.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.atteo:evo-inflector:1.2.2" level="project" />
-<<<<<<< HEAD
-=======
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.11.4" level="project" />
->>>>>>> 460644343d668668036649a03ecbc6acd1837026
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-mail:2.4.4" level="project" />
     <orderEntry type="library" name="Maven: com.sun.mail:jakarta.mail:1.6.6" level="project" />
     <orderEntry type="library" name="Maven: com.sun.activation:jakarta.activation:1.2.2" level="project" />
@@ -105,12 +99,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-webmvc:5.3.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.session:spring-session-core:2.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.3.5" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.4" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.11.4" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.11.4" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-json:2.4.4" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.4" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-parameter-names:2.11.4" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.springframework.boot:spring-boot-devtools:2.4.4" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.4.4" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:2.4.4" level="project" />

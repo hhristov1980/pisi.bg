@@ -8,12 +8,14 @@ import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.MySQLException;
 import pisibg.model.dto.*;
+import pisibg.model.pojo.Payment;
 import pisibg.model.pojo.User;
 import pisibg.service.UserService;
 import pisibg.utility.EmailServiceImpl;
 
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.util.Random;
 
 @RestController
 public class UserController extends AbstractController {
@@ -26,6 +28,7 @@ public class UserController extends AbstractController {
     @Autowired
     private SessionManager sessionManager;
 
+
     @PostMapping("/users")
     public UserRegisterResponseDTO register(@RequestBody UserRegisterRequestDTO userDTO) {
         return userService.addUser(userDTO);
@@ -35,7 +38,6 @@ public class UserController extends AbstractController {
     public UserWithoutPassDTO login(@RequestBody UserLoginDTO dto, HttpSession ses) {
         UserWithoutPassDTO responseDto = userService.login(dto);
         sessionManager.loginUser(ses, responseDto.getId());
-        emailService.sendSimpleMessage("hristo_ih@abv.bg","Test","Test Test");
         return responseDto;
     }
 

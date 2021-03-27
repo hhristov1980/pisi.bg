@@ -72,7 +72,6 @@ public class UserService {
     }
 
     public void softDelete(int id) throws SQLException {
-<<<<<<< HEAD
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             User u = user.get();
@@ -216,8 +215,5 @@ public class UserService {
         else {
             throw new NotFoundException("User not found!");
         }
-=======
-        userDAO.deleteUser(id);
->>>>>>> 460644343d668668036649a03ecbc6acd1837026
     }
 }

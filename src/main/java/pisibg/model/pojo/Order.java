@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Order {
     private int id;
     private User user;
-    private Status status;
+    private OrderStatus orderStatus;
     private PaymentMethod paymentMethod;
     private String address;
     private LocalDateTime createdAt;
