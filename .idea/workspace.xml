@@ -5,13 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="46684cbe-b4f0-4d22-bd76-0757d99ccfb1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_classmate_1_5_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sun_istack_istack_commons_runtime_3_0_11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_dom4j_dom4j_2_1_32.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jaxb_jaxb_runtime_2_3_32.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_jaxb_txw2_2_3_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_common_hibernate_commons_annotations_5_1_2_Final.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_common_hibernate_commons_annotations_5_1_2_Final2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_core_5_4_29_Final.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_javassist_javassist_3_27_0_GA2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_jandex_2_2_3_Final.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/pisibg.iml" beforeDir="false" afterPath="$PROJECT_DIR$/pisibg.iml" afterDir="false" />
-=======
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/AbstractController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/AbstractController.java" afterDir="false" />
->>>>>>> a3f0929ba0f023166a908f712d8c439f7a73ab19
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/CartController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/CartController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/SessionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/SessionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/PaymentMethodResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/PaymentMethodResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/ProductOrderResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/ProductOrderResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/ProductResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/ProductResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/OrderStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/PaymentMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/PaymentMethod.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/repository/ProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/repository/ProductRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/CartService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +59,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RequestMappingsPanelOrder0" value="0" />
     <property name="RequestMappingsPanelOrder1" value="1" />
     <property name="RequestMappingsPanelWidth0" value="75" />
@@ -46,25 +68,17 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="PisibgApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="pisibg" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="pisibg.PisibgApplication" />
@@ -83,6 +97,15 @@
       <updated>1616768802510</updated>
       <workItem from="1616768804372" duration="7695000" />
       <workItem from="1616777159807" duration="14779000" />
+      <workItem from="1616863084469" duration="298000" />
+      <workItem from="1616863505438" duration="8175000" />
+      <workItem from="1616872044022" duration="283000" />
+      <workItem from="1616872708817" duration="2089000" />
+      <workItem from="1616874900875" duration="102000" />
+      <workItem from="1616875089971" duration="882000" />
+      <workItem from="1616876003825" duration="1841000" />
+      <workItem from="1616878049261" duration="511000" />
+      <workItem from="1616878598718" duration="1123000" />
     </task>
     <servers />
   </component>

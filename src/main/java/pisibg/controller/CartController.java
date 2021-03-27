@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.DeniedPermissionException;
-import pisibg.model.dto.ProductOrderRequestDTO;
-import pisibg.model.dto.ProductOrderResponseDTO;
-import pisibg.model.dto.UserEditRequestDTO;
-import pisibg.model.dto.UserEditResponseDTO;
+import pisibg.model.dto.*;
 import pisibg.model.pojo.User;
 import pisibg.service.CartService;
 
@@ -44,6 +41,31 @@ public class CartController extends AbstractController{
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             return cartService.removeProd(orderDto,ses);
+        }
+    }
+    @DeleteMapping("/users/{id}/cart/empty")
+    public void emptyCart(@PathVariable int id,HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        }
+        else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (id != user.getId()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            cartService.emptyCart(ses);
+        }
+    }
+    @GetMapping("/users/{id}/cart")
+    public CartPriceResponseDTO calculatePrice(@PathVariable int id, HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (id != user.getId()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            return cartService.calculatePrice(ses);
         }
     }
 

@@ -6,8 +6,11 @@ import pisibg.model.pojo.Discount;
 import pisibg.model.pojo.Manufacturer;
 import pisibg.model.pojo.Product;
 
+import java.util.List;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Integer> {
     Product findByName(String productName);
     Product findById(int productId);
+    List<Product> findByDiscountId(int discountId);
 }

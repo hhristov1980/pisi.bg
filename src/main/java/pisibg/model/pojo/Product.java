@@ -39,6 +39,9 @@ public class Product {
     @OneToMany(mappedBy = "product")
     @JsonManagedReference
     private Set<Image> images;
+    @ManyToMany(mappedBy = "products")
+    @JsonBackReference
+    private Set<Order> order;
 
     public Product(ProductRequestDTO productRequestDTO){
         name = productRequestDTO.getName();

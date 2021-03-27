@@ -1,5 +1,6 @@
 package pisibg.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import pisibg.model.dto.UserRegisterRequestDTO;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @NoArgsConstructor
 @Setter
@@ -34,6 +36,9 @@ public class User {
     private LocalDateTime deletedAt;
     private boolean isSubscribed;
     private boolean isAdmin;
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private Set<Order> orders;
 
     public User(UserRegisterRequestDTO userDTO){
         email = userDTO.getEmail();

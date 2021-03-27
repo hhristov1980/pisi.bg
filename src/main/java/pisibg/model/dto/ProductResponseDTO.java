@@ -23,7 +23,7 @@ public class ProductResponseDTO {
 //    private Subcategory subcategory;
     private int quantity;
     private double price;
-    private int discountPercent;
+    private Integer discountPercent;
 //    private Discount discount;
 
     public ProductResponseDTO(Product product){
@@ -36,7 +36,13 @@ public class ProductResponseDTO {
 //        subcategory = product.getSubcategory();
         quantity = product.getQuantity();
         price = product.getPrice();
-        discountPercent = product.getDiscount().getPercent();
+        if(product.getDiscount() == null){
+            discountPercent = null;
+        }
+        else {
+            discountPercent = product.getDiscount().getPercent();
+        }
+
 //        discount = product.getDiscount();
     }
 }
