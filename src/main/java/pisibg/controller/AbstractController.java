@@ -37,4 +37,10 @@ public class AbstractController {
     public ErrorDTO handleSQL(MySQLException e){
         return new ErrorDTO(e.getMessage());
     }
+
+    @ExceptionHandler(OutOfStockException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDTO handleSQL(OutOfStockException e){
+        return new ErrorDTO(e.getMessage());
+    }
 }
