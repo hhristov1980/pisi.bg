@@ -215,9 +215,5 @@ public class UserService {
         else {
             throw new NotFoundException("User not found!");
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> 66408eac95f0b1d89f1df7324553a30dd246c277
     }
 }
