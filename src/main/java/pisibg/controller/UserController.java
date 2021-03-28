@@ -4,7 +4,6 @@ package pisibg.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
-import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.MySQLException;
 import pisibg.model.dto.*;
@@ -15,7 +14,6 @@ import pisibg.utility.EmailServiceImpl;
 
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
-import java.util.Random;
 
 @RestController
 public class UserController extends AbstractController {
@@ -110,21 +108,34 @@ public class UserController extends AbstractController {
         }
     }
 
-    @DeleteMapping("/users/{id_admin}/admin/{id_user}")
-    public void deleteUser(@PathVariable int id_admin,@PathVariable int id_user, HttpSession ses){
+    @DeleteMapping("/users/{admin_id}/admin/{user_id}")
+    public void deleteUser(@PathVariable int admin_id, @PathVariable int user_id, HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if (id_admin != user.getId()) {
+            if (admin_id != user.getId()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             try {
-                userService.deleteUser(id_admin,id_user);
+                userService.deleteUser(admin_id, user_id);
                 ses.invalidate();
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                throw new MySQLException("Something get wrong!");
             }
+        }
+    }
+
+    @PutMapping("/users/{admin_id}/order/{order_id}")
+    public OrderEditResponseDTO editOrder(@PathVariable int admin_id,@PathVariable int order_id,@RequestBody OrderEditRequestDTO orderDto, HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (admin_id != user.getId()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            return userService.editOrder(admin_id, order_id,orderDto);
         }
     }
 
