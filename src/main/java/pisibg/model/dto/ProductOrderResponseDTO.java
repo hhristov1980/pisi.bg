@@ -18,8 +18,9 @@ public class ProductOrderResponseDTO {
     private String subcategoryName;
     private double price;
     private int discountPercent;
+    private int quantity;
 
-    public ProductOrderResponseDTO(Product product){
+    public ProductOrderResponseDTO(Product product, int quantity){
         id = product.getId();
         name = product.getName();
         description = product.getDescription();
@@ -27,5 +28,6 @@ public class ProductOrderResponseDTO {
         subcategoryName = product.getSubcategory().getName();
         price = product.getPrice();
         discountPercent = product.getDiscount().getPercent();
+        this.quantity = quantity;
     }
 }

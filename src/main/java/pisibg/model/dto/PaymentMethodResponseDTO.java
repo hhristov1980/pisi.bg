@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
-import pisibg.model.pojo.OrderStatus;
 import pisibg.model.pojo.PaymentMethod;
 
 @NoArgsConstructor

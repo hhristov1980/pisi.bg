@@ -4,17 +4,13 @@ package pisibg.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
-import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
-import pisibg.exceptions.NotFoundException;
 import pisibg.model.dto.*;
 import pisibg.model.pojo.User;
-import pisibg.model.repository.ManufacturerRepository;
 import pisibg.model.repository.UserRepository;
 import pisibg.service.ProductService;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class ProductController extends AbstractController{
@@ -38,6 +34,19 @@ public class ProductController extends AbstractController{
             }
         }
         return productService.add(productRequestDTO);
+    }
+    @PutMapping("/users/{user_id}/product/edit")
+    public ProductResponseDTO changeQuantity(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody ProductEditRequestDTO productEditRequestDTO){
+        if(sessionManager.getLoggedUser(ses)==null){
+            throw new AuthenticationException("You have to be logged in!");
+        }
+        else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (userId != user.getId()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+        }
+        return productService.edit(productEditRequestDTO);
     }
 
     @GetMapping("/product")
