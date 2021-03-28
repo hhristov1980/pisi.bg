@@ -77,7 +77,7 @@ public class OrderService {
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
-                    //TODO
+                    System.out.println("Thread sleep interupted!");
                 }
                 payment.setProcessedAt(LocalDateTime.now());
                 payment.setStatus("OK");

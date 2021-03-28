@@ -147,8 +147,6 @@ public class CartService {
                     discountAmount+=(double) Math. round((productPrice*quantity*(discountPercent*1.0/100)) * 100) / 100;
                 }
             }
-
-
             priceAfterDiscount = priceWithoutDiscount-discountAmount;
             CartPriceResponseDTO cartPriceResponseDTO = new CartPriceResponseDTO();
             cartPriceResponseDTO.setProducts(allProducts);
@@ -173,13 +171,16 @@ public class CartService {
             if(!cart.isEmpty()){
                 for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products: cart.entrySet()){
                     int orderQuantity = products.getValue().size();
+                    System.out.println("Order quantity"+orderQuantity);
                     if(orderQuantity>0){
                         Product product = productRepository.findById(products.getValue().peek().getId());
                         int quantityDB = product.getQuantity();
+                        System.out.println("quantity in DB  = " + quantityDB);
                         if(orderQuantity<=quantityDB){
                             int updatedQuantity = quantityDB-orderQuantity;
                             product.setQuantity(updatedQuantity);
                             productRepository.save(product);
+                            System.out.println("Updated quantity"+updatedQuantity);
                             System.out.println("Quantity in DB "+productRepository.getOne(products.getValue().peek().getId()).getQuantity());
                         }
                         else {

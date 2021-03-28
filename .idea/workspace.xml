@@ -6,9 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="46684cbe-b4f0-4d22-bd76-0757d99ccfb1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/SessionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/SessionManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/OrderResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/OrderResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Order.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/CartService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,23 +48,15 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="restartRequiresConfirmation" value="false" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="PisibgApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="pisibg" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="pisibg.PisibgApplication" />
@@ -73,7 +68,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="9e1b6973-9035-4914-8303-e816089f8a8e" name="Default Changelist" comment="" />
+      <changelist id="46684cbe-b4f0-4d22-bd76-0757d99ccfb1" name="Default Changelist" comment="" />
       <created>1616919131192</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -92,6 +87,8 @@
       <workItem from="1616880791833" duration="1367000" />
       <workItem from="1616915956230" duration="4333000" />
       <workItem from="1616919133103" duration="10762000" />
+      <workItem from="1616960743012" duration="2231000" />
+      <workItem from="1616969467884" duration="1797000" />
     </task>
     <servers />
   </component>

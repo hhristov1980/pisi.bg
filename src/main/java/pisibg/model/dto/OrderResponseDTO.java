@@ -40,6 +40,7 @@ public class OrderResponseDTO {
         id =  order.getId();
         userNames = order.getUser().getFirstName()+" "+order.getUser().getLastName();
         address = order.getAddress();
+        orderStatus=order.getOrderStatus().getType();
         paymentMethodType = order.getPaymentMethod().getType();
         createdAt = order.getCreatedAt();
         grossValue = order.getGrossValue();
