@@ -57,7 +57,7 @@ public class CartController extends AbstractController{
         }
     }
     @GetMapping("/users/{id}/cart")
-    public CartPriceResponseDTO calculatePrice(@PathVariable int id, HttpSession ses){
+    public CartPriceResponseDTO checkout(@PathVariable int id, HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -65,7 +65,7 @@ public class CartController extends AbstractController{
             if (id != user.getId()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
-            return cartService.calculatePrice(ses);
+            return cartService.checkout(ses);
         }
     }
 

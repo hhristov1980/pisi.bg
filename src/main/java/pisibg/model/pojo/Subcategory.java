@@ -8,6 +8,7 @@ import lombok.Setter;
 import pisibg.model.dto.SubCategoryRequestDTO;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -32,5 +33,16 @@ public class Subcategory {
         name = subCategoryRequestDTO.getName();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Subcategory that = (Subcategory) o;
+        return id == that.id;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

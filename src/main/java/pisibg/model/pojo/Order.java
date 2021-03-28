@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -27,6 +28,8 @@ public class Order {
     @JoinColumn(name = "status_id")
     @JsonBackReference
     private OrderStatus orderStatus;
+    @OneToOne(mappedBy = "order")
+    private Payment payment;
     @ManyToOne
     @JoinColumn(name="payment_method_id")
     @JsonBackReference
@@ -34,6 +37,7 @@ public class Order {
     private String address;
     private LocalDateTime createdAt;
     private double grossValue;
+    @Column(name = "discount_amount")
     private double discount;
     private double netValue;
     private boolean isPaid;
@@ -45,4 +49,17 @@ public class Order {
     )
     @JsonManagedReference
     private Set<Product> products;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return id == order.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

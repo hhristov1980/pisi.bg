@@ -37,7 +37,7 @@ public class SessionChecker extends Thread{
     @Override
     public void run() {
         //TODO fix 60 to variable
-        maxInactiveIntervalBeforeEmptyCart = ses.getMaxInactiveInterval()-60;
+        maxInactiveIntervalBeforeEmptyCart = ses.getMaxInactiveInterval()-40;
         while (true){
             if(System.currentTimeMillis()-ses.getLastAccessedTime()<maxInactiveIntervalBeforeEmptyCart){
                 cart = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");

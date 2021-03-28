@@ -4,15 +4,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Random;
 
 @NoArgsConstructor
 @Setter
 @Getter
+@Entity
+@Table(name = "payments")
 public class Payment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable=false)
     private User user;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
     private LocalDateTime createdAt;
     private double amount;
@@ -21,7 +31,7 @@ public class Payment {
     private String status;
 
 
-    protected String getSaltString() {
+    public String transactionIdGenerator() {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
@@ -31,5 +41,18 @@ public class Payment {
         }
         String saltStr = salt.toString();
         return saltStr;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Payment payment = (Payment) o;
+        return id == payment.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

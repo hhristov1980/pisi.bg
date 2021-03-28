@@ -1,5 +1,6 @@
 package pisibg.service;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import pisibg.utility.Validator;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class ImageService {
@@ -58,6 +61,7 @@ public class ImageService {
             String url = image.getUrl();
             File pFile = new File(url);
             return Files.readAllBytes(pFile.toPath());
+
         }
     }
 }

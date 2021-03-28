@@ -57,6 +57,7 @@ public class CartService {
         if(ses.getAttribute("cart")==null){
             Map<Integer, Queue<ProductOrderResponseDTO>> cart = new LinkedHashMap<>();
             SessionChecker sessionChecker = new SessionChecker();
+            sessionChecker.setDaemon(true);
             sessionChecker.setCart(cart);
             sessionChecker.setSes(ses);
             sessionChecker.start();
@@ -122,7 +123,7 @@ public class CartService {
             }
         }
     }
-    public CartPriceResponseDTO calculatePrice(HttpSession ses){
+    public CartPriceResponseDTO checkout(HttpSession ses){
         if(ses.getAttribute("cart")==null){
             throw new NotFoundException("Cart not found!");
         }
@@ -131,10 +132,13 @@ public class CartService {
         double discountAmount = 0.0;
         Map<Integer, Queue<ProductOrderResponseDTO>> cart = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
         if(!cart.isEmpty()){
+            Set<Product> allProducts = new HashSet<>();
             for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products: cart.entrySet()){
                 int quantity = products.getValue().size();
                 if(quantity>0){
                     Product product = productRepository.findById(products.getValue().peek().getId());
+                    product.setQuantity(quantity);
+                    allProducts.add(product);
                     double productPrice = product.getPrice();
                     int userId = sessionManager.getLoggedUser(ses).getId();
                     Discount discount = product.getDiscount();
@@ -145,12 +149,15 @@ public class CartService {
                     else {
                         discountPercent = discountRepository.findById(discount.getId()).getPercent();
                     }
-                    priceWithoutDiscount+=(productPrice*quantity);
-                    discountAmount+=(productPrice*quantity*(discountPercent*1.0/100));
+                    priceWithoutDiscount+=(double) Math. round((productPrice*quantity) * 100) / 100;
+                    discountAmount+=(double) Math. round((productPrice*quantity*(discountPercent*1.0/100)) * 100) / 100;
                 }
             }
+
+
             priceAfterDiscount = priceWithoutDiscount-discountAmount;
             CartPriceResponseDTO cartPriceResponseDTO = new CartPriceResponseDTO();
+            cartPriceResponseDTO.setProducts(allProducts);
             cartPriceResponseDTO.setPriceWithoutDiscount(priceWithoutDiscount);
             cartPriceResponseDTO.setDiscountAmount(discountAmount);
             cartPriceResponseDTO.setPriceAfterDiscount(priceAfterDiscount);

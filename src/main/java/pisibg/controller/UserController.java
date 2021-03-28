@@ -8,7 +8,7 @@ import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.MySQLException;
 import pisibg.model.dto.*;
-import pisibg.model.pojo.Payment;
+//import pisibg.model.pojo.Payment;
 import pisibg.model.pojo.User;
 import pisibg.service.UserService;
 import pisibg.utility.EmailServiceImpl;
