@@ -43,10 +43,10 @@ public class Product {
     @JsonBackReference
     private Set<Order> order;
 
-    public Product(ProductRequestDTO productRequestDTO){
-        name = productRequestDTO.getName();
-        description = productRequestDTO.getDescription();
-        quantity = productRequestDTO.getQuantity();
-        price = productRequestDTO.getPrice();
-    }
+//    public Product(ProductRequestDTO productRequestDTO){
+//        name = productRequestDTO.getName();
+//        description = productRequestDTO.getDescription();
+//        quantity = productRequestDTO.getQuantity();
+//        price = productRequestDTO.getPrice();
+//    }
 }

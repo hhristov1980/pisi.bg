@@ -34,7 +34,7 @@ public class OrderService {
     @Autowired
     private PaymentMethodRepository paymentMethodRepository;
     @Autowired
-    private OrderStatusRepository orderResponseDTO;
+    private OrderStatusRepository orderStatusRepository;
 
     public OrderResponseDTO checkout (OrderRequestDTO orderRequestDTO, HttpSession ses, int userId){
         if(ses.getAttribute("cart")==null){
@@ -58,7 +58,7 @@ public class OrderService {
         order.setDiscount(cartService.calculatePrice(ses).getDiscountAmount());
         order.setNetValue(cartService.calculatePrice(ses).getPriceAfterDiscount());
         order.setPaymentMethod(paymentMethodRepository.getOne(orderRequestDTO.getPaymentMethodId()));
-        order.setOrderStatus(orderResponseDTO.getOne(1)); //status id 1 is PROCESSING
+        order.setOrderStatus(orderStatusRepository.getOne(1)); //status id 1 is PROCESSING
         order.setPaid(false); //DEFAULT VALUE FALSE - TO BE CHANGED FURTHER!
         orderRepository.save(order);
         //CLEAR CART AFTER SUCCESSFUL PAYMENT OR PAYMENT FAIL

@@ -23,10 +23,13 @@ public class Order {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
-    @OneToOne(mappedBy="order_statuses")
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    @JsonBackReference
     private OrderStatus orderStatus;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="payment_method_id")
+    @JsonBackReference
     private PaymentMethod paymentMethod;
     private String address;
     private LocalDateTime createdAt;

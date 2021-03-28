@@ -1,10 +1,12 @@
 package pisibg.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -18,6 +20,7 @@ public class PaymentMethod {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String type;
-    @OneToOne(mappedBy="payment_methods")
-    private Order orders;
+    @OneToMany(mappedBy = "paymentMethod")
+    @JsonManagedReference
+    private List<Order> orders;
 }

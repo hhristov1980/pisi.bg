@@ -1,11 +1,13 @@
 package pisibg.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pisibg.model.dto.OrderStatusRequestDTO;
 
 import javax.persistence.*;
+import java.util.List;
 
 @NoArgsConstructor
 @Setter
@@ -17,9 +19,9 @@ public class OrderStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String type;
-    @OneToOne
-    @JoinColumn(name="status_id")
-    private Order order;
+    @OneToMany(mappedBy = "orderStatus")
+    @JsonManagedReference
+    private List<Order> order;
 
     public OrderStatus(OrderStatusRequestDTO status){
         this.type = status.getType();

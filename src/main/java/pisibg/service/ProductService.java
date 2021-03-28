@@ -62,7 +62,11 @@ public class ProductService {
                                         throw new BadRequestException("Please enter price greater than 0!");
                                     }
                                     else {
-                                        Product product = new Product(productRequestDTO);
+                                        Product product = new Product();
+                                        product.setName(productRequestDTO.getName());
+                                        product.setDescription(product.getDescription());
+                                        product.setQuantity(productRequestDTO.getQuantity());
+                                        product.setPrice(productRequestDTO.getPrice());
                                         product.setDiscount(discountRepository.findById(productRequestDTO.getDiscountId()));
                                         product.setManufacturer(manufacturerRepository.findById(productRequestDTO.getManufacturerId()));
                                         product.setSubcategory(subCategoryRepository.getById(productRequestDTO.getSubcategoryId()));
