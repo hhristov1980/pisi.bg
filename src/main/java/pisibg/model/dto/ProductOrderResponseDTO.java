@@ -27,7 +27,12 @@ public class ProductOrderResponseDTO {
         producerName = product.getManufacturer().getProducerName();
         subcategoryName = product.getSubcategory().getName();
         price = product.getPrice();
-        discountPercent = product.getDiscount().getPercent();
+        if(product.getDiscount()==null) {
+            discountPercent = 0;
+        }
+        else {
+            discountPercent = product.getDiscount().getPercent();
+        }
         this.quantity = quantity;
     }
 }

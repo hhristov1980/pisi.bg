@@ -14,8 +14,8 @@ import javax.servlet.http.HttpSession;
 public class SessionManager {
 
     private static final String LOGGED_USER_ID = "LOGGED_USER_ID";
-    private static final int MAX_INACTIVE_INTERVAL = 10*60;
-    private static final int EMPTY_CART_BEFORE_TIMEOUT_INTERVAL = MAX_INACTIVE_INTERVAL-120;
+    private static final int MAX_INACTIVE_INTERVAL = 1*60;
+    private static final int EMPTY_CART_BEFORE_TIMEOUT_INTERVAL = MAX_INACTIVE_INTERVAL-50;
 
     @Autowired
     private UserRepository repository;

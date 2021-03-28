@@ -9,6 +9,7 @@ import pisibg.model.dto.ProductRequestDTO;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -43,10 +44,17 @@ public class Product {
     @JsonBackReference
     private Set<Order> order;
 
-//    public Product(ProductRequestDTO productRequestDTO){
-//        name = productRequestDTO.getName();
-//        description = productRequestDTO.getDescription();
-//        quantity = productRequestDTO.getQuantity();
-//        price = productRequestDTO.getPrice();
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id == product.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
+

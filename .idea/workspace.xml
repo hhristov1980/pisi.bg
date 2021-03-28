@@ -4,28 +4,76 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46684cbe-b4f0-4d22-bd76-0757d99ccfb1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d3c747f3-80cc-4224-b308-8cd9c6022090.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d3c747f3-80cc-4224-b308-8cd9c6022090/storage_v2/_src_/schema/hr.Cg0AAA.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d3c747f3-80cc-4224-b308-8cd9c6022090/storage_v2/_src_/schema/hr.Cg0AAA.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d3c747f3-80cc-4224-b308-8cd9c6022090/storage_v2/_src_/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
+    <list default="true" id="9e1b6973-9035-4914-8303-e816089f8a8e" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/6e9219a3-b526-44d6-a03c-ae727c4b8015.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/6e9219a3-b526-44d6-a03c-ae727c4b8015/storage_v2/_src_/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__antlr_antlr_2_7_72.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_2_32.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_core_1_2_32.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_11_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_jsr310_2_11_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_jayway_jsonpath_json_path_2_4_02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_sun_activation_jakarta_activation_1_2_22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_zaxxer_HikariCP_3_4_52.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_activation_jakarta_activation_api_1_2_22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_annotation_jakarta_annotation_api_1_3_52.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_persistence_jakarta_persistence_api_2_2_32.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_xml_bind_jakarta_xml_bind_api_2_3_32.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__mysql_mysql_connector_java_8_0_232.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_minidev_accessors_smart_1_22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_to_slf4j_2_13_32.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_aspectj_aspectjweaver_1_9_62.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_assertj_assertj_core_3_18_12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_atteo_evo_inflector_1_2_22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_2_22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_7_12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_7_12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_objenesis_objenesis_3_12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_ow2_asm_asm_5_0_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_projectlombok_lombok_1_18_182.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_skyscreamer_jsonassert_1_5_02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_jul_to_slf4j_1_7_302.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_302.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_2_4_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_devtools_2_4_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_aop_2_4_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_json_2_4_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_mail_2_4_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_tomcat_2_4_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_web_2_4_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_test_2_4_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_test_autoconfigure_2_4_42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_data_spring_data_commons_2_4_62.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_hateoas_spring_hateoas_1_2_52.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_plugin_spring_plugin_core_2_0_0_RELEASE2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_security_spring_security_crypto_5_4_52.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_beans_5_3_52.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_context_5_3_52.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_jcl_5_3_52.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_jdbc_5_3_52.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_webmvc_5_3_52.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_xmlunit_xmlunit_core_2_7_02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_yaml_snakeyaml_1_272.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pisibg.iml" beforeDir="false" afterPath="$PROJECT_DIR$/pisibg.iml" afterDir="false" />
-<<<<<<< HEAD
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/ImageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/ImageController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Payment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/ImageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/ImageService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-=======
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/AbstractController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/AbstractController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/CartController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/CartController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/SessionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/SessionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/CartPriceResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/CartPriceResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/ProductOrderResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/ProductOrderResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Image.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Image.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/OrderStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/OrderStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/PaymentMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/PaymentMethod.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Payment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Subcategory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Subcategory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/CartService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/OrderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/ProductService.java" afterDir="false" />
->>>>>>> bbf5c713be89b5b4ebd6df88cbddf7f3eeaaa085
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/utility/SessionChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/utility/SessionChecker.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,15 +83,15 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="1qIYtfD0dXWZy1bnl5VXvjEXBtT" />
+  <component name="ProjectId" id="1qNTcoN0B5FTxeoRcbxrXYUm0gf" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
@@ -59,19 +107,26 @@
     <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="PisibgApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="pisibg" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="pisibg.PisibgApplication" />
@@ -83,29 +138,12 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="46684cbe-b4f0-4d22-bd76-0757d99ccfb1" name="Default Changelist" comment="" />
-      <created>1616768802510</created>
+      <changelist id="9e1b6973-9035-4914-8303-e816089f8a8e" name="Default Changelist" comment="" />
+      <created>1616919131192</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1616768802510</updated>
-      <workItem from="1616768804372" duration="7695000" />
-<<<<<<< HEAD
-      <workItem from="1616777159807" duration="15375000" />
-      <workItem from="1616860652839" duration="8406000" />
-=======
-      <workItem from="1616777159807" duration="14779000" />
-      <workItem from="1616863084469" duration="298000" />
-      <workItem from="1616863505438" duration="8175000" />
-      <workItem from="1616872044022" duration="283000" />
-      <workItem from="1616872708817" duration="2089000" />
-      <workItem from="1616874900875" duration="102000" />
-      <workItem from="1616875089971" duration="882000" />
-      <workItem from="1616876003825" duration="1841000" />
-      <workItem from="1616878049261" duration="511000" />
-      <workItem from="1616878598718" duration="1991000" />
-      <workItem from="1616880791833" duration="1367000" />
-      <workItem from="1616915956230" duration="1440000" />
->>>>>>> bbf5c713be89b5b4ebd6df88cbddf7f3eeaaa085
+      <updated>1616919131192</updated>
+      <workItem from="1616919133103" duration="6150000" />
     </task>
     <servers />
   </component>
@@ -122,6 +160,5 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

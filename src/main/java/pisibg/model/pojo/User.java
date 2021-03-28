@@ -6,14 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import pisibg.model.dto.UserRegisterRequestDTO;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-<<<<<<< HEAD
 import java.util.List;
-=======
 import java.util.Set;
->>>>>>> bbf5c713be89b5b4ebd6df88cbddf7f3eeaaa085
+
 
 @NoArgsConstructor
 @Setter
@@ -40,14 +37,11 @@ public class User {
     private LocalDateTime deletedAt;
     private boolean isSubscribed;
     private boolean isAdmin;
-<<<<<<< HEAD
-//    @OneToMany(mappedBy="user")
-//    private List<Payment> payments;
-=======
+    @OneToMany(mappedBy="user")
+    private Set<Payment> payments;
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private Set<Order> orders;
->>>>>>> bbf5c713be89b5b4ebd6df88cbddf7f3eeaaa085
 
     public User(UserRegisterRequestDTO userDTO){
         email = userDTO.getEmail();
