@@ -6,11 +6,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pisibg.model.pojo.*;
+import pisibg.model.repository.ProductRepository;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 @Setter
@@ -18,6 +22,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Component
 public class OrderResponseDTO {
+
     private int id;
     private String userNames;
     private String orderStatus;
@@ -31,7 +36,7 @@ public class OrderResponseDTO {
     private boolean isPaid;
     private Set<Product> products;
 
-    public OrderResponseDTO(Order order){
+    public OrderResponseDTO( Order order, Set<Product> productSet){
         id =  order.getId();
         userNames = order.getUser().getFirstName()+" "+order.getUser().getLastName();
         address = order.getAddress();
@@ -41,5 +46,6 @@ public class OrderResponseDTO {
         discount = order.getDiscount();
         netValue = order.getNetValue();
         isPaid = order.isPaid();
+        products = productSet;
     }
 }

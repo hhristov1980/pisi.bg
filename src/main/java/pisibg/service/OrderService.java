@@ -11,8 +11,10 @@ import pisibg.exceptions.PaymentFailedException;
 import pisibg.model.dto.CartPriceResponseDTO;
 import pisibg.model.dto.OrderRequestDTO;
 import pisibg.model.dto.OrderResponseDTO;
+import pisibg.model.dto.ProductOrderResponseDTO;
 import pisibg.model.pojo.Order;
 import pisibg.model.pojo.Payment;
+import pisibg.model.pojo.Product;
 import pisibg.model.pojo.User;
 import pisibg.model.repository.*;
 import pisibg.utility.Constants;
@@ -20,11 +22,11 @@ import pisibg.utility.Validator;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class OrderService {
-    private static final int SUCCESS_CHANCE=99;
+    private static final int SUCCESS_CHANCE=90;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -37,6 +39,8 @@ public class OrderService {
     private OrderStatusRepository orderStatusRepository;
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     public OrderResponseDTO pay(OrderRequestDTO orderRequestDTO, HttpSession ses, int userId){
         if(new Random().nextInt(100)<SUCCESS_CHANCE) {
@@ -54,35 +58,42 @@ public class OrderService {
             if (address.length() == 0) {
                 address = userRepository.getOne(userId).getAddress();
             }
-            CartPriceResponseDTO cart = cartService.checkout(ses);
-            order.setProducts(cart.getProducts());
-            order.setUser(userRepository.getOne(userId));
-            order.setAddress(address);
-            order.setCreatedAt(LocalDateTime.now());
-            order.setGrossValue(cartService.checkout(ses).getPriceWithoutDiscount());
-            order.setDiscount(cartService.checkout(ses).getDiscountAmount());
-            order.setNetValue(cartService.checkout(ses).getPriceAfterDiscount());
-            order.setPaymentMethod(paymentMethodRepository.getOne(orderRequestDTO.getPaymentMethodId()));
-            order.setOrderStatus(orderStatusRepository.getOne(1)); //status id 1 is PROCESSING
-            order.setPaid(false); //DEFAULT VALUE FALSE - TO BE CHANGED FURTHER!
-            orderRepository.save(order);
-            Payment payment = new Payment();
-            payment.setCreatedAt(LocalDateTime.now());
-            payment.setOrder(order);
-            payment.setUser(userRepository.getOne(userId));
-            payment.setAmount(order.getNetValue());
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                //TODO
+            if(cartService.checkProductsAndRemoveFromDB(ses)){
+                CartPriceResponseDTO cart = cartService.checkout(ses);
+                order.setProducts(cart.getProducts());
+                order.setUser(userRepository.getOne(userId));
+                order.setAddress(address);
+                order.setCreatedAt(LocalDateTime.now());
+                order.setGrossValue(cartService.checkout(ses).getPriceWithoutDiscount());
+                order.setDiscount(cartService.checkout(ses).getDiscountAmount());
+                order.setNetValue(cartService.checkout(ses).getPriceAfterDiscount());
+                order.setPaymentMethod(paymentMethodRepository.getOne(orderRequestDTO.getPaymentMethodId()));
+                order.setOrderStatus(orderStatusRepository.getOne(1)); //status id 1 is PROCESSING
+                Payment payment = new Payment();
+                payment.setCreatedAt(LocalDateTime.now());
+                payment.setOrder(order);
+                payment.setUser(userRepository.getOne(userId));
+                payment.setAmount(order.getNetValue());
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    //TODO
+                }
+                payment.setProcessedAt(LocalDateTime.now());
+                payment.setStatus("OK");
+                payment.setTransactionId(payment.transactionIdGenerator());
+                order.setPaid(true);
+                orderRepository.save(order);
+                paymentRepository.save(payment);
+                updateTurnoverAndPersonalDiscountPercent(order.getNetValue(),userId);
+                Map<Integer, Queue<ProductOrderResponseDTO>> cartSet = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
+                ses.removeAttribute("cart");
+                return new OrderResponseDTO(order, createProductSet(cartSet));
             }
-            payment.setProcessedAt(LocalDateTime.now());
-            payment.setStatus("OK");
-            payment.setTransactionId(payment.transactionIdGenerator());
-            paymentRepository.save(payment);
-            updateTurnoverAndPersonalDiscountPercent(order.getNetValue(),userId);
-            cartService.emptyCart(ses);
-            return new OrderResponseDTO(order);
+            else {
+                throw new NotFoundException("Product/s are already out of stock. Please try again with other products!");
+            }
+
         }
         else {
             cartService.emptyCart(ses);
@@ -105,6 +116,19 @@ public class OrderService {
         userRepository.save(user);
 
     }
+
+    private Set<Product> createProductSet(Map<Integer, Queue<ProductOrderResponseDTO>> cartSet){
+        HashSet<Product> productSet = new HashSet<>();
+        for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> p: cartSet.entrySet()){
+            int quantity = p.getValue().size();
+            if(quantity>0){
+                Product product = productRepository.getOne(p.getKey());
+                productSet.add(product);
+            }
+        }
+        return productSet;
+    }
+
 
 
 

@@ -14,7 +14,6 @@ import pisibg.model.pojo.Product;
 import pisibg.model.repository.DiscountRepository;
 import pisibg.model.repository.ProductRepository;
 import pisibg.model.repository.UserRepository;
-import pisibg.utility.SessionChecker;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -41,8 +40,8 @@ public class CartService {
                     }
                     cart.get(orderDto.getId()).offer(new ProductOrderResponseDTO(product,1));
                 }
-                product.setQuantity(product.getQuantity() - orderDto.getQuantity());
-                productRepository.save(product);
+//                product.setQuantity(product.getQuantity() - orderDto.getQuantity());
+//                productRepository.save(product);
                 ses.setAttribute("cart",cart);
                 return new ProductOrderResponseDTO(product, orderDto.getQuantity());
             } else {
@@ -56,11 +55,6 @@ public class CartService {
     public ProductOrderResponseDTO addProd(ProductOrderRequestDTO orderDto, HttpSession ses) {
         if(ses.getAttribute("cart")==null){
             Map<Integer, Queue<ProductOrderResponseDTO>> cart = new LinkedHashMap<>();
-            SessionChecker sessionChecker = new SessionChecker();
-            sessionChecker.setDaemon(true);
-            sessionChecker.setCart(cart);
-            sessionChecker.setSes(ses);
-            sessionChecker.start();
             return buy(orderDto,cart,ses);
         }
         else {
@@ -82,8 +76,8 @@ public class CartService {
                             cart.get(orderDto.getId()).poll();
                         }
                         Product product = productRepository.findById(orderDto.getId());
-                        product.setQuantity(product.getQuantity() + orderDto.getQuantity());
-                        productRepository.save(product);
+//                        product.setQuantity(product.getQuantity() + orderDto.getQuantity());
+//                        productRepository.save(product);
                         return new ProductOrderResponseDTO(product, orderDto.getQuantity());
                     }
                     else {
@@ -168,6 +162,39 @@ public class CartService {
         }
     }
 
+
+    public boolean checkProductsAndRemoveFromDB(HttpSession ses){
+        if(ses.getAttribute("cart")==null){
+            return false;
+        }
+        else {
+            //Проверка какво се вади от базата!!!!
+            Map<Integer, Queue<ProductOrderResponseDTO>> cart = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
+            if(!cart.isEmpty()){
+                for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products: cart.entrySet()){
+                    int orderQuantity = products.getValue().size();
+                    if(orderQuantity>0){
+                        Product product = productRepository.findById(products.getValue().peek().getId());
+                        int quantityDB = product.getQuantity();
+                        if(orderQuantity<=quantityDB){
+                            int updatedQuantity = quantityDB-orderQuantity;
+                            product.setQuantity(updatedQuantity);
+                            productRepository.save(product);
+                            System.out.println("Quantity in DB "+productRepository.getOne(products.getValue().peek().getId()).getQuantity());
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+    }
 
 
 
