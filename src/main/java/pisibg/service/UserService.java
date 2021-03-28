@@ -1,5 +1,6 @@
 package pisibg.service;
 
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,7 +11,9 @@ import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.NotFoundException;
 import pisibg.model.dao.UserDAO;
 import pisibg.model.dto.*;
+import pisibg.model.pojo.Order;
 import pisibg.model.pojo.User;
+import pisibg.model.repository.OrderRepository;
 import pisibg.model.repository.UserRepository;
 
 import java.sql.SQLException;
@@ -20,6 +23,9 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Autowired
     private UserDAO userDAO;
@@ -199,20 +205,45 @@ public class UserService {
         }
     }
 
-    public void deleteUser(int id_admin, int id_user) throws SQLException {
-        Optional<User> a = userRepository.findById(id_admin);
-        Optional<User> u = userRepository.findById(id_user);
+    public void deleteUser(int admin_id, int user_id) throws SQLException {
+        Optional<User> a = userRepository.findById(admin_id);
+        Optional<User> u = userRepository.findById(user_id);
         if (a.isPresent() && u.isPresent()) {
             User admin = a.get();
             User user = u.get();
             if (admin.isAdmin()) {
-                userDAO.deleteUser(id_user);
+                userDAO.deleteUser(user_id);
             }
             else {
                 throw new DeniedPermissionException("You don't have permission for that!");
             }
         }
         else {
+            throw new NotFoundException("User not found!");
+        }
+    }
+
+    public OrderEditResponseDTO editOrder(int admin_id, int order_id,OrderEditRequestDTO orderDto) {
+        Optional<User> a = userRepository.findById(admin_id);
+        Optional<Order> o = orderRepository.findById(order_id);
+        Optional<User> u = userRepository.findById(o.get().getUser().getId());
+        if(o.isPresent() && a.isPresent()) {
+            User admin = a.get();
+            Order order = o.get();
+            User user = u.get();
+            if (admin.isAdmin()) {
+                order.setAddress(orderDto.getAddress());
+                order.setGrossValue(orderDto.getGrossValue());
+                order.setNetValue(orderDto.getNetValue());
+                order.setPaid(orderDto.isPaid());
+                order.setDiscount(orderDto.getDiscount());
+                orderRepository.save(order);
+                user.setTurnover(user.getTurnover()-order.getNetValue());
+                return new OrderEditResponseDTO(order);
+            }else {
+                throw new DeniedPermissionException("You don't have permission for that!");
+            }
+        } else {
             throw new NotFoundException("User not found!");
         }
     }

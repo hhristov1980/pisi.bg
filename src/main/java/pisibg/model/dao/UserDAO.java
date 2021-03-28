@@ -21,10 +21,8 @@ public class UserDAO extends AbstractDAO {
     public void deleteUser(int id) throws SQLException {
         String sql = "UPDATE users SET email='deleted', password='deleted', first_name='deleted', last_name='deleted'," +
                 " phone_number='deleted',address='deleted' , is_subscribed='0',deleted_at = ? WHERE id = ?;";
-        String select = "SELECT * FROM users";
         try (Connection connection = jdbcTemplate.getDataSource().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             PreparedStatement ps1 = connection.prepareStatement(select)) {
+             PreparedStatement statement = connection.prepareStatement(sql);) {
             statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             statement.setInt(2, id);
             statement.executeUpdate();
@@ -38,12 +36,4 @@ public class UserDAO extends AbstractDAO {
             return statement.executeUpdate();
         }
     }
-
-//public void editUser(int id) throws SQLException {
-//    String sql = "UPDATE users SET ";
-//    try (Connection connection = jdbcTemplate.getDataSource().getConnection();
-//         PreparedStatement statement = connection.prepareStatement(sql)){
-//
-//    }
-//}
 }

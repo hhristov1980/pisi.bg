@@ -1,15 +1,13 @@
 package pisibg.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
-import pisibg.model.pojo.*;
+import pisibg.model.pojo.Order;
+import pisibg.model.pojo.Product;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -17,7 +15,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @Component
-public class OrderResponseDTO {
+public class OrderEditResponseDTO {
     private int id;
     private String userNames;
     private String orderStatus;
@@ -31,7 +29,7 @@ public class OrderResponseDTO {
     private boolean isPaid;
     private Set<Product> products;
 
-    public OrderResponseDTO(Order order){
+    public OrderEditResponseDTO(Order order){
         id =  order.getId();
         userNames = order.getUser().getFirstName()+" "+order.getUser().getLastName();
         address = order.getAddress();
