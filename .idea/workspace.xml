@@ -6,8 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="46684cbe-b4f0-4d22-bd76-0757d99ccfb1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/AbstractController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/AbstractController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pisibg.iml" beforeDir="false" afterPath="$PROJECT_DIR$/pisibg.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/ImageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/ImageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Payment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/ImageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/ImageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,24 +48,14 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="restartRequiresConfirmation" value="false" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="PisibgApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="pisibg" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="pisibg.PisibgApplication" />
@@ -78,7 +73,8 @@
       <option name="presentableId" value="Default" />
       <updated>1616768802510</updated>
       <workItem from="1616768804372" duration="7695000" />
-      <workItem from="1616777159807" duration="14779000" />
+      <workItem from="1616777159807" duration="15375000" />
+      <workItem from="1616860652839" duration="8406000" />
     </task>
     <servers />
   </component>

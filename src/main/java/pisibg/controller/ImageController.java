@@ -2,6 +2,7 @@ package pisibg.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pisibg.exceptions.AuthenticationException;
@@ -48,9 +49,9 @@ public class ImageController {
         }
         return null;
     }
-    @ResponseBody
+
     @GetMapping(value = "/images/{id}/download", produces = "image/*")
-    public byte[] download(@PathVariable int id) throws IOException {
+    public @ResponseBody byte[] download(@PathVariable int id) throws IOException {
         return imageService.download(id);
     }
 

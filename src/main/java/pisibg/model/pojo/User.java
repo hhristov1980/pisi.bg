@@ -8,6 +8,7 @@ import pisibg.model.dto.UserRegisterRequestDTO;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @Setter
@@ -34,6 +35,8 @@ public class User {
     private LocalDateTime deletedAt;
     private boolean isSubscribed;
     private boolean isAdmin;
+//    @OneToMany(mappedBy="user")
+//    private List<Payment> payments;
 
     public User(UserRegisterRequestDTO userDTO){
         email = userDTO.getEmail();
