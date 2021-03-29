@@ -16,6 +16,7 @@ import pisibg.model.dto.ProductOrderResponseDTO;
 import pisibg.model.pojo.*;
 import pisibg.model.repository.*;
 import pisibg.utility.Constants;
+import pisibg.utility.RoundFloat;
 import pisibg.utility.Validator;
 
 import javax.servlet.http.HttpSession;
@@ -53,23 +54,21 @@ public class OrderService {
                 throw new NotFoundException("Payment method not found!");
             }
             if (cartService.checkProductsAndRemoveFromDB(cart)) {
-                CartPriceResponseDTO carts = cartService.checkout(cart, user);
                 Order order = new Order();
                 String address = orderRequestDTO.getAddress();
                 if (address.length() == 0) {
                     address = user.getAddress();
                 }
-                order.setProducts(carts.getProducts());
+                order.setProducts(createProductSet(cart));
                 order.setUser(user);
                 order.setAddress(address);
                 order.setCreatedAt(LocalDateTime.now());
                 order.setGrossValue(calculateGrossPrice(cart));
-                order.setDiscount(carts.getDiscountAmount());
-                order.setNetValue(calculateGrossPrice(cart,user));
+                order.setDiscount(calculateDiscountPrice(cart,user));
+                order.setNetValue(order.getGrossValue()-order.getDiscount());
                 Payment payment = addPayment(order, user.getId());
                 order.setPaid(true);
                 updateTurnoverAndPersonalDiscountPercent(order.getNetValue(), user.getId());
-                //status id 1 is PROCESSING
                 OrderStatus orderStatus = orderStatusRepository.getOne(Constants.FIRST_ORDER_STATUS);
                 order.setOrderStatus(orderStatus);
                 Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(orderRequestDTO.getPaymentMethodId());
@@ -78,16 +77,16 @@ public class OrderService {
 
                 } else {
                     throw new NotFoundException("Payment method not found!");
+
                 }
                 orderRepository.save(order);
                 paymentRepository.save(payment);
-                cartService.checkProductsAndRemoveFromDB(cart);
-                return new OrderResponseDTO(order, createProductSet(cart));
+                return new OrderResponseDTO(order, cart);
             } else {
+
                 throw new NotFoundException("Product/s are already out of stock. Please try again with other products!");
             }
         } else {
-//            cartService.emptyCart(ses);
             throw new PaymentFailedException("Payment failed!");
         }
     }
@@ -100,14 +99,13 @@ public class OrderService {
             if (quantity > 0) {
                 Product product = productRepository.findById(products.getValue().peek().getId());
                 double productPrice = product.getPrice();
-                price += quantity * productPrice;
+                price += RoundFloat.round(quantity * productPrice,Constants.TWO_DECIMAL_PLACES);
             }
         }
         return price;
     }
 
-    private double calculateGrossPrice(Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) {
-        double price = 0;
+    private double calculateDiscountPrice(Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) {
         double priceWithoutDiscount = 0;
         double discountAmount = 0;
         for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products: cart.entrySet()){
@@ -123,8 +121,8 @@ public class OrderService {
                 else {
                     discountPercent = discountRepository.findById(discount.getId()).getPercent();
                 }
-                priceWithoutDiscount+=(double) Math. round((productPrice*quantity) * 100) / 100;
-                discountAmount+=(double) Math. round((productPrice*quantity*(discountPercent*1.0/100)) * 100) / 100;
+                priceWithoutDiscount+= RoundFloat.round((productPrice*quantity), Constants.TWO_DECIMAL_PLACES);
+                discountAmount+=RoundFloat.round(productPrice*quantity*(discountPercent*1.0/100),Constants.TWO_DECIMAL_PLACES);
             }
         }
         return discountAmount;

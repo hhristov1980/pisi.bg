@@ -1,6 +1,7 @@
 package pisibg.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import pisibg.model.repository.ProductRepository;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -34,9 +36,9 @@ public class OrderResponseDTO {
     private double netValue;
     @JsonProperty(value = "isPaid")
     private boolean isPaid;
-    private Set<Product> products;
+    private int totalProducts;
 
-    public OrderResponseDTO( Order order, Set<Product> productSet){
+    public OrderResponseDTO( Order order, Map<Integer, Queue<ProductOrderResponseDTO>> cart){
         id =  order.getId();
         userNames = order.getUser().getFirstName()+" "+order.getUser().getLastName();
         address = order.getAddress();
@@ -47,6 +49,9 @@ public class OrderResponseDTO {
         discount = order.getDiscount();
         netValue = order.getNetValue();
         isPaid = order.isPaid();
-        products = productSet;
+        for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> p: cart.entrySet()) {
+            totalProducts += p.getValue().size();
+        }
+
     }
 }

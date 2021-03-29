@@ -2,6 +2,7 @@ package pisibg.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pisibg.controller.SessionManager;
 import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.NotFoundException;
@@ -15,6 +16,8 @@ import pisibg.model.pojo.User;
 import pisibg.model.repository.DiscountRepository;
 import pisibg.model.repository.ProductRepository;
 import pisibg.model.repository.UserRepository;
+import pisibg.utility.Constants;
+import pisibg.utility.RoundFloat;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -50,27 +53,6 @@ public class CartService {
             throw new NotFoundException("Product not found!");
         }
     }
-
-//    public ProductOrderResponseDTO buy(ProductOrderRequestDTO orderDto,Map<Integer, Queue<ProductOrderResponseDTO>> cart){
-//        Product product = productRepository.findById(orderDto.getId());
-//        if(product!=null) {
-//            if (product.getQuantity() >= orderDto.getQuantity()) {
-//                for (int i = 0; i < orderDto.getQuantity(); i++) {
-//                    if (!cart.containsKey(product.getId())) {
-//                        cart.put(orderDto.getId(), new LinkedList<>());
-//                    }
-//                    cart.get(orderDto.getId()).offer(new ProductOrderResponseDTO(product, 1));
-//                }
-//                return new ProductOrderResponseDTO(product, orderDto.getQuantity());
-//            } else {
-//                throw new OutOfStockException("Not enough quantity!");
-//            }
-//        }else {
-//            throw new NotFoundException("Product not found!");
-//        }
-//    }
-
-
 
     public ProductOrderResponseDTO removeProd(ProductOrderRequestDTO orderDto, Map<Integer, Queue<ProductOrderResponseDTO>> cart) {
             if(!cart.isEmpty()){
@@ -112,7 +94,6 @@ public class CartService {
             }
     }
     public CartPriceResponseDTO checkout(Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user){
-
         double priceWithoutDiscount = 0.0;
         double priceAfterDiscount = 0.0;
         double discountAmount = 0.0;
@@ -133,8 +114,8 @@ public class CartService {
                     else {
                         discountPercent = discountRepository.findById(discount.getId()).getPercent();
                     }
-                    priceWithoutDiscount+=(double) Math. round((productPrice*quantity) * 100) / 100;
-                    discountAmount+=(double) Math. round((productPrice*quantity*(discountPercent*1.0/100)) * 100) / 100;
+                    priceWithoutDiscount+= RoundFloat.round((productPrice*quantity), Constants.TWO_DECIMAL_PLACES);
+                    discountAmount+=RoundFloat.round(productPrice*quantity*(discountPercent*1.0/100),Constants.TWO_DECIMAL_PLACES);
                 }
             }
             priceAfterDiscount = priceWithoutDiscount-discountAmount;
@@ -150,9 +131,8 @@ public class CartService {
         }
     }
 
-
+    @Transactional
     public boolean checkProductsAndRemoveFromDB(Map<Integer, Queue<ProductOrderResponseDTO>> cart){
-         //Проверка какво се вади от базата!!!!
             if(!cart.isEmpty()){
                 for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products: cart.entrySet()){
                     int orderQuantity = products.getValue().size();
