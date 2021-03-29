@@ -3,6 +3,7 @@ package pisibg.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
+import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
 import pisibg.model.dto.*;
 import pisibg.model.pojo.User;
@@ -21,45 +22,55 @@ public class CartController extends AbstractController{
     @Autowired
     private CartService cartService;
 
-    @PutMapping("cart")
-    public ProductOrderResponseDTO addProduct(@PathVariable int id, @RequestBody ProductOrderRequestDTO orderDto, HttpSession ses){
+
+    @PutMapping("/cart")
+    public ProductOrderResponseDTO addProduct(@RequestBody ProductOrderRequestDTO orderDto, HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
-            User user = sessionManager.getLoggedUser(ses);
-            if (id != user.getId()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+            Map<Integer, Queue<ProductOrderResponseDTO>> cart = new LinkedHashMap<>();
+            if(ses.getAttribute("cart")==null){
+                ses.setAttribute("cart",cart);
             }
-            return cartService.addProd(orderDto,ses);
+            else {
+                cart = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
+            }
+            return cartService.addProd(orderDto,cart);
         }
     }
 
-    @DeleteMapping("cart")
-    public ProductOrderResponseDTO removeProduct(@PathVariable int id, @RequestBody ProductOrderRequestDTO orderDto, HttpSession ses){
+    @DeleteMapping("/cart")
+    public ProductOrderResponseDTO removeProduct(@RequestBody ProductOrderRequestDTO orderDto, HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
-            User user = sessionManager.getLoggedUser(ses);
-            if (id != user.getId()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+            if(ses.getAttribute("cart")==null){
+                throw new BadRequestException("You haven't cart!");
             }
-            return cartService.removeProd(orderDto,ses);
+            else {
+                Map<Integer, Queue<ProductOrderResponseDTO>> cart = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
+                return cartService.removeProd(orderDto,cart);
+            }
         }
     }
-    @DeleteMapping("empty")
-    public void emptyCart(@PathVariable int id,HttpSession ses){
+
+
+    @DeleteMapping("/cart/all")
+    public void emptyCart(HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
-            User user = sessionManager.getLoggedUser(ses);
-            if (id != user.getId()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+            if(ses.getAttribute("cart")==null){
+                throw new BadRequestException("You haven't cart!");
             }
-            cartService.emptyCart(ses);
+            else {
+                Map<Integer, Queue<ProductOrderResponseDTO>> cart = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
+                cartService.emptyCart(cart);
+            }
         }
     }
-    @GetMapping("cart")
+    @GetMapping("/cart") //TODO FIX CHECKOUT
     public CartPriceResponseDTO checkout(HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");

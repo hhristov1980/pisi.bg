@@ -25,7 +25,7 @@ import java.util.*;
 
 @Service
 public class OrderService {
-    private static final int SUCCESS_CHANCE=90;
+    private static final int SUCCESS_CHANCE = 90;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -40,57 +40,97 @@ public class OrderService {
     private PaymentRepository paymentRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private DiscountRepository discountRepository;
 
     @Transactional
-    public OrderResponseDTO pay(OrderRequestDTO orderRequestDTO, Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user){
-        if(new Random().nextInt(100)<SUCCESS_CHANCE) {
+    public OrderResponseDTO pay(OrderRequestDTO orderRequestDTO, Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) {
+        if (new Random().nextInt(100) < SUCCESS_CHANCE) {
             if (!Validator.isValidInteger(orderRequestDTO.getPaymentMethodId())) {
                 throw new BadRequestException("Please enter number greater than 0");
             }
             if (!paymentMethodRepository.existsById(orderRequestDTO.getPaymentMethodId())) {
                 throw new NotFoundException("Payment method not found!");
             }
-            Order order = new Order();
-            String address = orderRequestDTO.getAddress();
-            if (address.length() == 0) {
-                address = user.getAddress();
-            }
-            if(cartService.checkProductsAndRemoveFromDB(cart)){
+            if (cartService.checkProductsAndRemoveFromDB(cart)) {
                 CartPriceResponseDTO carts = cartService.checkout(cart, user);
+                Order order = new Order();
+                String address = orderRequestDTO.getAddress();
+                if (address.length() == 0) {
+                    address = user.getAddress();
+                }
                 order.setProducts(carts.getProducts());
                 order.setUser(user);
                 order.setAddress(address);
                 order.setCreatedAt(LocalDateTime.now());
-                order.setGrossValue(carts.getPriceWithoutDiscount());
+                order.setGrossValue(calculateGrossPrice(cart));
                 order.setDiscount(carts.getDiscountAmount());
-                order.setNetValue(carts.getPriceAfterDiscount());
-                Payment payment = addPayment(order,user.getId());
+                order.setNetValue(calculateGrossPrice(cart,user));
+                Payment payment = addPayment(order, user.getId());
                 order.setPaid(true);
+                updateTurnoverAndPersonalDiscountPercent(order.getNetValue(), user.getId());
+                //status id 1 is PROCESSING
+                OrderStatus orderStatus = orderStatusRepository.getOne(Constants.FIRST_ORDER_STATUS);
+                order.setOrderStatus(orderStatus);
+                Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(orderRequestDTO.getPaymentMethodId());
+                if (paymentMethod.isPresent()) {
+                    order.setPaymentMethod(paymentMethod.get());
+
+                } else {
+                    throw new NotFoundException("Payment method not found!");
+                }
                 orderRepository.save(order);
                 paymentRepository.save(payment);
-                updateTurnoverAndPersonalDiscountPercent(order.getNetValue(),user.getId());
-                //status id 1 is PROCESSING
-                Optional<OrderStatus> orderStatus = orderStatusRepository.findById(Constants.FIRST_ORDER_STATUS);
-                Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(orderRequestDTO.getPaymentMethodId());
-                if(orderStatus.isPresent() && paymentMethod.isPresent()) {
-                    order.setOrderStatus(orderStatus.get());
-                    order.setPaymentMethod(paymentMethod.get());
-                }
-                else {
-                    throw new NotFoundException("Payment method or order status not found!");
-                }
+                cartService.checkProductsAndRemoveFromDB(cart);
                 return new OrderResponseDTO(order, createProductSet(cart));
-            }
-            else {
+            } else {
                 throw new NotFoundException("Product/s are already out of stock. Please try again with other products!");
             }
-        }
-        else {
+        } else {
+//            cartService.emptyCart(ses);
             throw new PaymentFailedException("Payment failed!");
         }
     }
 
-    public Payment addPayment(Order order, int userId){
+    private double calculateGrossPrice(Map<Integer, Queue<ProductOrderResponseDTO>> cart) {
+
+        double price = 0;
+        for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {
+            int quantity = products.getValue().size();
+            if (quantity > 0) {
+                Product product = productRepository.findById(products.getValue().peek().getId());
+                double productPrice = product.getPrice();
+                price += quantity * productPrice;
+            }
+        }
+        return price;
+    }
+
+    private double calculateGrossPrice(Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) {
+        double price = 0;
+        double priceWithoutDiscount = 0;
+        double discountAmount = 0;
+        for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products: cart.entrySet()){
+            int quantity = products.getValue().size();
+            if(quantity>0){
+                Product product = productRepository.findById(products.getValue().peek().getId());
+                double productPrice = product.getPrice();
+                Discount discount = product.getDiscount();
+                int discountPercent = 0;
+                if(discount == null){
+                    discountPercent = user.getPersonalDiscount();
+                }
+                else {
+                    discountPercent = discountRepository.findById(discount.getId()).getPercent();
+                }
+                priceWithoutDiscount+=(double) Math. round((productPrice*quantity) * 100) / 100;
+                discountAmount+=(double) Math. round((productPrice*quantity*(discountPercent*1.0/100)) * 100) / 100;
+            }
+        }
+        return discountAmount;
+    }
+
+    public Payment addPayment(Order order, int userId) {
         Payment payment = new Payment();
         payment.setCreatedAt(LocalDateTime.now());
         payment.setOrder(order);
@@ -107,35 +147,33 @@ public class OrderService {
         return payment;
     }
 
-    private void updateTurnoverAndPersonalDiscountPercent(double orderAmount, int userId){
+    private void updateTurnoverAndPersonalDiscountPercent(double orderAmount, int userId) {
         User user = userRepository.getOne(userId);
         double currentTurnover = user.getTurnover();
-        double newTurnover = currentTurnover+orderAmount;
+        double newTurnover = currentTurnover + orderAmount;
         user.setTurnover(newTurnover);
         //put comment here
-        int coefficientTurnoverToIncreaseStep = (int) (newTurnover/ Constants.DISCOUNT_INCREASE_TURNOVER_STEP);
+        int coefficientTurnoverToIncreaseStep = (int) (newTurnover / Constants.DISCOUNT_INCREASE_TURNOVER_STEP);
         int currentPersonalDiscountPercent = user.getPersonalDiscount();
-        if(currentPersonalDiscountPercent+coefficientTurnoverToIncreaseStep<=Constants.MAX_PERSONAL_DISCOUNT_PERCENT){
-            int newPersonalDiscountPercent = currentPersonalDiscountPercent+coefficientTurnoverToIncreaseStep;
+        if (currentPersonalDiscountPercent + coefficientTurnoverToIncreaseStep <= Constants.MAX_PERSONAL_DISCOUNT_PERCENT) {
+            int newPersonalDiscountPercent = currentPersonalDiscountPercent + coefficientTurnoverToIncreaseStep;
             user.setPersonalDiscount(newPersonalDiscountPercent);
         }
         userRepository.save(user);
 
     }
 
-    private Set<Product> createProductSet(Map<Integer, Queue<ProductOrderResponseDTO>> cartSet){
+    private Set<Product> createProductSet(Map<Integer, Queue<ProductOrderResponseDTO>> cartSet) {
         HashSet<Product> productSet = new HashSet<>();
-        for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> p: cartSet.entrySet()){
+        for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> p : cartSet.entrySet()) {
             int quantity = p.getValue().size();
-            if(quantity>0){
+            if (quantity > 0) {
                 Product product = productRepository.getOne(p.getKey());
                 productSet.add(product);
             }
         }
         return productSet;
     }
-
-
 
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pisibg.model.dto.ProductOrderResponseDTO;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
