@@ -30,7 +30,9 @@ public class CartService {
     @Autowired
     private DiscountRepository discountRepository;
 
-    public ProductOrderResponseDTO buy(ProductOrderRequestDTO orderDto,Map<Integer, Queue<ProductOrderResponseDTO>> cart,HttpSession ses){
+
+
+    public ProductOrderResponseDTO addProd(ProductOrderRequestDTO orderDto,  Map<Integer, Queue<ProductOrderResponseDTO>> cart) {
         Product product = productRepository.findById(orderDto.getId());
         if(product!=null) {
             if (product.getQuantity() >= orderDto.getQuantity()) {
@@ -38,11 +40,8 @@ public class CartService {
                     if (!cart.containsKey(product.getId())) {
                         cart.put(orderDto.getId(), new LinkedList<>());
                     }
-                    cart.get(orderDto.getId()).offer(new ProductOrderResponseDTO(product,1));
+                    cart.get(orderDto.getId()).offer(new ProductOrderResponseDTO(product, 1));
                 }
-//                product.setQuantity(product.getQuantity() - orderDto.getQuantity());
-//                productRepository.save(product);
-                ses.setAttribute("cart",cart);
                 return new ProductOrderResponseDTO(product, orderDto.getQuantity());
             } else {
                 throw new OutOfStockException("Not enough quantity!");
@@ -52,23 +51,28 @@ public class CartService {
         }
     }
 
-    public ProductOrderResponseDTO addProd(ProductOrderRequestDTO orderDto, HttpSession ses) {
-        if(ses.getAttribute("cart")==null){
-            Map<Integer, Queue<ProductOrderResponseDTO>> cart = new LinkedHashMap<>();
-            return buy(orderDto,cart,ses);
-        }
-        else {
-            Map<Integer, Queue<ProductOrderResponseDTO>> cart = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
-            return buy(orderDto,cart,ses);
-        }
-    }
+//    public ProductOrderResponseDTO buy(ProductOrderRequestDTO orderDto,Map<Integer, Queue<ProductOrderResponseDTO>> cart){
+//        Product product = productRepository.findById(orderDto.getId());
+//        if(product!=null) {
+//            if (product.getQuantity() >= orderDto.getQuantity()) {
+//                for (int i = 0; i < orderDto.getQuantity(); i++) {
+//                    if (!cart.containsKey(product.getId())) {
+//                        cart.put(orderDto.getId(), new LinkedList<>());
+//                    }
+//                    cart.get(orderDto.getId()).offer(new ProductOrderResponseDTO(product, 1));
+//                }
+//                return new ProductOrderResponseDTO(product, orderDto.getQuantity());
+//            } else {
+//                throw new OutOfStockException("Not enough quantity!");
+//            }
+//        }else {
+//            throw new NotFoundException("Product not found!");
+//        }
+//    }
 
-    public ProductOrderResponseDTO removeProd(ProductOrderRequestDTO orderDto, HttpSession ses) {
-        if(ses.getAttribute("cart")==null){
-           throw new NotFoundException("Cart not found!");
-        }
-        else {
-            Map<Integer, Queue<ProductOrderResponseDTO>> cart = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
+
+
+    public ProductOrderResponseDTO removeProd(ProductOrderRequestDTO orderDto, Map<Integer, Queue<ProductOrderResponseDTO>> cart) {
             if(!cart.isEmpty()){
                 if(cart.containsKey(orderDto.getId())) {
                     if (cart.get(orderDto.getId()).size() >= orderDto.getQuantity()) {
@@ -76,8 +80,6 @@ public class CartService {
                             cart.get(orderDto.getId()).poll();
                         }
                         Product product = productRepository.findById(orderDto.getId());
-//                        product.setQuantity(product.getQuantity() + orderDto.getQuantity());
-//                        productRepository.save(product);
                         return new ProductOrderResponseDTO(product, orderDto.getQuantity());
                     }
                     else {
@@ -89,33 +91,25 @@ public class CartService {
                 }
             }
             else {
-                throw new NotFoundException("Cart not found!");
+                throw new NotFoundException("Cart is empty!");
             }
-        }
     }
 
-    public void emptyCart(HttpSession ses){
-        if(ses.getAttribute("cart")==null){
-            throw new NotFoundException("Cart not found!");
-        }
-        else {
-            Map<Integer, Queue<ProductOrderResponseDTO>> cart = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
-            if(!cart.isEmpty()){
-                for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products: cart.entrySet()){
-                    int quantity = products.getValue().size();
-                    if(quantity>0){
-                        Product product = productRepository.findById(products.getValue().peek().getId());
-                        product.setQuantity(product.getQuantity() + quantity);
-                        productRepository.save(product);
+    public void emptyCart(Map<Integer, Queue<ProductOrderResponseDTO>> cart){
+        if(!cart.isEmpty()){
+            for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products: cart.entrySet()){
+                int quantity = products.getValue().size();
+                if(quantity>0){
+                    Product product = productRepository.findById(products.getValue().peek().getId());
+                    product.setQuantity(product.getQuantity() + quantity);
+                    productRepository.save(product);
                     }
                 }
                 cart.clear();
-                ses.removeAttribute("cart");
             }
             else {
                 throw new NotFoundException("Cart not found!");
             }
-        }
     }
     public CartPriceResponseDTO checkout(HttpSession ses){
         if(ses.getAttribute("cart")==null){

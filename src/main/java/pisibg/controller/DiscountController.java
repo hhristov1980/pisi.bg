@@ -27,8 +27,8 @@ public class DiscountController extends AbstractController{
     private SessionManager sessionManager;
 
 
-    @PostMapping("/users/{user_id}/discounts/add")
-    public DiscountResponseDTO add(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody DiscountRequestDTO discountRequestDTO){
+    @PostMapping("/discounts")
+    public DiscountResponseDTO add(HttpSession ses, @RequestBody DiscountRequestDTO discountRequestDTO){
         if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -43,19 +43,15 @@ public class DiscountController extends AbstractController{
         }
 
     }
-    @PutMapping("/users/{user_id}/discounts/edit")
-    public DiscountResponseDTO edit(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody DiscountEditRequestDTO discountEditRequestDTO){
+    @PutMapping("/discounts/edit")
+    public DiscountResponseDTO edit(HttpSession ses, @RequestBody DiscountEditRequestDTO discountEditRequestDTO){
         if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
-            int loggedId = (int)ses.getAttribute("LoggedUser");
-            if(loggedId!=userId){
-                throw new BadRequestException("Users mismatch!");
-            }
-            User user  = userRepository.findById(userId).get();
+            User user = sessionManager.getLoggedUser(ses);
             if(!user.isAdmin()){
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
             }
         }
         return discountService.edit(discountEditRequestDTO);
