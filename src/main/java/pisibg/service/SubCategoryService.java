@@ -27,28 +27,19 @@ public class SubCategoryService {
         if (!Validator.isValidInteger(subCategoryRequestDTO.getCategoryId())){
             throw new BadRequestException("Invalid category id! Please enter number greater than 0");
         }
-        else {
-            if (!categoryRepository.findById(subCategoryRequestDTO.getCategoryId()).isPresent()) {
-                throw new BadRequestException("Category doesn't exists");
-            }
-            else {
-                if(!Validator.isValidString(subCategoryRequestDTO.getName())){
-                    throw new BadRequestException("You have entered and empty text!");
-                }
-                else{
-                    Subcategory subcategory = new Subcategory(subCategoryRequestDTO);
-                    subcategory.setCategory(categoryRepository.findById(subCategoryRequestDTO.getCategoryId()).get());
-                    if(subCategoryRepository.getByNameAndCategory_Id(subcategory.getName(), subCategoryRequestDTO.getCategoryId())!=null){
-                        throw new BadRequestException("Combination already exists");
-                    }
-                    else {
-                        subcategory = subCategoryRepository.save(subcategory);
-                        return new SubcategoryResponseDTO(subcategory);
-                    }
-                }
-            }
+        if (!categoryRepository.findById(subCategoryRequestDTO.getCategoryId()).isPresent()) {
+            throw new BadRequestException("Category doesn't exists");
         }
-
+        if(!Validator.isValidString(subCategoryRequestDTO.getName())){
+            throw new BadRequestException("You have entered and empty text!");
+        }
+        Subcategory subcategory = new Subcategory(subCategoryRequestDTO);
+        subcategory.setCategory(categoryRepository.findById(subCategoryRequestDTO.getCategoryId()).get());
+        if(subCategoryRepository.getByNameAndCategory_Id(subcategory.getName(), subCategoryRequestDTO.getCategoryId())!=null){
+            throw new BadRequestException("Combination already exists");
+        }
+        subcategory = subCategoryRepository.save(subcategory);
+        return new SubcategoryResponseDTO(subcategory);
     }
 
     public SubcategoryResponseDTO edit(SubCategoryEditRequestDTO subCategoryEditRequestDTO){
@@ -56,40 +47,28 @@ public class SubCategoryService {
         if(!Validator.isValidInteger(subCategoryEditRequestDTO.getId())){
             throw new BadRequestException("Please put id greater than 0!");
         }
-        else {
-            if(!(Validator.isValidString(subCategoryEditRequestDTO.getCurrentSubcategoryName())||(!Validator.isValidString(subCategoryEditRequestDTO.getNewSubcategoryName())))){
-                throw new BadRequestException("You have entered and empty text!");
-            }
-            else {
-                if(subCategoryEditRequestDTO.getCurrentSubcategoryName().equals(subCategoryEditRequestDTO.getNewSubcategoryName())
-                        && subCategoryEditRequestDTO.getCurrentCategory_id()== subCategoryEditRequestDTO.getNewCategory_id()){
-                    throw new BadRequestException("You didn't make any change!");
-                }
-                else {
-                    if(!subCategoryRepository.findById(subCategoryEditRequestDTO.getId()).isPresent()){
-                        throw new NotFoundException("Subcategory not found!");
-                    }
-                    else {
-                        if (!categoryRepository.findById(subCategoryEditRequestDTO.getCurrentCategory_id()).isPresent()) {
-                            throw new NotFoundException("Category doesn't exists");
-                        }
-                        else {
-                            Subcategory subcategory = new Subcategory();
-                            subcategory.setId(subCategoryEditRequestDTO.getId());
-                            subcategory.setName(subCategoryEditRequestDTO.getNewSubcategoryName());
-                            subcategory.setCategory(categoryRepository.findById(subCategoryEditRequestDTO.getNewCategory_id()).get());
-                            if(subCategoryRepository.getByNameAndCategory_Id(subcategory.getName(), subcategory.getCategory().getId())!=null){
-                                throw new BadRequestException("Combination already exists");
-                            }
-                            else {
-                                subcategory = subCategoryRepository.save(subcategory);
-                                return new SubcategoryResponseDTO(subcategory);
-                            }
-                        }
-                    }
-                }
-            }
+        if(!(Validator.isValidString(subCategoryEditRequestDTO.getCurrentSubcategoryName())||(!Validator.isValidString(subCategoryEditRequestDTO.getNewSubcategoryName())))){
+            throw new BadRequestException("You have entered and empty text!");
         }
+        if(subCategoryEditRequestDTO.getCurrentSubcategoryName().equals(subCategoryEditRequestDTO.getNewSubcategoryName())
+                && subCategoryEditRequestDTO.getCurrentCategory_id()== subCategoryEditRequestDTO.getNewCategory_id()){
+            throw new BadRequestException("You didn't make any change!");
+        }
+        if(!subCategoryRepository.findById(subCategoryEditRequestDTO.getId()).isPresent()){
+            throw new NotFoundException("Subcategory not found!");
+        }
+        if (!categoryRepository.findById(subCategoryEditRequestDTO.getCurrentCategory_id()).isPresent()) {
+            throw new NotFoundException("Category doesn't exists");
+        }
+        Subcategory subcategory = new Subcategory();
+        subcategory.setId(subCategoryEditRequestDTO.getId());
+        subcategory.setName(subCategoryEditRequestDTO.getNewSubcategoryName());
+        subcategory.setCategory(categoryRepository.findById(subCategoryEditRequestDTO.getNewCategory_id()).get());
+        if(subCategoryRepository.getByNameAndCategory_Id(subcategory.getName(), subcategory.getCategory().getId())!=null){
+            throw new BadRequestException("Combination already exists");
+        }
+        subcategory = subCategoryRepository.save(subcategory);
+        return new SubcategoryResponseDTO(subcategory);
     }
 
     public List<SubcategoryResponseDTO> getAll() {
@@ -98,24 +77,19 @@ public class SubCategoryService {
         if(subcategories.isEmpty()){
             throw new NotFoundException("Subcategories not found");
         }
-        else {
-            for(Subcategory s: subcategories){
-                subcategoryResponseDTOList.add(new SubcategoryResponseDTO(s));
-            }
-            return subcategoryResponseDTOList;
+        for(Subcategory s: subcategories){
+            subcategoryResponseDTOList.add(new SubcategoryResponseDTO(s));
         }
-
+        return subcategoryResponseDTOList;
     }
+
     public SubcategoryResponseDTO getById(int subcategory_id) {
         Optional<Subcategory> temp = subCategoryRepository.findById(subcategory_id);
         if(!temp.isPresent()){
             throw new NotFoundException("Subcategory not found");
         }
-        else {
-            Subcategory subcategory = temp.get();
-            SubcategoryResponseDTO subcategoryResponseDTO = new SubcategoryResponseDTO(subcategory);
-            return subcategoryResponseDTO;
-        }
+        Subcategory subcategory = temp.get();
+        SubcategoryResponseDTO subcategoryResponseDTO = new SubcategoryResponseDTO(subcategory);
+        return subcategoryResponseDTO;
     }
-
 }

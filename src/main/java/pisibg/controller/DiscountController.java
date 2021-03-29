@@ -64,4 +64,6 @@ public class DiscountController extends AbstractController{
     public DiscountResponseDTO getById(@PathVariable(name = "id") int discountId){
         return discountService.getById(discountId);
     }
+
+    //TODO ACTIVATE AND DEACTIVATE DISCOUNTS
 }

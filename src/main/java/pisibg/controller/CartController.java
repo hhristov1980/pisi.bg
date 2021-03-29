@@ -69,7 +69,7 @@ public class CartController extends AbstractController{
             }
         }
     }
-    @GetMapping("/cart") //TODO FIX CHECKOUT
+    @GetMapping("/cart")
     public CartPriceResponseDTO checkout(HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");

@@ -26,77 +26,59 @@ public class CategoryService {
         if(!Validator.isValidString(name)){
             throw new BadRequestException("You have entered empty text!");
         }
-        else {
-            if(categoryRepository.findByName(name) != null){
-                throw new BadRequestException("Category already exists");
+        if(categoryRepository.findByName(name) != null){
+            throw new BadRequestException("Category already exists");
             }
-            else{
-                Category category = new Category(categoryRequestDTO);
-                category = categoryRepository.save(category);
-                return new CategoryResponseDTO(category);
-            }
-        }
-
+        Category category = new Category(categoryRequestDTO);
+        category = categoryRepository.save(category);
+        return new CategoryResponseDTO(category);
     }
+
     public CategoryResponseDTO edit (CategoryEditRequestDTO categoryEditRequestDTO){
 
         if(!Validator.isValidString(categoryEditRequestDTO.getNewCategoryName())){
             throw new BadRequestException("You have entered empty text!");
-        }
-        else {
-            if(categoryEditRequestDTO.getCurrentCategoryName().equals(categoryEditRequestDTO.getNewCategoryName())){
+            }
+        if(categoryEditRequestDTO.getCurrentCategoryName().equals(categoryEditRequestDTO.getNewCategoryName())){
                 throw new BadRequestException("You didn't make any change!");
             }
-            else {
-                if(!Validator.isValidInteger(categoryEditRequestDTO.getId())){
-                    throw new BadRequestException("Please put number greater than 0!");
-                }
-                else {
-                    if(!categoryRepository.findById(categoryEditRequestDTO.getId()).isPresent()){
-                        throw new NotFoundException("Category not found");
-                    }
-                    else {
-                        if(categoryRepository.findByName(categoryEditRequestDTO.getNewCategoryName()) != null){
-                            throw new NotFoundException("Category with this name already exists");
-                        }
-                        else {
-                            Category category = new Category();
-                            category.setId(categoryEditRequestDTO.getId());
-                            category.setName(categoryEditRequestDTO.getNewCategoryName());
-                            categoryRepository.save(category);
-                            return new CategoryResponseDTO(category);
-                        }
-                    }
-                }
-
+        if(!Validator.isValidInteger(categoryEditRequestDTO.getId())){
+            throw new BadRequestException("Please put number greater than 0!");
             }
-        }
+        if(!categoryRepository.findById(categoryEditRequestDTO.getId()).isPresent()){
+            throw new NotFoundException("Category not found");
+            }
+        if(categoryRepository.findByName(categoryEditRequestDTO.getNewCategoryName()) != null){
+            throw new NotFoundException("Category with this name already exists");
+            }
 
+        Category category = new Category();
+        category.setId(categoryEditRequestDTO.getId());
+        category.setName(categoryEditRequestDTO.getNewCategoryName());
+        categoryRepository.save(category);
+        return new CategoryResponseDTO(category);
     }
+
     public List<CategoryResponseDTO> getAll() {
         List<Category> categories = categoryRepository.findAll();
         List<CategoryResponseDTO> categoryResponseDTOList = new ArrayList<>();
         if(categories.isEmpty()){
             throw new NotFoundException("Categories not found");
         }
-        else {
-            for(Category c: categories){
-                categoryResponseDTOList.add(new CategoryResponseDTO(c));
-            }
-            return categoryResponseDTOList;
+        for(Category c: categories){
+            categoryResponseDTOList.add(new CategoryResponseDTO(c));
         }
-
+        return categoryResponseDTOList;
     }
+
     public CategoryResponseDTO getById(int category_id) {
         Optional<Category> temp = categoryRepository.findById(category_id);
         if(!temp.isPresent()){
             throw new NotFoundException("Category not found");
         }
-        else {
-            Category category = temp.get();
-            CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO(category);
-            return categoryResponseDTO;
-        }
+        Category category = temp.get();
+        CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO(category);
+        return categoryResponseDTO;
     }
 }
 
