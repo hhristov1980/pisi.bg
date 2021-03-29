@@ -54,7 +54,6 @@ public class CartController extends AbstractController{
         }
     }
 
-
     @DeleteMapping("/cart/all")
     public void emptyCart(HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {

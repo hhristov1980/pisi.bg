@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.BadRequestException;
+import pisibg.exceptions.DeniedPermissionException;
 import pisibg.model.dto.*;
 import pisibg.model.pojo.User;
 import pisibg.service.OrderStatusService;
@@ -20,55 +21,49 @@ public class PaymentMethodController {
     @Autowired
     private PaymentMethodService paymentService;
 
-    @PostMapping("/users/{id}/paymentmethod")
-    public PaymentMethodResponseDTO addPaymentMethod(@PathVariable int id, HttpSession ses, @RequestBody PaymentMethodRequestDTO methodDTO){
+    @PostMapping("/paymentmethod")
+    public PaymentMethodResponseDTO addPaymentMethod(HttpSession ses, @RequestBody PaymentMethodRequestDTO methodDTO){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
-        } else {
-            User user = sessionManager.getLoggedUser(ses);
-            if (id != user.getId()) {
-                throw new BadRequestException("Users mismatch!");
-            }
         }
+        User user = sessionManager.getLoggedUser(ses);
+        if (!user.isAdmin()) {
+            throw new DeniedPermissionException("You dont have permission for that!");
+        }
+        int id = user.getId();
         return paymentService.addPayment(id,methodDTO);
     }
 
-    @PutMapping("/users/{id}/paymentmethod")
-    public PaymentMethodResponseDTO edit(@PathVariable int id, HttpSession ses, @RequestBody PaymentMethodEditDTO methodDTO ){
+    @PutMapping("/paymentmethod")
+    public PaymentMethodResponseDTO edit( HttpSession ses, @RequestBody PaymentMethodEditDTO methodDTO ){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
-        } else {
-            User user = sessionManager.getLoggedUser(ses);
-            if (id != user.getId()) {
-                throw new BadRequestException("Users mismatch!");
-            }
         }
+        User user = sessionManager.getLoggedUser(ses);
+        if (!user.isAdmin()) {
+            throw new DeniedPermissionException("You dont have permission for that!");
+        }
+        int id = user.getId();
         return paymentService.edit(id,methodDTO);
     }
 
-    @GetMapping("/users/{id}/paymentmethod")
-    public List<PaymentMethodResponseDTO> getAll(@PathVariable int id, HttpSession ses){
+    @GetMapping("/paymentmethod")
+    public List<PaymentMethodResponseDTO> getAll( HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
-        } else {
-            User user = sessionManager.getLoggedUser(ses);
-            if (id != user.getId()) {
-                throw new BadRequestException("Users mismatch!");
-            }
         }
+        User user = sessionManager.getLoggedUser(ses);
+        int id = user.getId();
         return paymentService.getAll(id);
     }
 
-    @GetMapping("/users/{user_id}/paymentmethod/{id}")
-    public PaymentMethodResponseDTO getById(@PathVariable int user_id,@PathVariable int id, HttpSession ses){
+    @GetMapping("/paymentmethod/{id}")
+    public PaymentMethodResponseDTO getById(@PathVariable int id, HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
-        } else {
-            User user = sessionManager.getLoggedUser(ses);
-            if (user_id != user.getId()) {
-                throw new BadRequestException("Users mismatch!");
-            }
         }
+        User user = sessionManager.getLoggedUser(ses);
+        int user_id = user.getId();
         return paymentService.getById(user_id,id);
     }
 }

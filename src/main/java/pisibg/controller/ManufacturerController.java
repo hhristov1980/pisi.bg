@@ -29,39 +29,30 @@ public class ManufacturerController {
     private SessionManager sessionManager;
 
 
-    @PostMapping("/users/{user_id}/manufacturers/add")
-    public ManufacturerResponseDTO add(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody ManufacturerRequestDTO manufacturerRequestDTO){
-        if(sessionManager.getLoggedUser(ses)==null){
+    @PostMapping("/manufacturers/add")
+    public ManufacturerResponseDTO add(HttpSession ses, @RequestBody ManufacturerRequestDTO manufacturerRequestDTO){
+        if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
-        else {
-            User user = sessionManager.getLoggedUser(ses);
-            if(!user.isAdmin()){
-                throw new DeniedPermissionException("You don't have permission for that!");
-            }
-            else{
-                return manufacturerService.add(manufacturerRequestDTO);
-            }
+        User user = sessionManager.getLoggedUser(ses);
+        if (!user.isAdmin()) {
+            throw new DeniedPermissionException("You dont have permission for that!");
         }
-
+        return manufacturerService.add(manufacturerRequestDTO);
     }
 
-    @PutMapping("/users/{user_id}/manufacturers/edit")
-    public ManufacturerResponseDTO editManufacturer(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody ManufacturerEditRequestDTO manufacturerEditRequestDTO){
-        if(sessionManager.getLoggedUser(ses)==null){
+    @PutMapping("/manufacturers/edit")
+    public ManufacturerResponseDTO editManufacturer(HttpSession ses, @RequestBody ManufacturerEditRequestDTO manufacturerEditRequestDTO){
+        if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
-        }
-        else {
-            int loggedId = (int)ses.getAttribute("LoggedUser");
-            if(loggedId!=userId){
-                throw new BadRequestException("Users mismatch!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if (!user.isAdmin()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
             }
-            User user  = userRepository.findById(userId).get();
-            if(!user.isAdmin()){
-                throw new DeniedPermissionException("You don't have permission for that!");
-            }
+            int id = user.getId();
+            return manufacturerService.edit(manufacturerEditRequestDTO);
         }
-        return manufacturerService.edit(manufacturerEditRequestDTO);
     }
     @GetMapping("/manufacturers")
     public List<ManufacturerResponseDTO> getAll(){
