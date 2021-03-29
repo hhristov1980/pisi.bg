@@ -23,35 +23,29 @@ public class SubCategoryController extends AbstractController{
     @Autowired
     private SessionManager sessionManager;
 
-    @PostMapping("/users/{user_id}/subcategories/add")
-    public SubcategoryResponseDTO addNewSubcategory(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody SubCategoryRequestDTO subCategoryRequestDTO){
+    @PostMapping("subcategories/add")
+    public SubcategoryResponseDTO addNewSubcategory(HttpSession ses, @RequestBody SubCategoryRequestDTO subCategoryRequestDTO){
         if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
             User user = sessionManager.getLoggedUser(ses);
-            if(!user.isAdmin()){
-                throw new DeniedPermissionException("You don't have permission for that!");
+            if (!user.isAdmin()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
             }
-            else {
-                return subCategoryService.addSubCategory(subCategoryRequestDTO);
-            }
+            return subCategoryService.addSubCategory(subCategoryRequestDTO);
         }
 
     }
 
-    @PutMapping("/users/{user_id}/subcategories/edit")
-    public SubcategoryResponseDTO edit(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody SubCategoryEditRequestDTO subCategoryEditRequestDTO){
+    @PutMapping("subcategories/edit")
+    public SubcategoryResponseDTO edit( HttpSession ses, @RequestBody SubCategoryEditRequestDTO subCategoryEditRequestDTO){
         if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
         }
         else {
-            int loggedId = (int)ses.getAttribute("LoggedUser");
-            if(loggedId!=userId){
-                throw new BadRequestException("Users mismatch!");
-            }
-            User user  = userRepository.findById(userId).get();
-            if(!user.isAdmin()){
+            User user = sessionManager.getLoggedUser(ses);
+            if (!user.isAdmin()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
         }

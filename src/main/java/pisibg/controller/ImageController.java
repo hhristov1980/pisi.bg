@@ -28,17 +28,15 @@ public class ImageController {
     @Autowired
     private SessionManager sessionManager;
     @ResponseBody
-    @PutMapping("/users/{user_id}/product/{product_id}/images/upload")
-    public Image upload(@PathVariable(name = "user_id") int userId,  @PathVariable (name = "product_id") int productId, HttpSession ses,  @RequestPart MultipartFile file){
-        if(sessionManager.getLoggedUser(ses)==null){
+    @PostMapping("/images/product/{product_id}")
+    public Image upload(@PathVariable (name = "product_id") int productId, HttpSession ses,  @RequestPart MultipartFile file){
+        if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
-        }
-        else {
+        } else {
             User user = sessionManager.getLoggedUser(ses);
-            if(!user.isAdmin()){
-                throw new DeniedPermissionException("You don't have permission for that!");
+            if (!user.isAdmin()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
             }
-            else {
                 //TODO fix exceptions
                 try {
                     return imageService.upload(file,productId);
@@ -46,11 +44,10 @@ public class ImageController {
                     e.printStackTrace();
                 }
             }
-        }
         return null;
     }
 
-    @GetMapping(value = "/images/{id}/download", produces = "image/*")
+    @GetMapping(value = "/images/{id}", produces = "image/*")
     public @ResponseBody byte[] download(@PathVariable int id) throws IOException {
         return imageService.download(id);
     }

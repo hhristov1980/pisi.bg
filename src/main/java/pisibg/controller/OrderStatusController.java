@@ -3,7 +3,7 @@ package pisibg.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
-import pisibg.exceptions.BadRequestException;
+import pisibg.exceptions.DeniedPermissionException;
 import pisibg.model.dto.OrderStatusRequestDTO;
 import pisibg.model.dto.OrderStatusEditDTO;
 import pisibg.model.dto.OrderStatusResponseDTO;
@@ -22,55 +22,59 @@ public class OrderStatusController extends AbstractController{
     private OrderStatusService statusService;
 
 
-    @PostMapping("/users/{id}/orderstatus")
-    public OrderStatusResponseDTO add(@PathVariable int id, HttpSession ses, @RequestBody OrderStatusRequestDTO statusDTO){
+    @PostMapping("/users/orderstatus")
+    public OrderStatusResponseDTO add( HttpSession ses, @RequestBody OrderStatusRequestDTO statusDTO){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if (id != user.getId()) {
-                throw new BadRequestException("Users mismatch!");
+            if(!user.isAdmin()){
+                throw new DeniedPermissionException("You dont have permission for that!");
             }
+            int id = user.getId();
+            return statusService.add(id,statusDTO);
         }
-        return statusService.add(id,statusDTO);
     }
 
-    @PutMapping("/users/{id}/orderstatus")
-    public OrderStatusResponseDTO edit(@PathVariable int id, HttpSession ses, @RequestBody OrderStatusEditDTO statusDTO){
+    @PutMapping("/users/orderstatus")
+    public OrderStatusResponseDTO edit( HttpSession ses, @RequestBody OrderStatusEditDTO statusDTO){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if (id != user.getId()) {
-                throw new BadRequestException("Users mismatch!");
+            if (!user.isAdmin()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
             }
+            int id = user.getId();
+            return statusService.edit(id, statusDTO);
         }
-        return statusService.edit(id,statusDTO);
     }
 
-    @GetMapping("/users/{id}/orderstatus")
-    public List<OrderStatusResponseDTO> getAll(@PathVariable int id, HttpSession ses){
+    @GetMapping("/users/orderstatus")
+    public List<OrderStatusResponseDTO> getAll( HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if (id != user.getId()) {
-                throw new BadRequestException("Users mismatch!");
+            if (!user.isAdmin()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
             }
+            int id = user.getId();
+            return statusService.getAll(id);
         }
-        return statusService.getAll(id);
     }
 
-    @GetMapping("/users/{user_id}/orderstatus/{id}")
-    public OrderStatusResponseDTO getById(@PathVariable int user_id,@PathVariable int id, HttpSession ses){
+    @GetMapping("/users/orderstatus/{order_id}")
+    public OrderStatusResponseDTO getById(@PathVariable int order_id, HttpSession ses){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if (user_id != user.getId()) {
-                throw new BadRequestException("Users mismatch!");
+            if (!user.isAdmin()) {
+                throw new DeniedPermissionException("You dont have permission for that!");
             }
+            int id = user.getId();
+            return statusService.getById(id, order_id);
         }
-        return statusService.getById(user_id,id);
     }
 }

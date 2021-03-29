@@ -205,14 +205,14 @@ public class UserService {
         }
     }
 
-    public void deleteUser(int admin_id, int user_id) throws SQLException {
+    public UserEditResponseDTO deleteUser(int admin_id, int user_id) throws SQLException {
         Optional<User> a = userRepository.findById(admin_id);
         Optional<User> u = userRepository.findById(user_id);
         if (a.isPresent() && u.isPresent()) {
             User admin = a.get();
             User user = u.get();
             if (admin.isAdmin()) {
-                userDAO.deleteUser(user_id);
+               return userDAO.deleteUser(user_id);
             }
             else {
                 throw new DeniedPermissionException("You don't have permission for that!");

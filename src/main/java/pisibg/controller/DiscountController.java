@@ -43,7 +43,7 @@ public class DiscountController extends AbstractController{
         }
 
     }
-    @PutMapping("/discounts/edit")
+    @PutMapping("/discounts")
     public DiscountResponseDTO edit(HttpSession ses, @RequestBody DiscountEditRequestDTO discountEditRequestDTO){
         if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
