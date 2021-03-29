@@ -4,12 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.DeniedPermissionException;
+import pisibg.exceptions.NotFoundException;
 import pisibg.model.dto.OrderRequestDTO;
 import pisibg.model.dto.OrderResponseDTO;
+import pisibg.model.dto.ProductOrderResponseDTO;
 import pisibg.model.pojo.User;
 import pisibg.service.OrderService;
 
 import javax.servlet.http.HttpSession;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Queue;
 
 @RestController
 public class OrderController {
@@ -18,19 +23,20 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PutMapping("/users/{user_id}/pay")
-    public OrderResponseDTO pay(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody OrderRequestDTO orderRequestDTO){
-        if(sessionManager.getLoggedUser(ses)==null){
+    @PutMapping("/pay")
+    public OrderResponseDTO pay(HttpSession ses, @RequestBody OrderRequestDTO orderRequestDTO){
+        if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
-        }
-        else {
-            User user = sessionManager.getLoggedUser(ses);
-            if (userId != user.getId()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+        } else {
+            Map<Integer, Queue<ProductOrderResponseDTO>> cart = new LinkedHashMap<>();
+            if(ses.getAttribute("cart")==null){
+                ses.setAttribute("cart",cart);
             }
             else {
-                return orderService.pay(orderRequestDTO, ses, userId);
+                cart = (LinkedHashMap<Integer, Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
             }
+            User user = sessionManager.getLoggedUser(ses);
+            return orderService.pay(orderRequestDTO, cart, user);
         }
     }
 }

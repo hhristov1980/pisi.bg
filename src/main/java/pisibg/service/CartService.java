@@ -11,6 +11,7 @@ import pisibg.model.dto.ProductOrderRequestDTO;
 import pisibg.model.dto.ProductOrderResponseDTO;
 import pisibg.model.pojo.Discount;
 import pisibg.model.pojo.Product;
+import pisibg.model.pojo.User;
 import pisibg.model.repository.DiscountRepository;
 import pisibg.model.repository.ProductRepository;
 import pisibg.model.repository.UserRepository;
@@ -20,7 +21,6 @@ import java.util.*;
 
 @Service
 public class CartService {
-
     @Autowired
     private ProductRepository productRepository;
     @Autowired
@@ -117,14 +117,11 @@ public class CartService {
             }
         }
     }
-    public CartPriceResponseDTO checkout(HttpSession ses){
-        if(ses.getAttribute("cart")==null){
-            throw new NotFoundException("Cart not found!");
-        }
+    public CartPriceResponseDTO checkout(Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user){
+
         double priceWithoutDiscount = 0.0;
         double priceAfterDiscount = 0.0;
         double discountAmount = 0.0;
-        Map<Integer, Queue<ProductOrderResponseDTO>> cart = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
         if(!cart.isEmpty()){
             Set<Product> allProducts = new HashSet<>();
             for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products: cart.entrySet()){
@@ -134,7 +131,7 @@ public class CartService {
                     product.setQuantity(quantity);
                     allProducts.add(product);
                     double productPrice = product.getPrice();
-                    int userId = sessionManager.getLoggedUser(ses).getId();
+                    int userId = user.getId();
                     Discount discount = product.getDiscount();
                     int discountPercent = 0;
                     if(discount == null){
@@ -161,13 +158,9 @@ public class CartService {
     }
 
 
-    public boolean checkProductsAndRemoveFromDB(HttpSession ses){
-        if(ses.getAttribute("cart")==null){
-            return false;
-        }
-        else {
-            //Проверка какво се вади от базата!!!!
-            Map<Integer, Queue<ProductOrderResponseDTO>> cart = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
+    public boolean checkProductsAndRemoveFromDB(Map<Integer, Queue<ProductOrderResponseDTO>> cart){
+         //Проверка какво се вади от базата!!!!
+            Map<Integer, Queue<ProductOrderResponseDTO>> carts = cart;
             if(!cart.isEmpty()){
                 for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products: cart.entrySet()){
                     int orderQuantity = products.getValue().size();
@@ -194,9 +187,4 @@ public class CartService {
                 return false;
             }
         }
-
     }
-
-
-
-}

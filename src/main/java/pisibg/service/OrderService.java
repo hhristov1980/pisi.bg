@@ -19,6 +19,7 @@ import pisibg.utility.Constants;
 import pisibg.utility.Validator;
 
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -40,11 +41,9 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
-    public OrderResponseDTO pay(OrderRequestDTO orderRequestDTO, HttpSession ses, int userId){
+    @Transactional
+    public OrderResponseDTO pay(OrderRequestDTO orderRequestDTO, Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user){
         if(new Random().nextInt(100)<SUCCESS_CHANCE) {
-            if (ses.getAttribute("cart") == null) {
-                throw new NotFoundException("Cart not found!");
-            }
             if (!Validator.isValidInteger(orderRequestDTO.getPaymentMethodId())) {
                 throw new BadRequestException("Please enter number greater than 0");
             }
@@ -54,62 +53,58 @@ public class OrderService {
             Order order = new Order();
             String address = orderRequestDTO.getAddress();
             if (address.length() == 0) {
-                address = userRepository.getOne(userId).getAddress();
+                address = user.getAddress();
             }
-            if(cartService.checkProductsAndRemoveFromDB(ses)){
-                CartPriceResponseDTO cart = cartService.checkout(ses);
-                order.setProducts(cart.getProducts());
-                Optional<User> u = userRepository.findById(userId);
-                if(u.isPresent()) {
-                    order.setUser(u.get());
-                }
-                else {
-                    throw new NotFoundException("User not found!");
-                }
-
+            if(cartService.checkProductsAndRemoveFromDB(cart)){
+                CartPriceResponseDTO carts = cartService.checkout(cart, user);
+                order.setProducts(carts.getProducts());
+                order.setUser(user);
                 order.setAddress(address);
                 order.setCreatedAt(LocalDateTime.now());
-                order.setGrossValue(cartService.checkout(ses).getPriceWithoutDiscount());
-                order.setDiscount(cartService.checkout(ses).getDiscountAmount());
-                order.setNetValue(cartService.checkout(ses).getPriceAfterDiscount());
-                order.setPaymentMethod(paymentMethodRepository.getOne(orderRequestDTO.getPaymentMethodId()));
-                Optional<OrderStatus> o = orderStatusRepository.findById(1);
-                if(o.isPresent()) {
-                    order.setOrderStatus(o.get()); //status id 1 is PROCESSING
-                }
-                else {
-                    throw new NotFoundException("Order status not found!");
-                }
-                Payment payment = new Payment();
-                payment.setCreatedAt(LocalDateTime.now());
-                payment.setOrder(order);
-                payment.setUser(userRepository.getOne(userId));
-                payment.setAmount(order.getNetValue());
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    System.out.println("Thread sleep interupted!");
-                }
-                payment.setProcessedAt(LocalDateTime.now());
-                payment.setStatus("OK");
-                payment.setTransactionId(payment.transactionIdGenerator());
+                order.setGrossValue(carts.getPriceWithoutDiscount());
+                order.setDiscount(carts.getDiscountAmount());
+                order.setNetValue(carts.getPriceAfterDiscount());
+                Payment payment = addPayment(order,user.getId());
                 order.setPaid(true);
                 orderRepository.save(order);
                 paymentRepository.save(payment);
-                updateTurnoverAndPersonalDiscountPercent(order.getNetValue(),userId);
-                Map<Integer, Queue<ProductOrderResponseDTO>> cartSet = (LinkedHashMap<Integer,Queue<ProductOrderResponseDTO>>)ses.getAttribute("cart");
-                ses.removeAttribute("cart");
-                return new OrderResponseDTO(order, createProductSet(cartSet));
+                updateTurnoverAndPersonalDiscountPercent(order.getNetValue(),user.getId());
+                //status id 1 is PROCESSING
+                Optional<OrderStatus> orderStatus = orderStatusRepository.findById(Constants.FIRST_ORDER_STATUS);
+                Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(orderRequestDTO.getPaymentMethodId());
+                if(orderStatus.isPresent() && paymentMethod.isPresent()) {
+                    order.setOrderStatus(orderStatus.get());
+                    order.setPaymentMethod(paymentMethod.get());
+                }
+                else {
+                    throw new NotFoundException("Payment method or order status not found!");
+                }
+                return new OrderResponseDTO(order, createProductSet(cart));
             }
             else {
                 throw new NotFoundException("Product/s are already out of stock. Please try again with other products!");
             }
-
         }
         else {
-            cartService.emptyCart(ses);
             throw new PaymentFailedException("Payment failed!");
         }
+    }
+
+    public Payment addPayment(Order order, int userId){
+        Payment payment = new Payment();
+        payment.setCreatedAt(LocalDateTime.now());
+        payment.setOrder(order);
+        payment.setUser(userRepository.getOne(userId));
+        payment.setAmount(order.getNetValue());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            System.out.println("Thread sleep interupted!");
+        }
+        payment.setProcessedAt(LocalDateTime.now());
+        payment.setStatus("OK");
+        payment.setTransactionId(payment.transactionIdGenerator());
+        return payment;
     }
 
     private void updateTurnoverAndPersonalDiscountPercent(double orderAmount, int userId){
