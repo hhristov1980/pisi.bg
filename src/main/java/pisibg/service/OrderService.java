@@ -2,6 +2,7 @@ package pisibg.service;
 
 
 import com.sun.xml.bind.v2.TODO;
+import org.aspectj.weaver.ast.Or;
 import org.hibernate.procedure.spi.ParameterRegistrationImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,7 @@ import pisibg.model.dto.CartPriceResponseDTO;
 import pisibg.model.dto.OrderRequestDTO;
 import pisibg.model.dto.OrderResponseDTO;
 import pisibg.model.dto.ProductOrderResponseDTO;
-import pisibg.model.pojo.Order;
-import pisibg.model.pojo.Payment;
-import pisibg.model.pojo.Product;
-import pisibg.model.pojo.User;
+import pisibg.model.pojo.*;
 import pisibg.model.repository.*;
 import pisibg.utility.Constants;
 import pisibg.utility.Validator;
@@ -61,14 +59,27 @@ public class OrderService {
             if(cartService.checkProductsAndRemoveFromDB(ses)){
                 CartPriceResponseDTO cart = cartService.checkout(ses);
                 order.setProducts(cart.getProducts());
-                order.setUser(userRepository.getOne(userId));
+                Optional<User> u = userRepository.findById(userId);
+                if(u.isPresent()) {
+                    order.setUser(u.get());
+                }
+                else {
+                    throw new NotFoundException("User not found!");
+                }
+
                 order.setAddress(address);
                 order.setCreatedAt(LocalDateTime.now());
                 order.setGrossValue(cartService.checkout(ses).getPriceWithoutDiscount());
                 order.setDiscount(cartService.checkout(ses).getDiscountAmount());
                 order.setNetValue(cartService.checkout(ses).getPriceAfterDiscount());
                 order.setPaymentMethod(paymentMethodRepository.getOne(orderRequestDTO.getPaymentMethodId()));
-                order.setOrderStatus(orderStatusRepository.getOne(1)); //status id 1 is PROCESSING
+                Optional<OrderStatus> o = orderStatusRepository.findById(1);
+                if(o.isPresent()) {
+                    order.setOrderStatus(o.get()); //status id 1 is PROCESSING
+                }
+                else {
+                    throw new NotFoundException("Order status not found!");
+                }
                 Payment payment = new Payment();
                 payment.setCreatedAt(LocalDateTime.now());
                 payment.setOrder(order);

@@ -6,12 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="46684cbe-b4f0-4d22-bd76-0757d99ccfb1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/SessionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/SessionManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/OrderResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/dto/OrderResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/model/pojo/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/CartService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/controller/DiscountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/controller/DiscountController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/DiscountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/DiscountService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pisibg/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pisibg/service/OrderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +85,7 @@
       <workItem from="1616915956230" duration="4333000" />
       <workItem from="1616919133103" duration="10762000" />
       <workItem from="1616960743012" duration="2231000" />
-      <workItem from="1616969467884" duration="1797000" />
+      <workItem from="1616969467884" duration="5282000" />
     </task>
     <servers />
   </component>

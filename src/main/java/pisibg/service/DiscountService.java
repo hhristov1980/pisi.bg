@@ -7,7 +7,10 @@ import pisibg.exceptions.NotFoundException;
 import pisibg.model.dto.*;
 import pisibg.model.pojo.Category;
 import pisibg.model.pojo.Discount;
+import pisibg.model.pojo.User;
 import pisibg.model.repository.DiscountRepository;
+import pisibg.model.repository.UserRepository;
+import pisibg.utility.EmailServiceImpl;
 import pisibg.utility.Validator;
 
 import java.util.ArrayList;
@@ -19,6 +22,11 @@ import java.util.Optional;
 public class DiscountService {
     @Autowired
     private DiscountRepository discountRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private EmailServiceImpl emailService;
+
 
     public DiscountResponseDTO add(DiscountRequestDTO discountRequestDTO){
 
@@ -46,6 +54,13 @@ public class DiscountService {
 
                             Discount discount = new Discount(discountRequestDTO);
                             discount = discountRepository.save(discount);
+                            List <User> list = userRepository.findAll();
+                            for (int i = 0; i < list.size() ; i++) {
+                                Optional <User> u = userRepository.findById(i);
+                                if(u.isPresent()) {
+                                    emailService.sendSimpleMessage(u.get().getEmail(),"New discount",discount.getDescription());
+                                }
+                            }
                             return new DiscountResponseDTO(discount);
                         }
                     }
@@ -98,6 +113,13 @@ public class DiscountService {
                                     discount.setToDate(discountEditRequestDTO.getNewToDate());
                                     discount.setActive(discountEditRequestDTO.isNewIsActive());
                                     discountRepository.save(discount);
+                                    List <User> list = userRepository.findAll();
+                                    for (int i = 0; i < list.size() ; i++) {
+                                        Optional <User> u = userRepository.findById(i);
+                                        if(u.isPresent()) {
+                                            emailService.sendSimpleMessage(u.get().getEmail(),"Edited discount",discount.getDescription());
+                                        }
+                                    }
                                     return new DiscountResponseDTO(discount);
 
                                 }

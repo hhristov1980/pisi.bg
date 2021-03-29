@@ -9,18 +9,23 @@ import pisibg.model.dto.*;
 import pisibg.model.pojo.User;
 import pisibg.model.repository.UserRepository;
 import pisibg.service.DiscountService;
+import pisibg.utility.EmailServiceImpl;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class DiscountController extends AbstractController{
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private EmailServiceImpl emailService;
+    @Autowired
     private DiscountService discountService;
     @Autowired
     private SessionManager sessionManager;
+
 
     @PostMapping("/users/{user_id}/discounts/add")
     public DiscountResponseDTO add(@PathVariable(name = "user_id") int userId, HttpSession ses, @RequestBody DiscountRequestDTO discountRequestDTO){
