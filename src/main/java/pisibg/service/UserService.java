@@ -30,13 +30,20 @@ public class UserService {
     @Autowired
     private UserDAO userDAO;
     private static final String REGEX_EMAIL = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+    private static final String PASSWORD_REGEX = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$";
 
 
     public UserRegisterResponseDTO addUser(UserRegisterRequestDTO userDTO) {
 
         String email = userDTO.getEmail();
+        String password = userDTO.getPassword();
         if (!email.matches(REGEX_EMAIL)) {
             throw new BadRequestException("Email is not valid");
+        }
+
+        if(!password.matches(PASSWORD_REGEX)){
+            throw new BadRequestException("Password must be " +
+                    "minimum eight characters, at least one bigger letter, one lower letter, one number ");
         }
 
         if (userRepository.findByEmail(userDTO.getEmail()) != null) {
