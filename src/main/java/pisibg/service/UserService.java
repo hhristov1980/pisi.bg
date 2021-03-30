@@ -1,6 +1,5 @@
 package pisibg.service;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +16,8 @@ import pisibg.model.repository.OrderRepository;
 import pisibg.model.repository.UserRepository;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,6 +33,19 @@ public class UserService {
     private static final String REGEX_EMAIL = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
     private static final String PASSWORD_REGEX = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$";
 
+
+    public List<UserRegisterResponseDTO> getAllUsers(UserReportRequestDTO dto) throws SQLException {
+        return userDAO.getAllUsers(dto);
+    }
+    public List<OrderReportDTO> getDailyOrders(LocalDateTime from, LocalDateTime to,OrderDailyReportRequestDTO dto) throws SQLException {
+        return userDAO.dailyOrders(from,to,dto);
+    }
+    public List<OrderReportDTO> getMonhlyOrders(OrderMonthlyReportRequestDTO dto) throws SQLException {
+        return userDAO.monthlyOrders(dto);
+    }
+    public List<OrderReportDTO> getYearlyOrders(OrderYearlyReportRequestDTO dto) throws SQLException {
+        return userDAO.yearlyOrders(dto);
+    }
 
     public UserRegisterResponseDTO addUser(UserRegisterRequestDTO userDTO) {
 
@@ -254,4 +268,5 @@ public class UserService {
             throw new NotFoundException("User not found!");
         }
     }
+
 }
