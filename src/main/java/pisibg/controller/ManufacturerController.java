@@ -29,7 +29,7 @@ public class ManufacturerController {
     private SessionManager sessionManager;
 
 
-    @PostMapping("/manufacturers/add")
+    @PostMapping("/manufacturers")
     public ManufacturerResponseDTO add(HttpSession ses, @RequestBody ManufacturerRequestDTO manufacturerRequestDTO){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -41,7 +41,7 @@ public class ManufacturerController {
         return manufacturerService.add(manufacturerRequestDTO);
     }
 
-    @PutMapping("/manufacturers/edit")
+    @PutMapping("/manufacturers")
     public ManufacturerResponseDTO editManufacturer(HttpSession ses, @RequestBody ManufacturerEditRequestDTO manufacturerEditRequestDTO){
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");

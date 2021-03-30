@@ -23,7 +23,7 @@ public class ProductController extends AbstractController {
     @Autowired
     private SessionManager sessionManager;
 
-    @PostMapping("/product/add")
+    @PostMapping("/products")
     public ProductResponseDTO add(HttpSession ses, @RequestBody ProductRequestDTO productRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -35,7 +35,7 @@ public class ProductController extends AbstractController {
         return productService.add(productRequestDTO);
     }
 
-    @PutMapping("/product/edit")
+    @PutMapping("/products")
     public ProductResponseDTO changeQuantity(HttpSession ses, @RequestBody ProductEditRequestDTO productEditRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -49,12 +49,12 @@ public class ProductController extends AbstractController {
 
     }
 
-    @GetMapping("/product")
+    @GetMapping("/products")
     public List<ProductResponseDTO> getAll() {
         return productService.getAll();
     }
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/products/{id}")
     public ProductResponseDTO getById(@PathVariable(name = "id") int productId) {
         return productService.getById(productId);
     }

@@ -56,7 +56,7 @@ public class ProductService {
         }
         Product product = new Product();
         product.setName(productRequestDTO.getName());
-        product.setDescription(product.getDescription());
+        product.setDescription(productRequestDTO.getDescription());
         product.setQuantity(productRequestDTO.getQuantity());
         product.setPrice(productRequestDTO.getPrice());
         product.setDiscount(discountRepository.findById(productRequestDTO.getDiscountId()));

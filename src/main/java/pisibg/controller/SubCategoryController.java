@@ -23,7 +23,7 @@ public class SubCategoryController extends AbstractController{
     @Autowired
     private SessionManager sessionManager;
 
-    @PostMapping("subcategories/add")
+    @PostMapping("subcategories")
     public SubcategoryResponseDTO addNewSubcategory(HttpSession ses, @RequestBody SubCategoryRequestDTO subCategoryRequestDTO){
         if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
@@ -38,7 +38,7 @@ public class SubCategoryController extends AbstractController{
 
     }
 
-    @PutMapping("subcategories/edit")
+    @PutMapping("subcategories")
     public SubcategoryResponseDTO edit( HttpSession ses, @RequestBody SubCategoryEditRequestDTO subCategoryEditRequestDTO){
         if(sessionManager.getLoggedUser(ses)==null){
             throw new AuthenticationException("You have to be logged in!");
@@ -51,11 +51,11 @@ public class SubCategoryController extends AbstractController{
         }
         return subCategoryService.edit(subCategoryEditRequestDTO);
     }
-    @GetMapping("/subcategory")
+    @GetMapping("/subcategories")
     public List<SubcategoryResponseDTO> getAll(){
         return subCategoryService.getAll();
     }
-    @GetMapping("/subcategory/{id}")
+    @GetMapping("/subcategories/{id}")
     public SubcategoryResponseDTO getById(@PathVariable(name = "id") int subCategoryId){
         return subCategoryService.getById(subCategoryId);
     }

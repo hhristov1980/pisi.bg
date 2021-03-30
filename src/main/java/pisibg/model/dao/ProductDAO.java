@@ -2,7 +2,8 @@ package pisibg.model.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import pisibg.model.dto.ProductPageRequestDTO;
+import pisibg.exceptions.BadRequestException;
+import pisibg.model.dto.ProductFilterRequestDTO;
 import pisibg.model.pojo.Product;
 import pisibg.utility.OffsetPageCalculator;
 
@@ -18,13 +19,31 @@ public class ProductDAO {
     private JdbcTemplate jdbcTemplate;
 
 
-    public List<Product> getProducts(ProductPageRequestDTO productPageRequestDTO) throws SQLException {
+    public List<Product> getProducts(ProductFilterRequestDTO productFilterRequestDTO) throws SQLException {
         List<Product> products = new ArrayList<>();
         //TODO JOIN BY IDs
-        String query = "SELECT * FROM products LIMIT ? OFFSET ?;"; 
-        int productsPerPage = productPageRequestDTO.getProductsPerPage();
-        int pageToShow = productPageRequestDTO.getPage();
+        String query = "SELECT p.name, p.description, m.producer_name, c.name, sc.name, p.quantity , p.price, sd.percent " +
+                "FROM products p LEFT JOIN manufacturer m ON p.manufacturer_id = m.id " +
+                "LEFT JOIN subcategories sc ON p.subcategory_id = sc.id LEFT JOIN categories c ON sc.category_id = c.id " +
+                "LEFT JOIN sale_discounts sd ON p.discount_id = sd.id WHERE p.manufacturer_id = ? LIMIT ? OFFSET ?";
+        int productsPerPage = productFilterRequestDTO.getProductsPerPage();
+        int pageToShow = productFilterRequestDTO.getPage()-1; //FrontEnd sends 1 for page 1, while in mySql is 0;
         int offset = OffsetPageCalculator.offsetPageCalculator(productsPerPage,pageToShow);
+        if(pageToShow<0){
+            throw new BadRequestException("Please input page number greater than 0!");
+        }
+        if(productsPerPage<=0){
+            throw new BadRequestException("Please input products per page greater than 0!");
+        }
+
+        int manufacturerId = productFilterRequestDTO.getManufacturerId();
+        int categoryId = productFilterRequestDTO.getCategoryId();
+        int subcategoryId = productFilterRequestDTO.getSubcategoryId();
+        int discountId = productFilterRequestDTO.getDiscountId();
+        String initialSqlQuery = "SELECT p.name, p.description, m.producer_name, c.name, sc.name, p.quantity , p.price, sd.percent " +
+                "FROM products p LEFT JOIN manufacturer m ON p.manufacturer_id = m.id " +
+                "LEFT JOIN subcategories sc ON p.subcategory_id = sc.id LEFT JOIN categories c ON sc.category_id = c.id " +
+                "LEFT JOIN sale_discounts sd ON p.discount_id = sd.id LIMIT ? OFFSET ?";
 
         try (Connection connection = jdbcTemplate.getDataSource().getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)){
