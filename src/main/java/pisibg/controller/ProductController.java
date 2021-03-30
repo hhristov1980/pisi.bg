@@ -21,8 +21,6 @@ public class ProductController extends AbstractController {
     @Autowired
     private ProductService productService;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private SessionManager sessionManager;
     @Autowired
     private ProductDAO productDAO;
@@ -35,7 +33,7 @@ public class ProductController extends AbstractController {
         }
         User user = sessionManager.getLoggedUser(ses);
         if (!user.isAdmin()) {
-            throw new DeniedPermissionException("You dont have permission for that!");
+            throw new DeniedPermissionException("You don't have permission for that!");
         }
         return productService.add(productRequestDTO);
     }
@@ -48,16 +46,30 @@ public class ProductController extends AbstractController {
 
         User user = sessionManager.getLoggedUser(ses);
         if (!user.isAdmin()) {
-            throw new DeniedPermissionException("You dont have permission for that!");
+            throw new DeniedPermissionException("You don't have permission for that!");
         }
         return productService.edit(productEditRequestDTO);
 
     }
 
-    @GetMapping("/products")
-    public List<ProductResponseDTO> getAll() {
-        return productService.getAll();
+    @DeleteMapping ("/products")
+    public ProductDeleteResponseDTO deleteProduct(HttpSession ses, @RequestBody ProductDeleteRequestDTO productDeleteRequestDTO) {
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        }
+
+        User user = sessionManager.getLoggedUser(ses);
+        if (!user.isAdmin()) {
+            throw new DeniedPermissionException("You don't have permission for that!");
+        }
+        return productService.delete(productDeleteRequestDTO);
+
     }
+
+//    @GetMapping("/products")
+//    public List<ProductResponseDTO> getAll() {
+//        return productService.getAll();
+//    }
 
     @GetMapping("/products/{id}")
     public ProductResponseDTO getById(@PathVariable(name = "id") int productId) {
@@ -74,4 +86,49 @@ public class ProductController extends AbstractController {
         }
         return null;
     }
+    @PostMapping("/products/filter/admin")
+    public List<ProductAdminFilterResponseDTO> getAll(HttpSession ses, @RequestBody ProductAdminFilterRequestDTO productAdminFilterRequestDTO) {
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        }
+        User user = sessionManager.getLoggedUser(ses);
+        if (!user.isAdmin()) {
+            throw new DeniedPermissionException("You don't have permission for that!");
+        }
+        try {
+            return productDAO.getAdminInfoProducts(productAdminFilterRequestDTO);
+        } catch (SQLException throwables) {
+            //TODO FIX EXCEPTION
+            throwables.printStackTrace();
+        }
+        return null;
+    }
+    @PostMapping("/products/search")
+    public List<ProductFilterResponseDTO> searchProduct(@RequestBody ProductSearchRequestDTO productSearchRequestDTO) {
+        try {
+            return productDAO.searchProducts(productSearchRequestDTO);
+        } catch (SQLException throwables) {
+            //TODO FIX EXCEPTION
+            throwables.printStackTrace();
+        }
+        return null;
+    }
+    @PostMapping("/products/search/admin")
+    public List<ProductAdminFilterResponseDTO> searchAdminProducts(HttpSession ses, @RequestBody ProductSearchRequestDTO productSearchRequestDTO) {
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        }
+        User user = sessionManager.getLoggedUser(ses);
+        if (!user.isAdmin()) {
+            throw new DeniedPermissionException("You don't have permission for that!");
+        }
+        try {
+            return productDAO.searchAdminProducts(productSearchRequestDTO);
+        } catch (SQLException throwables) {
+            //TODO FIX EXCEPTION
+            throwables.printStackTrace();
+        }
+        return null;
+    }
+
 }

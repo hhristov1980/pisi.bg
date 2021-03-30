@@ -21,7 +21,7 @@ public class ProductResponseDTO {
     private String subcategoryName;
 //    private Manufacturer manufacturer;
 //    private Subcategory subcategory;
-    private int quantity;
+    private int quantity; //TODO - MAY BE TO REMOVE IT?!
     private double price;
     private Integer discountPercent;
 //    private Discount discount;

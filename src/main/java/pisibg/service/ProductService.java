@@ -131,20 +131,42 @@ public class ProductService {
             return new ProductResponseDTO(product);
         }
     }
-    public List<ProductResponseDTO> getAll() {
-        List<Product> products = productRepository.findAll();
-        List<ProductResponseDTO> productResponseDTOList = new ArrayList<>();
-        if(products.isEmpty()){
-            throw new NotFoundException("Products not found");
+
+    public ProductDeleteResponseDTO delete(ProductDeleteRequestDTO productDeleteRequestDTO){
+        int id = productDeleteRequestDTO.getId();
+        if(!Validator.isValidInteger(productDeleteRequestDTO.getId())){
+            throw new BadRequestException("Please enter id greater than 0!");
         }
-        else {
-            for(Product p: products){
-                productResponseDTOList.add(new ProductResponseDTO(p));
-            }
-            Collections.sort(productResponseDTOList,((o1, o2) -> Double.compare(o1.getPrice(),o2.getPrice())));
-            return productResponseDTOList;
+        if(productRepository.findById(productDeleteRequestDTO.getId())==null){
+            throw new BadRequestException("Product with this id doesn't exists");
         }
+        Product product = productRepository.findById(productDeleteRequestDTO.getId());
+        ProductDeleteResponseDTO productDeleteResponseDTO = new ProductDeleteResponseDTO();
+        productDeleteResponseDTO.setId(product.getId());
+        productDeleteResponseDTO.setDescription("Deleted");
+        product.setQuantity(0);
+        product.setPrice(0);
+        product.setDiscount(null);
+        product.setDescription("Deleted");
+        //Other fields will stay for history
+        productRepository.save(product);
+        return productDeleteResponseDTO;
     }
+
+//    public List<ProductResponseDTO> getAll() {
+//        List<Product> products = productRepository.findAll();
+//        List<ProductResponseDTO> productResponseDTOList = new ArrayList<>();
+//        if(products.isEmpty()){
+//            throw new NotFoundException("Products not found");
+//        }
+//        else {
+//            for(Product p: products){
+//                productResponseDTOList.add(new ProductResponseDTO(p));
+//            }
+//            Collections.sort(productResponseDTOList,((o1, o2) -> Double.compare(o1.getPrice(),o2.getPrice())));
+//            return productResponseDTOList;
+//        }
+//    }
     public ProductResponseDTO getById(int productId) {
         Product product = productRepository.findById(productId);
         if(product ==null){
