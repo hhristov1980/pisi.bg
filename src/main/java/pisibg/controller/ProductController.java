@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.DeniedPermissionException;
+import pisibg.model.dao.ProductDAO;
 import pisibg.model.dto.*;
 import pisibg.model.pojo.User;
 import pisibg.model.repository.UserRepository;
 import pisibg.service.ProductService;
 
 import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -22,6 +24,9 @@ public class ProductController extends AbstractController {
     private UserRepository userRepository;
     @Autowired
     private SessionManager sessionManager;
+    @Autowired
+    private ProductDAO productDAO;
+
 
     @PostMapping("/products")
     public ProductResponseDTO add(HttpSession ses, @RequestBody ProductRequestDTO productRequestDTO) {
@@ -57,5 +62,16 @@ public class ProductController extends AbstractController {
     @GetMapping("/products/{id}")
     public ProductResponseDTO getById(@PathVariable(name = "id") int productId) {
         return productService.getById(productId);
+    }
+
+    @PostMapping("/products/filter")
+    public List<ProductFilterResponseDTO> getAll(@RequestBody ProductFilterRequestDTO productFilterRequestDTO) {
+        try {
+            return productDAO.getProducts(productFilterRequestDTO);
+        } catch (SQLException throwables) {
+            //TODO FIX EXCEPTION
+            throwables.printStackTrace();
+        }
+        return null;
     }
 }

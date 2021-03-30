@@ -27,14 +27,14 @@ public class SubCategoryService {
         if (!Validator.isValidInteger(subCategoryRequestDTO.getCategoryId())){
             throw new BadRequestException("Invalid category id! Please enter number greater than 0");
         }
-        if (!categoryRepository.findById(subCategoryRequestDTO.getCategoryId()).isPresent()) {
+        if (categoryRepository.findById(subCategoryRequestDTO.getCategoryId())==null) {
             throw new BadRequestException("Category doesn't exists");
         }
         if(!Validator.isValidString(subCategoryRequestDTO.getName())){
             throw new BadRequestException("You have entered and empty text!");
         }
         Subcategory subcategory = new Subcategory(subCategoryRequestDTO);
-        subcategory.setCategory(categoryRepository.findById(subCategoryRequestDTO.getCategoryId()).get());
+        subcategory.setCategory(categoryRepository.findById(subCategoryRequestDTO.getCategoryId()));
         if(subCategoryRepository.getByNameAndCategory_Id(subcategory.getName(), subCategoryRequestDTO.getCategoryId())!=null){
             throw new BadRequestException("Combination already exists");
         }
@@ -57,13 +57,13 @@ public class SubCategoryService {
         if(!subCategoryRepository.findById(subCategoryEditRequestDTO.getId()).isPresent()){
             throw new NotFoundException("Subcategory not found!");
         }
-        if (!categoryRepository.findById(subCategoryEditRequestDTO.getCurrentCategory_id()).isPresent()) {
+        if (categoryRepository.findById(subCategoryEditRequestDTO.getCurrentCategory_id())==null) {
             throw new NotFoundException("Category doesn't exists");
         }
         Subcategory subcategory = new Subcategory();
         subcategory.setId(subCategoryEditRequestDTO.getId());
         subcategory.setName(subCategoryEditRequestDTO.getNewSubcategoryName());
-        subcategory.setCategory(categoryRepository.findById(subCategoryEditRequestDTO.getNewCategory_id()).get());
+        subcategory.setCategory(categoryRepository.findById(subCategoryEditRequestDTO.getNewCategory_id()));
         if(subCategoryRepository.getByNameAndCategory_Id(subcategory.getName(), subcategory.getCategory().getId())!=null){
             throw new BadRequestException("Combination already exists");
         }

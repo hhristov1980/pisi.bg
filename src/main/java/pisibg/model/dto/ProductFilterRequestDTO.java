@@ -10,12 +10,13 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Component
 public class ProductFilterRequestDTO {
-    int productID;
-    int page; // first page Java - 0, from frontEnd - 1
-    int productsPerPage;
-    int manufacturerId;
-    int categoryId;
-    int subcategoryId;
-    int discountId;
+
+    private int page;
+    private int productsPerPage;
+    private int manufacturerId;
+    private int categoryId;
+    private int subcategoryId;
+    private int discountId;
+
 
 }

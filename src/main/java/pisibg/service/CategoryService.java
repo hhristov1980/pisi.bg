@@ -45,7 +45,7 @@ public class CategoryService {
         if(!Validator.isValidInteger(categoryEditRequestDTO.getId())){
             throw new BadRequestException("Please put number greater than 0!");
             }
-        if(!categoryRepository.findById(categoryEditRequestDTO.getId()).isPresent()){
+        if(categoryRepository.findById(categoryEditRequestDTO.getId())==null){
             throw new NotFoundException("Category not found");
             }
         if(categoryRepository.findByName(categoryEditRequestDTO.getNewCategoryName()) != null){
@@ -72,11 +72,10 @@ public class CategoryService {
     }
 
     public CategoryResponseDTO getById(int category_id) {
-        Optional<Category> temp = categoryRepository.findById(category_id);
-        if(!temp.isPresent()){
+        Category category = categoryRepository.findById(category_id);
+        if(category==null){
             throw new NotFoundException("Category not found");
         }
-        Category category = temp.get();
         CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO(category);
         return categoryResponseDTO;
     }
