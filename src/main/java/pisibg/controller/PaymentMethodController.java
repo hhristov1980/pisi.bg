@@ -3,11 +3,11 @@ package pisibg.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
-import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
-import pisibg.model.dto.*;
+import pisibg.model.dto.paymentDTO.PaymentMethodEditDTO;
+import pisibg.model.dto.paymentDTO.PaymentMethodRequestDTO;
+import pisibg.model.dto.paymentDTO.PaymentMethodResponseDTO;
 import pisibg.model.pojo.User;
-import pisibg.service.OrderStatusService;
 import pisibg.service.PaymentMethodService;
 
 import javax.servlet.http.HttpSession;
@@ -22,7 +22,7 @@ public class PaymentMethodController {
     private PaymentMethodService paymentService;
 
     @PostMapping("/paymentmethod")
-    public PaymentMethodResponseDTO addPaymentMethod(HttpSession ses, @RequestBody PaymentMethodRequestDTO methodDTO){
+    public PaymentMethodResponseDTO addPaymentMethod(HttpSession ses, @RequestBody PaymentMethodRequestDTO methodDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -31,11 +31,11 @@ public class PaymentMethodController {
             throw new DeniedPermissionException("You dont have permission for that!");
         }
         int id = user.getId();
-        return paymentService.addPayment(id,methodDTO);
+        return paymentService.addPayment(id, methodDTO);
     }
 
     @PutMapping("/paymentmethod")
-    public PaymentMethodResponseDTO edit( HttpSession ses, @RequestBody PaymentMethodEditDTO methodDTO ){
+    public PaymentMethodResponseDTO edit(HttpSession ses, @RequestBody PaymentMethodEditDTO methodDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -44,11 +44,11 @@ public class PaymentMethodController {
             throw new DeniedPermissionException("You dont have permission for that!");
         }
         int id = user.getId();
-        return paymentService.edit(id,methodDTO);
+        return paymentService.edit(id, methodDTO);
     }
 
     @GetMapping("/paymentmethod")
-    public List<PaymentMethodResponseDTO> getAll( HttpSession ses){
+    public List<PaymentMethodResponseDTO> getAll(HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -58,12 +58,12 @@ public class PaymentMethodController {
     }
 
     @GetMapping("/paymentmethod/{id}")
-    public PaymentMethodResponseDTO getById(@PathVariable int id, HttpSession ses){
+    public PaymentMethodResponseDTO getById(@PathVariable int id, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
         User user = sessionManager.getLoggedUser(ses);
         int user_id = user.getId();
-        return paymentService.getById(user_id,id);
+        return paymentService.getById(user_id, id);
     }
 }

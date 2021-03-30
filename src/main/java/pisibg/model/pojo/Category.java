@@ -4,18 +4,16 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pisibg.model.dto.CategoryRequestDTO;
+import pisibg.model.dto.categoryDTO.CategoryRequestDTO;
 
 import javax.persistence.*;
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 @NoArgsConstructor
 @Setter
 @Getter
 @Entity
-@Table(name="categories")
+@Table(name = "categories")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +23,9 @@ public class Category {
     @JsonManagedReference
     private Set<Subcategory> subcategories;
 
-    public Category(CategoryRequestDTO categoryRequestDTO){
+    public Category(CategoryRequestDTO categoryRequestDTO) {
         name = categoryRequestDTO.getName();
-        subcategories = new TreeSet<>(((o1, o2) -> Integer.compare(o1.getId(),o2.getId())));
+        subcategories = new TreeSet<>(((o1, o2) -> Integer.compare(o1.getId(), o2.getId())));
     }
 
 

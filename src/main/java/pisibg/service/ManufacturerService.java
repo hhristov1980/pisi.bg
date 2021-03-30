@@ -4,18 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.NotFoundException;
-import pisibg.model.dto.CategoryResponseDTO;
-import pisibg.model.dto.ManufacturerEditRequestDTO;
-import pisibg.model.dto.ManufacturerRequestDTO;
-import pisibg.model.dto.ManufacturerResponseDTO;
-import pisibg.model.pojo.Category;
+import pisibg.model.dto.manufacturerDTO.ManufacturerEditRequestDTO;
+import pisibg.model.dto.manufacturerDTO.ManufacturerRequestDTO;
+import pisibg.model.dto.manufacturerDTO.ManufacturerResponseDTO;
 import pisibg.model.pojo.Manufacturer;
 import pisibg.model.repository.ManufacturerRepository;
 import pisibg.utility.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ManufacturerService {
@@ -25,7 +22,7 @@ public class ManufacturerService {
     public ManufacturerResponseDTO add(ManufacturerRequestDTO manufacturerRequestDTO) {
 
         String name = manufacturerRequestDTO.getProducerName();
-        if(!Validator.isValidString(name)){
+        if (!Validator.isValidString(name)) {
             throw new BadRequestException("You have entered an empty text!");
         }
         if (manufacturerRepository.findByProducerName(name) != null) {
@@ -36,23 +33,23 @@ public class ManufacturerService {
         return new ManufacturerResponseDTO(manufacturer);
     }
 
-    public ManufacturerResponseDTO edit (ManufacturerEditRequestDTO manufacturerEditRequestDTO){
-        if(!(Validator.isValidString(manufacturerEditRequestDTO.getCurrentProducerName())||(!Validator.isValidString(manufacturerEditRequestDTO.getNewProducerName())))){
+    public ManufacturerResponseDTO edit(ManufacturerEditRequestDTO manufacturerEditRequestDTO) {
+        if (!(Validator.isValidString(manufacturerEditRequestDTO.getCurrentProducerName()) || (!Validator.isValidString(manufacturerEditRequestDTO.getNewProducerName())))) {
             throw new BadRequestException("You have entered and empty text!");
         }
-        if(manufacturerEditRequestDTO.getCurrentProducerName().equals(manufacturerEditRequestDTO.getNewProducerName())){
+        if (manufacturerEditRequestDTO.getCurrentProducerName().equals(manufacturerEditRequestDTO.getNewProducerName())) {
             throw new BadRequestException("You didn't make any change!");
         }
-        if(!Validator.isValidInteger(manufacturerEditRequestDTO.getId())){
+        if (!Validator.isValidInteger(manufacturerEditRequestDTO.getId())) {
             throw new BadRequestException("Please put number greater than 0!");
         }
-        if(manufacturerRepository.findById(manufacturerEditRequestDTO.getId())==null){
+        if (manufacturerRepository.findById(manufacturerEditRequestDTO.getId()) == null) {
             throw new NotFoundException("Manufacturer not found");
         }
-        if(!Validator.isValidString(manufacturerEditRequestDTO.getNewProducerName())){
+        if (!Validator.isValidString(manufacturerEditRequestDTO.getNewProducerName())) {
             throw new BadRequestException("You have entered an empty text!");
         }
-        if(manufacturerRepository.findByProducerName(manufacturerEditRequestDTO.getNewProducerName()) != null){
+        if (manufacturerRepository.findByProducerName(manufacturerEditRequestDTO.getNewProducerName()) != null) {
             throw new NotFoundException("Manufacturer with this name already exists");
         }
         Manufacturer manufacturer = new Manufacturer();
@@ -65,20 +62,20 @@ public class ManufacturerService {
     public List<ManufacturerResponseDTO> getAll() {
         List<Manufacturer> manufacturers = manufacturerRepository.findAll();
         List<ManufacturerResponseDTO> manufacturerResponseDTOList = new ArrayList<>();
-        if(manufacturers.isEmpty()){
+        if (manufacturers.isEmpty()) {
             throw new NotFoundException("Manufacturers not found");
         }
-        for(Manufacturer m: manufacturers){
+        for (Manufacturer m : manufacturers) {
             manufacturerResponseDTOList.add(new ManufacturerResponseDTO(m));
         }
-            return manufacturerResponseDTOList;
-        }
+        return manufacturerResponseDTOList;
+    }
 
 
     //TODO FIX EXCEPTION
     public ManufacturerResponseDTO getById(int manufacturer_id) {
         Manufacturer manufacturer = manufacturerRepository.findById(manufacturer_id);
-        if(manufacturer==null){
+        if (manufacturer == null) {
             throw new NotFoundException("Manufacturer not found");
         }
         ManufacturerResponseDTO manufacturerResponseDTO = new ManufacturerResponseDTO(manufacturer);

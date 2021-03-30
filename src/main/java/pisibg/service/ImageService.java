@@ -1,6 +1,5 @@
 package pisibg.service;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -8,9 +7,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.NotFoundException;
-import pisibg.model.dto.CategoryRequestDTO;
-import pisibg.model.dto.CategoryResponseDTO;
-import pisibg.model.pojo.Category;
 import pisibg.model.pojo.Image;
 import pisibg.model.repository.ImageRepository;
 import pisibg.model.repository.ProductRepository;
@@ -18,8 +14,6 @@ import pisibg.utility.Validator;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Service
 public class ImageService {

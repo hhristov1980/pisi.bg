@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pisibg.model.dto.ManufacturerRequestDTO;
+import pisibg.model.dto.manufacturerDTO.ManufacturerRequestDTO;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -13,7 +13,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
-@Table(name="manufacturer")
+@Table(name = "manufacturer")
 public class Manufacturer {
 
     @Id
@@ -24,7 +24,7 @@ public class Manufacturer {
     @JsonManagedReference
     private Set<Product> products;
 
-    public Manufacturer(ManufacturerRequestDTO manufacturerRequestDTO){
+    public Manufacturer(ManufacturerRequestDTO manufacturerRequestDTO) {
         producerName = manufacturerRequestDTO.getProducerName();
     }
 }

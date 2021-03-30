@@ -27,9 +27,10 @@ public class ImageController {
     private ImageService imageService;
     @Autowired
     private SessionManager sessionManager;
+
     @ResponseBody
     @PostMapping("/images/product/{product_id}")
-    public Image upload(@PathVariable (name = "product_id") int productId, HttpSession ses,  @RequestPart MultipartFile file){
+    public Image upload(@PathVariable(name = "product_id") int productId, HttpSession ses, @RequestPart MultipartFile file) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -37,18 +38,19 @@ public class ImageController {
             if (!user.isAdmin()) {
                 throw new DeniedPermissionException("You don't have permission for that!");
             }
-                //TODO fix exceptions
-                try {
-                    return imageService.upload(file,productId);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            //TODO fix exceptions
+            try {
+                return imageService.upload(file, productId);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
         return null;
     }
 
     @GetMapping(value = "/images/{id}", produces = "image/*")
-    public @ResponseBody byte[] download(@PathVariable int id) throws IOException {
+    public @ResponseBody
+    byte[] download(@PathVariable int id) throws IOException {
         return imageService.download(id);
     }
 

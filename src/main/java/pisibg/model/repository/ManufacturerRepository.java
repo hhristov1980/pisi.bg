@@ -7,8 +7,9 @@ import pisibg.model.pojo.Manufacturer;
 import pisibg.model.pojo.User;
 
 @Repository
-public interface ManufacturerRepository extends JpaRepository<Manufacturer,Integer> {
+public interface ManufacturerRepository extends JpaRepository<Manufacturer, Integer> {
 
     Manufacturer findByProducerName(String producerName);
+
     Manufacturer findById(int manufacturerId);
 }

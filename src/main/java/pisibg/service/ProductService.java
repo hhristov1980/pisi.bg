@@ -4,17 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.NotFoundException;
-import pisibg.model.dto.*;
+import pisibg.model.dto.productDTO.*;
 import pisibg.model.pojo.*;
 import pisibg.model.repository.DiscountRepository;
 import pisibg.model.repository.ManufacturerRepository;
 import pisibg.model.repository.ProductRepository;
 import pisibg.model.repository.SubCategoryRepository;
 import pisibg.utility.Validator;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 public class ProductService {
@@ -27,31 +23,31 @@ public class ProductService {
     @Autowired
     ManufacturerRepository manufacturerRepository;
 
-    public ProductResponseDTO add(ProductRequestDTO productRequestDTO){
+    public ProductResponseDTO add(ProductRequestDTO productRequestDTO) {
 
         String name = productRequestDTO.getName();
-        if(!Validator.isValidString(name)){
+        if (!Validator.isValidString(name)) {
             throw new BadRequestException("You have entered empty text!");
         }
-        if(productRepository.findByName(name) != null){
+        if (productRepository.findByName(name) != null) {
             throw new BadRequestException("Product already exists");
-            }
-        if(!isValidManufacturer(productRequestDTO)){
+        }
+        if (!isValidManufacturer(productRequestDTO)) {
             throw new BadRequestException("Invalid manufacturer id!");
         }
-        if(!isValidSubcategory(productRequestDTO)){
+        if (!isValidSubcategory(productRequestDTO)) {
             throw new BadRequestException("Invalid subcategory id!");
         }
-        if(!isValidDiscount(productRequestDTO)){
+        if (!isValidDiscount(productRequestDTO)) {
             throw new BadRequestException("Invalid discount id!");
         }
-        if(!Validator.isValidString(productRequestDTO.getDescription())){
+        if (!Validator.isValidString(productRequestDTO.getDescription())) {
             throw new BadRequestException("You have entered and empty product's description!");
         }
-        if(!isValidQuantity(productRequestDTO.getQuantity())){
+        if (!isValidQuantity(productRequestDTO.getQuantity())) {
             throw new BadRequestException("Please enter quantity greater than 0!");
         }
-        if(!isValidPrice(productRequestDTO.getPrice())){
+        if (!isValidPrice(productRequestDTO.getPrice())) {
             throw new BadRequestException("Please enter price greater than 0!");
         }
         Product product = new Product();
@@ -66,39 +62,39 @@ public class ProductService {
         return new ProductResponseDTO(product);
     }
 
-    public ProductResponseDTO  edit(ProductEditRequestDTO productEditRequestDTO){
+    public ProductResponseDTO edit(ProductEditRequestDTO productEditRequestDTO) {
 
-        if(!Validator.isValidInteger(productEditRequestDTO.getId())){
+        if (!Validator.isValidInteger(productEditRequestDTO.getId())) {
             throw new BadRequestException("Please enter id greater than 0!");
         }
-        if(productRepository.findById(productEditRequestDTO.getId())==null){
+        if (productRepository.findById(productEditRequestDTO.getId()) == null) {
             throw new BadRequestException("Product with this id doesn't exists");
         }
-        if(!Validator.isValidString(productEditRequestDTO.getNewName())){
+        if (!Validator.isValidString(productEditRequestDTO.getNewName())) {
             throw new BadRequestException("You put and empty name!");
         }
-        if(!productEditRequestDTO.getCurrentName().equals(productEditRequestDTO.getNewName())&&productRepository.findByName(productEditRequestDTO.getNewName())!=null){
+        if (!productEditRequestDTO.getCurrentName().equals(productEditRequestDTO.getNewName()) && productRepository.findByName(productEditRequestDTO.getNewName()) != null) {
             throw new BadRequestException("This name already exists!");
         }
-        if(!isValidQuantity(productEditRequestDTO.getNewQuantity())){
+        if (!isValidQuantity(productEditRequestDTO.getNewQuantity())) {
             throw new BadRequestException("Please enter quantity greater or equal to 0!");
         }
-        if(!isValidPrice(productEditRequestDTO.getNewPrice())){
+        if (!isValidPrice(productEditRequestDTO.getNewPrice())) {
             throw new BadRequestException("Please enter price greater than 0!");
         }
-        if(!Validator.isValidInteger(productEditRequestDTO.getNewManufacturerId())||!Validator.isValidInteger(productEditRequestDTO.getNewSubcategoryId())){
+        if (!Validator.isValidInteger(productEditRequestDTO.getNewManufacturerId()) || !Validator.isValidInteger(productEditRequestDTO.getNewSubcategoryId())) {
             throw new BadRequestException("Please number greater than 0!");
         }
-        if(manufacturerRepository.findById(productEditRequestDTO.getNewManufacturerId())==null){
+        if (manufacturerRepository.findById(productEditRequestDTO.getNewManufacturerId()) == null) {
             throw new NotFoundException("No manufacturer with this Id");
         }
-        if(subCategoryRepository.getById(productEditRequestDTO.getNewSubcategoryId())==null){
+        if (subCategoryRepository.getById(productEditRequestDTO.getNewSubcategoryId()) == null) {
             throw new NotFoundException("No subcategory with this Id");
         }
-        if(productEditRequestDTO.getNewDiscountId()<0){
+        if (productEditRequestDTO.getNewDiscountId() < 0) {
             throw new BadRequestException("Please number greater than 0 for new or 0 to delete discount!");
         }
-        if(productEditRequestDTO.getNewDiscountId()>0) {
+        if (productEditRequestDTO.getNewDiscountId() > 0) {
             if (discountRepository.findById(productEditRequestDTO.getNewDiscountId()) == null) {
                 throw new NotFoundException("No discount with this Id");
             }
@@ -116,8 +112,7 @@ public class ProductService {
             product.setSubcategory(subCategoryRepository.getById(productEditRequestDTO.getNewSubcategoryId()));
             product = productRepository.save(product);
             return new ProductResponseDTO(product);
-        }
-        else {
+        } else {
             Product product = new Product();
             product.setId(productEditRequestDTO.getId());
             product.setName(productEditRequestDTO.getNewName());
@@ -132,12 +127,12 @@ public class ProductService {
         }
     }
 
-    public ProductDeleteResponseDTO delete(ProductDeleteRequestDTO productDeleteRequestDTO){
+    public ProductDeleteResponseDTO delete(ProductDeleteRequestDTO productDeleteRequestDTO) {
         int id = productDeleteRequestDTO.getId();
-        if(!Validator.isValidInteger(productDeleteRequestDTO.getId())){
+        if (!Validator.isValidInteger(productDeleteRequestDTO.getId())) {
             throw new BadRequestException("Please enter id greater than 0!");
         }
-        if(productRepository.findById(productDeleteRequestDTO.getId())==null){
+        if (productRepository.findById(productDeleteRequestDTO.getId()) == null) {
             throw new BadRequestException("Product with this id doesn't exists");
         }
         Product product = productRepository.findById(productDeleteRequestDTO.getId());
@@ -153,7 +148,7 @@ public class ProductService {
         return productDeleteResponseDTO;
     }
 
-//    public List<ProductResponseDTO> getAll() {
+    //    public List<ProductResponseDTO> getAll() {
 //        List<Product> products = productRepository.findAll();
 //        List<ProductResponseDTO> productResponseDTOList = new ArrayList<>();
 //        if(products.isEmpty()){
@@ -169,50 +164,52 @@ public class ProductService {
 //    }
     public ProductResponseDTO getById(int productId) {
         Product product = productRepository.findById(productId);
-        if(product ==null){
+        if (product == null) {
             throw new NotFoundException("Product not found");
-        }
-        else {
+        } else {
             ProductResponseDTO productResponseDTO = new ProductResponseDTO(product);
             return productResponseDTO;
         }
     }
 
 
-    private boolean isValidSubcategory(ProductRequestDTO productRequestDTO){
+    private boolean isValidSubcategory(ProductRequestDTO productRequestDTO) {
         int subcategoryId = productRequestDTO.getSubcategoryId();
-        if(subcategoryId>0){
+        if (subcategoryId > 0) {
             Subcategory subcategory = subCategoryRepository.getById(subcategoryId);
-            return subcategory!=null;
+            return subcategory != null;
         }
         return false;
     }
-    private boolean isValidDiscount(ProductRequestDTO productRequestDTO){
+
+    private boolean isValidDiscount(ProductRequestDTO productRequestDTO) {
         int discountId = productRequestDTO.getDiscountId();
-        if(discountId>0){
+        if (discountId > 0) {
             Discount discount = discountRepository.findById(discountId);
-            return discount!=null;
-        }
-        else {
-            if(discountId == 0){
+            return discount != null;
+        } else {
+            if (discountId == 0) {
                 return true;
             }
         }
         return false;
     }
-    private boolean isValidManufacturer(ProductRequestDTO productRequestDTO){
+
+    private boolean isValidManufacturer(ProductRequestDTO productRequestDTO) {
         int manufacturerId = productRequestDTO.getManufacturerId();
-        if(manufacturerId>0){
+        if (manufacturerId > 0) {
             Manufacturer manufacturer = manufacturerRepository.findById(manufacturerId);
-            return manufacturer!=null;
+            return manufacturer != null;
         }
         return false;
 
     }
-    private boolean isValidQuantity(int quantity){
-        return quantity>=0;
+
+    private boolean isValidQuantity(int quantity) {
+        return quantity >= 0;
     }
-    private boolean isValidPrice(double price){
-        return price>0;
+
+    private boolean isValidPrice(double price) {
+        return price > 0;
     }
 }

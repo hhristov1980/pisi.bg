@@ -5,10 +5,9 @@ import org.springframework.stereotype.Service;
 import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.NotFoundException;
-import pisibg.model.dto.OrderStatusResponseDTO;
-import pisibg.model.dto.PaymentMethodEditDTO;
-import pisibg.model.dto.PaymentMethodRequestDTO;
-import pisibg.model.dto.PaymentMethodResponseDTO;
+import pisibg.model.dto.paymentDTO.PaymentMethodEditDTO;
+import pisibg.model.dto.paymentDTO.PaymentMethodRequestDTO;
+import pisibg.model.dto.paymentDTO.PaymentMethodResponseDTO;
 import pisibg.model.pojo.PaymentMethod;
 import pisibg.model.pojo.User;
 import pisibg.model.repository.PaymentMethodRepository;
@@ -27,19 +26,17 @@ public class PaymentMethodService {
 
     public PaymentMethodResponseDTO addPayment(int id, PaymentMethodRequestDTO methodDTO) {
         Optional<User> u = userRepository.findById(id);
-        if(u.isPresent()){
+        if (u.isPresent()) {
             User user = u.get();
-            if(user.isAdmin()){
+            if (user.isAdmin()) {
                 PaymentMethod method = new PaymentMethod();
                 method.setType(methodDTO.getType());
                 paymentsRepository.save(method);
                 return new PaymentMethodResponseDTO(method);
-            }
-            else {
+            } else {
                 throw new DeniedPermissionException("You don't have permission for that!");
             }
-        }
-        else {
+        } else {
             throw new NotFoundException("User not found!");
         }
     }
@@ -78,7 +75,7 @@ public class PaymentMethodService {
             if (user.isAdmin()) {
                 List<PaymentMethod> methods = paymentsRepository.findAll();
                 List<PaymentMethodResponseDTO> result = new ArrayList<>();
-                for(PaymentMethod m : methods){
+                for (PaymentMethod m : methods) {
                     result.add(new PaymentMethodResponseDTO(m));
                 }
                 return result;
@@ -93,11 +90,10 @@ public class PaymentMethodService {
     public PaymentMethodResponseDTO getById(int user_id, int id) {
         Optional<User> u = userRepository.findById(user_id);
         Optional<PaymentMethod> pm = paymentsRepository.findById(id);
-        if(u.isPresent() && pm.isPresent()){
+        if (u.isPresent() && pm.isPresent()) {
             PaymentMethod method = pm.get();
             return new PaymentMethodResponseDTO(method);
-        }
-        else {
+        } else {
             throw new NotFoundException("User/method not found!");
         }
     }

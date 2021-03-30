@@ -6,9 +6,10 @@ import pisibg.model.pojo.Category;
 import pisibg.model.pojo.Manufacturer;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category,Integer> {
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     Category findByName(String name);
+
     Category findById(int categoryId);
 
 }

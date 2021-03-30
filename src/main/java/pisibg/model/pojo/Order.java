@@ -5,11 +5,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pisibg.model.dto.ProductOrderResponseDTO;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -17,7 +15,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
-@Table(name="orders")
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +31,7 @@ public class Order {
     @OneToOne(mappedBy = "order")
     private Payment payment;
     @ManyToOne
-    @JoinColumn(name="payment_method_id")
+    @JoinColumn(name = "payment_method_id")
     @JsonBackReference
     private PaymentMethod paymentMethod;
     private String address;
@@ -46,8 +44,8 @@ public class Order {
     @ManyToMany
     @JoinTable(
             name = "orders_have_products",
-            joinColumns = { @JoinColumn(name = "order_id") },
-            inverseJoinColumns = { @JoinColumn(name = "product_id") }
+            joinColumns = {@JoinColumn(name = "order_id")},
+            inverseJoinColumns = {@JoinColumn(name = "product_id")}
     )
     @JsonManagedReference
     private Set<Product> products;

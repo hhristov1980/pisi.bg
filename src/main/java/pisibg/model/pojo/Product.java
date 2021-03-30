@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pisibg.model.dto.ProductRequestDTO;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;
 
@@ -16,7 +14,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
-@Table(name="products")
+@Table(name = "products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

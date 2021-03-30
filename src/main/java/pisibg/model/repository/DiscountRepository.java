@@ -7,8 +7,9 @@ import pisibg.model.pojo.Category;
 import pisibg.model.pojo.Discount;
 
 @Repository
-public interface DiscountRepository extends JpaRepository<Discount,Integer> {
+public interface DiscountRepository extends JpaRepository<Discount, Integer> {
 
     Discount findByDescription(String description);
+
     Discount findById(int discountId);
 }

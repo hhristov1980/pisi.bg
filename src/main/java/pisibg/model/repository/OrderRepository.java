@@ -6,5 +6,5 @@ import pisibg.model.pojo.Manufacturer;
 import pisibg.model.pojo.Order;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order,Integer> {
+public interface OrderRepository extends JpaRepository<Order, Integer> {
 }

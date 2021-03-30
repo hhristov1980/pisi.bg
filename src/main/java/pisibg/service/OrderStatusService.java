@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.NotFoundException;
-import pisibg.model.dto.OrderStatusRequestDTO;
-import pisibg.model.dto.OrderStatusEditDTO;
-import pisibg.model.dto.OrderStatusResponseDTO;
+import pisibg.model.dto.orderDTO.OrderStatusRequestDTO;
+import pisibg.model.dto.orderDTO.OrderStatusEditDTO;
+import pisibg.model.dto.orderDTO.OrderStatusResponseDTO;
 import pisibg.model.pojo.OrderStatus;
 import pisibg.model.pojo.User;
 import pisibg.model.repository.OrderStatusRepository;
@@ -90,8 +90,7 @@ public class OrderStatusService {
             } else {
                 throw new DeniedPermissionException("You don't have permission for that");
             }
-        }
-        else {
+        } else {
             throw new NotFoundException("User not found!");
         }
     }

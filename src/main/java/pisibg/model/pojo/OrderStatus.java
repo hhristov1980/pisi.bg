@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pisibg.model.dto.OrderStatusRequestDTO;
+import pisibg.model.dto.orderDTO.OrderStatusRequestDTO;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@Table(name="order_statuses")
+@Table(name = "order_statuses")
 public class OrderStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class OrderStatus {
     @JsonManagedReference
     private List<Order> order;
 
-    public OrderStatus(OrderStatusRequestDTO status){
+    public OrderStatus(OrderStatusRequestDTO status) {
         this.type = status.getType();
     }
 }

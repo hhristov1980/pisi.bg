@@ -12,7 +12,7 @@ import java.util.Objects;
 @Setter
 @Getter
 @Entity
-@Table(name="images")
+@Table(name = "images")
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

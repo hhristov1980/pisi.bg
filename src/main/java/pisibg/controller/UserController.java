@@ -2,22 +2,18 @@ package pisibg.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.MySQLException;
-import pisibg.model.dto.*;
 //import pisibg.model.pojo.Payment;
+import pisibg.model.dto.orderDTO.*;
+import pisibg.model.dto.userDTO.*;
 import pisibg.model.pojo.User;
 import pisibg.service.UserService;
-import pisibg.utility.EmailServiceImpl;
 
 import javax.servlet.http.HttpSession;
-import java.net.http.HttpHeaders;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,9 +21,6 @@ import java.util.List;
 public class UserController extends AbstractController {
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private EmailServiceImpl emailService;
 
     @Autowired
     private SessionManager sessionManager;
@@ -50,80 +43,69 @@ public class UserController extends AbstractController {
         sessionManager.logoutUser(ses);
     }
 
-//    @GetMapping("/users/{id}/subscribe")
-//    public UserWithoutPassDTO subscribe(@PathVariable int id, HttpSession ses) {
-//        if (sessionManager.getLoggedUser(ses) == null) {
-//            throw new AuthenticationException("You have to be logged in!");
-//        } else {
-//            User user = sessionManager.getLoggedUser(ses);
-//            if (id != user.getId()) {
-//                throw new DeniedPermissionException("You dont have permission for that!");
-//            }
-//            return userService.subscribe(id);
-//        }
-//    }
 
     @PutMapping("/users/edit")
-    public UserEditResponseDTO editPasswordUser(@RequestBody UserEditRequestDTO userDto, HttpSession ses){
+    public UserEditResponseDTO editUser(@RequestBody UserEditRequestDTO userDto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
             int id = user.getId();
-            return userService.edit(userDto,id);
+            return userService.edit(userDto, id);
         }
     }
+
     @PostMapping("/users/edit")
-    public String editPasswordUser(@RequestBody UserEditPasswordDTO userDto, HttpSession ses){
+    public String editPasswordUser(@RequestBody UserEditPasswordDTO userDto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
             int id = user.getId();
-            return userService.editPassword(userDto,id);
+            return userService.editPassword(userDto, id);
         }
     }
 
     @PostMapping("/admin/{id_user}")
-    public UserRegisterResponseDTO makeAdmin(@PathVariable int id_user, HttpSession ses){
+    public UserRegisterResponseDTO makeAdmin(@PathVariable int id_user, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if(!user.isAdmin()){
+            if (!user.isAdmin()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             int admin_id = user.getId();
-            return userService.makeAdmin(admin_id,id_user);
+            return userService.makeAdmin(admin_id, id_user);
         }
     }
 
     @PutMapping("/admin/{id_user}")
-    public UserRegisterResponseDTO removeAdmin(@PathVariable int id_user, HttpSession ses){
+    public UserRegisterResponseDTO removeAdmin(@PathVariable int id_user, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if(!user.isAdmin()){
+            if (!user.isAdmin()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             int admin_id = user.getId();
-            return userService.removeAdmin(admin_id,id_user);
+            return userService.removeAdmin(admin_id, id_user);
         }
     }
 
     @DeleteMapping("/admin/{user_id}")
-    public UserEditResponseDTO deleteUser(@PathVariable int user_id, HttpSession ses){
+    public UserEditResponseDTO deleteUser(@PathVariable int user_id, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if(!user.isAdmin()){
+            if (!user.isAdmin()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             int admin_id = user.getId();
             try {
-               return userService.deleteUser(admin_id, user_id);
+                return userService.deleteUser(admin_id, user_id);
             } catch (SQLException throwables) {
                 throw new MySQLException("Something get wrong!");
             }
@@ -131,12 +113,12 @@ public class UserController extends AbstractController {
     }
 
     @PostMapping("/admin/users")
-    public List<UserRegisterResponseDTO> getAllUsers(@RequestBody UserReportRequestDTO dto, HttpSession ses){
+    public List<UserRegisterResponseDTO> getAllUsers(@RequestBody UserReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if(!user.isAdmin()){
+            if (!user.isAdmin()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             try {
@@ -149,18 +131,18 @@ public class UserController extends AbstractController {
 
 
     @PostMapping("/admin/daily")
-    public List<OrderReportDTO> getDailyOrders(@RequestBody OrderDailyReportRequestDTO dto, HttpSession ses){
+    public List<OrderReportDTO> getDailyOrders(@RequestBody OrderDailyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if(!user.isAdmin()){
+            if (!user.isAdmin()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             try {
                 LocalDateTime from = dto.getFromDate();
                 LocalDateTime to = dto.getToDate();
-                return userService.getDailyOrders(from,to, dto);
+                return userService.getDailyOrders(from, to, dto);
             } catch (SQLException throwables) {
                 throw new MySQLException("Something get wrong!");
             }
@@ -168,12 +150,12 @@ public class UserController extends AbstractController {
     }
 
     @PostMapping("/admin/monthly")
-    public List<OrderReportDTO> getMonthlyOrders(@RequestBody OrderMonthlyReportRequestDTO dto, HttpSession ses){
+    public List<OrderReportDTO> getMonthlyOrders(@RequestBody OrderMonthlyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if(!user.isAdmin()){
+            if (!user.isAdmin()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             try {
@@ -185,12 +167,12 @@ public class UserController extends AbstractController {
     }
 
     @PostMapping("/admin/yearly")
-    public List<OrderReportDTO> getYearlyOrders(@RequestBody OrderYearlyReportRequestDTO dto, HttpSession ses){
+    public List<OrderReportDTO> getYearlyOrders(@RequestBody OrderYearlyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if(!user.isAdmin()){
+            if (!user.isAdmin()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             try {
@@ -202,31 +184,18 @@ public class UserController extends AbstractController {
     }
 
     @PutMapping("/users/order/{order_id}")
-    public OrderEditResponseDTO editOrder(@PathVariable int order_id,@RequestBody OrderEditRequestDTO orderDto, HttpSession ses){
+    public OrderEditResponseDTO editOrder(@PathVariable int order_id, @RequestBody OrderEditRequestDTO orderDto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if(!user.isAdmin()){
+            if (!user.isAdmin()) {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             int admin_id = user.getId();
-            return userService.editOrder(admin_id, order_id,orderDto);
+            return userService.editOrder(admin_id, order_id, orderDto);
         }
     }
-
-//    @GetMapping("/users/{id}/unsubscribe")
-//    public UserWithoutPassDTO unsubscribe(@PathVariable int id, HttpSession ses) {
-//        if (sessionManager.getLoggedUser(ses) == null) {
-//            throw new AuthenticationException("You have to be logged in!");
-//        } else {
-//            User user = sessionManager.getLoggedUser(ses);
-//            if (id != user.getId()) {
-//                throw new DeniedPermissionException("You dont have permission for that!");
-//            }
-//            return userService.unsubscribe(id);
-//        }
-//    }
 
     @GetMapping("/users/{id}")
     public UserWithoutPassDTO getById(@PathVariable int id, HttpSession ses) {

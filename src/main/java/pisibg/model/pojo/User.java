@@ -4,11 +4,10 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.SQLDelete;
-import pisibg.model.dto.UserRegisterRequestDTO;
+import pisibg.model.dto.userDTO.UserRegisterRequestDTO;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 
@@ -16,7 +15,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -37,23 +36,23 @@ public class User {
     private LocalDateTime deletedAt;
     private boolean isSubscribed;
     private boolean isAdmin;
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy = "user")
     private Set<Payment> payments;
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private Set<Order> orders;
 
-    public User(UserRegisterRequestDTO userDTO){
+    public User(UserRegisterRequestDTO userDTO) {
         email = userDTO.getEmail();
         password = userDTO.getPassword();
         firstName = userDTO.getFirstName();
         lastName = userDTO.getLastName();
-        phoneNumber  = userDTO.getPhoneNumber();
+        phoneNumber = userDTO.getPhoneNumber();
         townName = userDTO.getTownName();
         address = userDTO.getAddress();
         createdAt = LocalDateTime.now();
         isSubscribed = userDTO.isSubscribed();
-        personalDiscount=5;
+        personalDiscount = 5;
         isAdmin = false;
     }
 }

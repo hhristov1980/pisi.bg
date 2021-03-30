@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.DeniedPermissionException;
+import pisibg.exceptions.MySQLException;
 import pisibg.model.dao.ProductDAO;
-import pisibg.model.dto.*;
+import pisibg.model.dto.productDTO.*;
 import pisibg.model.pojo.User;
-import pisibg.model.repository.UserRepository;
 import pisibg.service.ProductService;
 
 import javax.servlet.http.HttpSession;
@@ -52,7 +52,7 @@ public class ProductController extends AbstractController {
 
     }
 
-    @DeleteMapping ("/products")
+    @DeleteMapping("/products")
     public ProductDeleteResponseDTO deleteProduct(HttpSession ses, @RequestBody ProductDeleteRequestDTO productDeleteRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -81,11 +81,10 @@ public class ProductController extends AbstractController {
         try {
             return productDAO.getProducts(productFilterRequestDTO);
         } catch (SQLException throwables) {
-            //TODO FIX EXCEPTION
-            throwables.printStackTrace();
+            throw new MySQLException("Something get wrong!");
         }
-        return null;
     }
+
     @PostMapping("/products/filter/admin")
     public List<ProductAdminFilterResponseDTO> getAll(HttpSession ses, @RequestBody ProductAdminFilterRequestDTO productAdminFilterRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
@@ -98,21 +97,19 @@ public class ProductController extends AbstractController {
         try {
             return productDAO.getAdminInfoProducts(productAdminFilterRequestDTO);
         } catch (SQLException throwables) {
-            //TODO FIX EXCEPTION
-            throwables.printStackTrace();
+            throw new MySQLException("Something get wrong!");
         }
-        return null;
     }
+
     @PostMapping("/products/search")
     public List<ProductFilterResponseDTO> searchProduct(@RequestBody ProductSearchRequestDTO productSearchRequestDTO) {
         try {
             return productDAO.searchProducts(productSearchRequestDTO);
         } catch (SQLException throwables) {
-            //TODO FIX EXCEPTION
-            throwables.printStackTrace();
+            throw new MySQLException("Something get wrong!");
         }
-        return null;
     }
+
     @PostMapping("/products/search/admin")
     public List<ProductAdminFilterResponseDTO> searchAdminProducts(HttpSession ses, @RequestBody ProductSearchRequestDTO productSearchRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
@@ -125,10 +122,8 @@ public class ProductController extends AbstractController {
         try {
             return productDAO.searchAdminProducts(productSearchRequestDTO);
         } catch (SQLException throwables) {
-            //TODO FIX EXCEPTION
-            throwables.printStackTrace();
+            throw new MySQLException("Something get wrong!");
         }
-        return null;
     }
 
 }

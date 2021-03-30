@@ -9,7 +9,8 @@ import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.NotFoundException;
 import pisibg.model.dao.UserDAO;
-import pisibg.model.dto.*;
+import pisibg.model.dto.orderDTO.*;
+import pisibg.model.dto.userDTO.*;
 import pisibg.model.pojo.Order;
 import pisibg.model.pojo.User;
 import pisibg.model.repository.OrderRepository;
@@ -31,18 +32,22 @@ public class UserService {
     @Autowired
     private UserDAO userDAO;
     private static final String REGEX_EMAIL = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-    private static final String PASSWORD_REGEX = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$";
+    private static final String PASSWORD_REGEX = "^(?!.*[\\s])(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$";
+
 
 
     public List<UserRegisterResponseDTO> getAllUsers(UserReportRequestDTO dto) throws SQLException {
         return userDAO.getAllUsers(dto);
     }
-    public List<OrderReportDTO> getDailyOrders(LocalDateTime from, LocalDateTime to,OrderDailyReportRequestDTO dto) throws SQLException {
-        return userDAO.dailyOrders(from,to,dto);
+
+    public List<OrderReportDTO> getDailyOrders(LocalDateTime from, LocalDateTime to, OrderDailyReportRequestDTO dto) throws SQLException {
+        return userDAO.dailyOrders(from, to, dto);
     }
+
     public List<OrderReportDTO> getMonhlyOrders(OrderMonthlyReportRequestDTO dto) throws SQLException {
         return userDAO.monthlyOrders(dto);
     }
+
     public List<OrderReportDTO> getYearlyOrders(OrderYearlyReportRequestDTO dto) throws SQLException {
         return userDAO.yearlyOrders(dto);
     }
@@ -55,7 +60,7 @@ public class UserService {
             throw new BadRequestException("Email is not valid");
         }
 
-        if(!password.matches(PASSWORD_REGEX)){
+        if (!password.matches(PASSWORD_REGEX)) {
             throw new BadRequestException("Password must be " +
                     "minimum eight characters, at least one bigger letter, one lower letter, one number ");
         }
@@ -233,22 +238,20 @@ public class UserService {
             User admin = a.get();
             User user = u.get();
             if (admin.isAdmin()) {
-               return userDAO.deleteUser(user_id);
-            }
-            else {
+                return userDAO.deleteUser(user_id);
+            } else {
                 throw new DeniedPermissionException("You don't have permission for that!");
             }
-        }
-        else {
+        } else {
             throw new NotFoundException("User not found!");
         }
     }
 
-    public OrderEditResponseDTO editOrder(int admin_id, int order_id,OrderEditRequestDTO orderDto) {
+    public OrderEditResponseDTO editOrder(int admin_id, int order_id, OrderEditRequestDTO orderDto) {
         Optional<User> a = userRepository.findById(admin_id);
         Optional<Order> o = orderRepository.findById(order_id);
         Optional<User> u = userRepository.findById(o.get().getUser().getId());
-        if(o.isPresent() && a.isPresent()) {
+        if (o.isPresent() && a.isPresent()) {
             User admin = a.get();
             Order order = o.get();
             User user = u.get();
@@ -259,9 +262,9 @@ public class UserService {
                 order.setPaid(orderDto.isPaid());
                 order.setDiscount(orderDto.getDiscount());
                 orderRepository.save(order);
-                user.setTurnover(user.getTurnover()-order.getNetValue());
+                user.setTurnover(user.getTurnover() - order.getNetValue());
                 return new OrderEditResponseDTO(order);
-            }else {
+            } else {
                 throw new DeniedPermissionException("You don't have permission for that!");
             }
         } else {

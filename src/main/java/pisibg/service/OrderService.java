@@ -1,25 +1,20 @@
 package pisibg.service;
 
 
-import com.sun.xml.bind.v2.TODO;
-import org.aspectj.weaver.ast.Or;
-import org.hibernate.procedure.spi.ParameterRegistrationImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.NotFoundException;
 import pisibg.exceptions.PaymentFailedException;
-import pisibg.model.dto.CartPriceResponseDTO;
-import pisibg.model.dto.OrderRequestDTO;
-import pisibg.model.dto.OrderResponseDTO;
-import pisibg.model.dto.ProductOrderResponseDTO;
+import pisibg.model.dto.orderDTO.OrderRequestDTO;
+import pisibg.model.dto.orderDTO.OrderResponseDTO;
+import pisibg.model.dto.productDTO.ProductOrderResponseDTO;
 import pisibg.model.pojo.*;
 import pisibg.model.repository.*;
 import pisibg.utility.Constants;
 import pisibg.utility.RoundFloat;
 import pisibg.utility.Validator;
 
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -64,8 +59,8 @@ public class OrderService {
                 order.setAddress(address);
                 order.setCreatedAt(LocalDateTime.now());
                 order.setGrossValue(calculateGrossPrice(cart));
-                order.setDiscount(calculateDiscountPrice(cart,user));
-                order.setNetValue(order.getGrossValue()-order.getDiscount());
+                order.setDiscount(calculateDiscountPrice(cart, user));
+                order.setNetValue(order.getGrossValue() - order.getDiscount());
                 Payment payment = addPayment(order, user.getId());
                 order.setPaid(true);
                 updateTurnoverAndPersonalDiscountPercent(order.getNetValue(), user.getId());
@@ -99,7 +94,7 @@ public class OrderService {
             if (quantity > 0) {
                 Product product = productRepository.findById(products.getValue().peek().getId());
                 double productPrice = product.getPrice();
-                price += RoundFloat.round(quantity * productPrice,Constants.TWO_DECIMAL_PLACES);
+                price += RoundFloat.round(quantity * productPrice, Constants.TWO_DECIMAL_PLACES);
             }
         }
         return price;
@@ -108,21 +103,20 @@ public class OrderService {
     private double calculateDiscountPrice(Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) {
         double priceWithoutDiscount = 0;
         double discountAmount = 0;
-        for(Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products: cart.entrySet()){
+        for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {
             int quantity = products.getValue().size();
-            if(quantity>0){
+            if (quantity > 0) {
                 Product product = productRepository.findById(products.getValue().peek().getId());
                 double productPrice = product.getPrice();
                 Discount discount = product.getDiscount();
                 int discountPercent = 0;
-                if(discount == null){
+                if (discount == null) {
                     discountPercent = user.getPersonalDiscount();
-                }
-                else {
+                } else {
                     discountPercent = discountRepository.findById(discount.getId()).getPercent();
                 }
-                priceWithoutDiscount+= RoundFloat.round((productPrice*quantity), Constants.TWO_DECIMAL_PLACES);
-                discountAmount+=RoundFloat.round(productPrice*quantity*(discountPercent*1.0/100),Constants.TWO_DECIMAL_PLACES);
+                priceWithoutDiscount += RoundFloat.round((productPrice * quantity), Constants.TWO_DECIMAL_PLACES);
+                discountAmount += RoundFloat.round(productPrice * quantity * (discountPercent * 1.0 / 100), Constants.TWO_DECIMAL_PLACES);
             }
         }
         return discountAmount;

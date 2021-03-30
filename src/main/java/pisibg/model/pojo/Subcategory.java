@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pisibg.model.dto.SubCategoryRequestDTO;
+import pisibg.model.dto.subcategoryDTO.SubCategoryRequestDTO;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
-@Table(name="subcategories")
+@Table(name = "subcategories")
 public class Subcategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class Subcategory {
     @JsonManagedReference
     private Set<Product> products;
 
-    public Subcategory(SubCategoryRequestDTO subCategoryRequestDTO){
+    public Subcategory(SubCategoryRequestDTO subCategoryRequestDTO) {
         name = subCategoryRequestDTO.getName();
     }
 
