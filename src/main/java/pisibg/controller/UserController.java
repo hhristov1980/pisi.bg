@@ -2,6 +2,8 @@ package pisibg.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.DeniedPermissionException;
@@ -13,7 +15,11 @@ import pisibg.service.UserService;
 import pisibg.utility.EmailServiceImpl;
 
 import javax.servlet.http.HttpSession;
+import java.net.http.HttpHeaders;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 public class UserController extends AbstractController {
@@ -117,8 +123,78 @@ public class UserController extends AbstractController {
             }
             int admin_id = user.getId();
             try {
-                ses.invalidate();
                return userService.deleteUser(admin_id, user_id);
+            } catch (SQLException throwables) {
+                throw new MySQLException("Something get wrong!");
+            }
+        }
+    }
+
+    @PostMapping("/admin/users")
+    public List<UserRegisterResponseDTO> getAllUsers(@RequestBody UserReportRequestDTO dto, HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if(!user.isAdmin()){
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            try {
+                return userService.getAllUsers(dto);
+            } catch (SQLException throwables) {
+                throw new MySQLException("Something get wrong!");
+            }
+        }
+    }
+
+
+    @PostMapping("/admin/daily")
+    public List<OrderReportDTO> getDailyOrders(@RequestBody OrderDailyReportRequestDTO dto, HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if(!user.isAdmin()){
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            try {
+                LocalDateTime from = dto.getFromDate();
+                LocalDateTime to = dto.getToDate();
+                return userService.getDailyOrders(from,to, dto);
+            } catch (SQLException throwables) {
+                throw new MySQLException("Something get wrong!");
+            }
+        }
+    }
+
+    @PostMapping("/admin/monthly")
+    public List<OrderReportDTO> getMonthlyOrders(@RequestBody OrderMonthlyReportRequestDTO dto, HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if(!user.isAdmin()){
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            try {
+                return userService.getMonhlyOrders(dto);
+            } catch (SQLException throwables) {
+                throw new MySQLException("Something get wrong!");
+            }
+        }
+    }
+
+    @PostMapping("/admin/yearly")
+    public List<OrderReportDTO> getYearlyOrders(@RequestBody OrderYearlyReportRequestDTO dto, HttpSession ses){
+        if (sessionManager.getLoggedUser(ses) == null) {
+            throw new AuthenticationException("You have to be logged in!");
+        } else {
+            User user = sessionManager.getLoggedUser(ses);
+            if(!user.isAdmin()){
+                throw new DeniedPermissionException("You dont have permission for that!");
+            }
+            try {
+                return userService.getYearlyOrders(dto);
             } catch (SQLException throwables) {
                 throw new MySQLException("Something get wrong!");
             }
