@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Queue;
 
 @RestController
-public class OrderController {
+public class OrderController extends AbstractController{
     @Autowired
     private SessionManager sessionManager;
     @Autowired

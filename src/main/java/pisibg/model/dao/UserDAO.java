@@ -12,6 +12,7 @@ import pisibg.model.dto.orderDTO.OrderYearlyReportRequestDTO;
 import pisibg.model.dto.userDTO.UserEditResponseDTO;
 import pisibg.model.dto.userDTO.UserRegisterResponseDTO;
 import pisibg.model.dto.userDTO.UserReportRequestDTO;
+import pisibg.model.pojo.Order;
 import pisibg.model.pojo.OrderStatus;
 import pisibg.model.pojo.PaymentMethod;
 import pisibg.model.pojo.User;
@@ -29,15 +30,13 @@ import java.util.List;
 public class UserDAO extends AbstractDAO {
 
     @Autowired
-    protected JdbcTemplate jdbcTemplate;
-    @Autowired
     private UserRepository userRepository;
     @Autowired
     private OrderStatusRepository orderStatusRepository;
     @Autowired
     private PaymentMethodRepository methodRepository;
 
-    public UserEditResponseDTO deleteUser(int id) throws SQLException {
+    public User deleteUser(int id) throws SQLException {
         String sql = "UPDATE users SET email='deleted', password='deleted', first_name='deleted', last_name='deleted'," +
                 " phone_number='deleted',address='deleted' , is_subscribed='0',deleted_at = ? WHERE id = ?;";
         String select = "SELECT id, email, first_name,last_name,phone_number,town_name,address,is_subscribed WHERE id= ?";
@@ -61,11 +60,11 @@ public class UserDAO extends AbstractDAO {
                 user.setAddress(resultSet.getString(10));
                 user.setSubscribed(resultSet.getBoolean(13));
             }
-            return new UserEditResponseDTO(user);
+            return user;
         }
     }
 
-    public List<OrderReportDTO> monthlyOrders(OrderMonthlyReportRequestDTO dto) throws SQLException {
+    public List<Order> monthlyOrders(OrderMonthlyReportRequestDTO dto) throws SQLException {
         String sql = "SELECT * FROM orders WHERE MONTH(created_at)=? LIMIT ? OFFSET ?;";
         try (Connection con = jdbcTemplate.getDataSource().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -82,16 +81,13 @@ public class UserDAO extends AbstractDAO {
             ps.setInt(2, productsPerPage);
             ps.setInt(3, offset);
             ResultSet resultSet = ps.executeQuery();
-            List<OrderReportDTO> orders = new ArrayList<>();
+            List<Order> orders = new ArrayList<>();
             while (resultSet.next()) {
-                OrderReportDTO order = new OrderReportDTO();
+                Order order = new Order();
                 order.setId(resultSet.getInt(1));
-                User u = userRepository.getOne(resultSet.getInt(2));
-                OrderStatus status = orderStatusRepository.getOne(resultSet.getInt(3));
-                PaymentMethod method = methodRepository.getOne(resultSet.getInt(4));
-                order.setUserNames(u.getFirstName() + " " + u.getLastName());
-                order.setOrderStatus(status.getType());
-                order.setPaymentMethodType(method.getType());
+                order.setUser(userRepository.getOne(resultSet.getInt(2)));
+                order.setOrderStatus(orderStatusRepository.getOne(resultSet.getInt(3)));
+                order.setPaymentMethod(methodRepository.getOne(resultSet.getInt(4)));
                 order.setAddress(resultSet.getString(5));
                 order.setCreatedAt(resultSet.getTimestamp(6).toLocalDateTime());
                 order.setGrossValue(resultSet.getInt(7));
@@ -104,7 +100,7 @@ public class UserDAO extends AbstractDAO {
         }
     }
 
-    public List<OrderReportDTO> yearlyOrders(OrderYearlyReportRequestDTO dto) throws SQLException {
+    public List<Order> yearlyOrders(OrderYearlyReportRequestDTO dto) throws SQLException {
         String sql = "SELECT * FROM orders WHERE YEAR(created_at)=? LIMIT ? OFFSET ?;";
         try (Connection con = jdbcTemplate.getDataSource().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -121,16 +117,13 @@ public class UserDAO extends AbstractDAO {
             ps.setInt(2, productsPerPage);
             ps.setInt(3, offset);
             ResultSet resultSet = ps.executeQuery();
-            List<OrderReportDTO> orders = new ArrayList<>();
+            List<Order> orders = new ArrayList<>();
             while (resultSet.next()) {
-                OrderReportDTO order = new OrderReportDTO();
+                Order order = new Order();
                 order.setId(resultSet.getInt(1));
-                User u = userRepository.getOne(resultSet.getInt(2));
-                OrderStatus status = orderStatusRepository.getOne(resultSet.getInt(3));
-                PaymentMethod method = methodRepository.getOne(resultSet.getInt(4));
-                order.setUserNames(u.getFirstName() + " " + u.getLastName());
-                order.setOrderStatus(status.getType());
-                order.setPaymentMethodType(method.getType());
+                order.setUser(userRepository.getOne(resultSet.getInt(2)));
+                order.setOrderStatus(orderStatusRepository.getOne(resultSet.getInt(3)));
+                order.setPaymentMethod(methodRepository.getOne(resultSet.getInt(4)));
                 order.setAddress(resultSet.getString(5));
                 order.setCreatedAt(resultSet.getTimestamp(6).toLocalDateTime());
                 order.setGrossValue(resultSet.getInt(7));
@@ -143,7 +136,7 @@ public class UserDAO extends AbstractDAO {
         }
     }
 
-    public List<UserRegisterResponseDTO> getAllUsers(UserReportRequestDTO dto) throws SQLException {
+    public List<User> getAllUsers(UserReportRequestDTO dto) throws SQLException {
         String sql = "SELECT id,email,first_name,last_name,phone_number,turnover," +
                 "personal_discount,town_name,address,created_at,is_subscribed,is_admin" +
                 " FROM users LIMIT ? OFFSET ?";
@@ -161,9 +154,9 @@ public class UserDAO extends AbstractDAO {
             ps.setInt(1, productsPerPage);
             ps.setInt(2, offset);
             ResultSet resultSet = ps.executeQuery();
-            List<UserRegisterResponseDTO> users = new ArrayList<>();
+            List<User> users = new ArrayList<>();
             while (resultSet.next()) {
-                UserRegisterResponseDTO user = new UserRegisterResponseDTO();
+                User user = new User();
                 user.setId(resultSet.getInt(1));
                 user.setEmail(resultSet.getString(2));
                 user.setFirstName(resultSet.getString(3));
@@ -182,7 +175,7 @@ public class UserDAO extends AbstractDAO {
         }
     }
 
-    public List<OrderReportDTO> dailyOrders(LocalDateTime from, LocalDateTime to, OrderDailyReportRequestDTO dto) throws SQLException {
+    public List<Order> dailyOrders(LocalDateTime from, LocalDateTime to, OrderDailyReportRequestDTO dto) throws SQLException {
         String sql = "SELECT * FROM orders WHERE created_at BETWEEN ? AND ? LIMIT ? OFFSET ?;";
         try (Connection con = jdbcTemplate.getDataSource().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -202,16 +195,13 @@ public class UserDAO extends AbstractDAO {
             ps.setInt(3, productsPerPage);
             ps.setInt(4, offset);
             ResultSet resultSet = ps.executeQuery();
-            List<OrderReportDTO> orders = new ArrayList<>();
+            List<Order> orders = new ArrayList<>();
             while (resultSet.next()) {
-                OrderReportDTO order = new OrderReportDTO();
+                Order order = new Order();
                 order.setId(resultSet.getInt(1));
-                User u = userRepository.getOne(resultSet.getInt(2));
-                OrderStatus status = orderStatusRepository.getOne(resultSet.getInt(3));
-                PaymentMethod method = methodRepository.getOne(resultSet.getInt(4));
-                order.setUserNames(u.getFirstName() + " " + u.getLastName());
-                order.setOrderStatus(status.getType());
-                order.setPaymentMethodType(method.getType());
+                order.setUser(userRepository.getOne(resultSet.getInt(2)));
+                order.setOrderStatus(orderStatusRepository.getOne(resultSet.getInt(3)));
+                order.setPaymentMethod(methodRepository.getOne(resultSet.getInt(4)));
                 order.setAddress(resultSet.getString(5));
                 order.setCreatedAt(resultSet.getTimestamp(6).toLocalDateTime());
                 order.setGrossValue(resultSet.getInt(7));

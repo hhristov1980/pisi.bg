@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 
 @Getter
 @Component
-public class SessionManager {
+public class SessionManager extends AbstractController{
 
     private static final String LOGGED_USER_ID = "LOGGED_USER_ID";
     private static final int MAX_INACTIVE_INTERVAL = 10 * 60;

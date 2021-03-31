@@ -24,9 +24,7 @@ import java.util.List;
 
 @Getter
 @Component
-public class ProductDAO {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+public class ProductDAO extends AbstractDAO{
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired

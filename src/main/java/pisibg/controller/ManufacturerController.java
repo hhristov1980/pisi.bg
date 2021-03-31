@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
-public class ManufacturerController {
+public class ManufacturerController extends AbstractController{
     @Autowired
     private ManufacturerService manufacturerService;
     @Autowired

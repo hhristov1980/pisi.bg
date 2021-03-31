@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
-public class PaymentMethodController {
+public class PaymentMethodController extends AbstractController {
     @Autowired
     private SessionManager sessionManager;
 

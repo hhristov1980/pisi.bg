@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
+import pisibg.model.pojo.Order;
 
 import java.time.LocalDateTime;
 
@@ -28,4 +29,7 @@ public class OrderDailyReportRequestDTO {
     private LocalDateTime toDate;
     int page;
     int ordersPerPage;
+    OrderDailyReportRequestDTO(Order order){
+
+    }
 }

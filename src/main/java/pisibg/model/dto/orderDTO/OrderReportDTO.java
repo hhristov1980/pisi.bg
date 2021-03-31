@@ -31,7 +31,7 @@ public class OrderReportDTO {
     @JsonProperty(value = "isPaid")
     private boolean isPaid;
 
-    public OrderReportDTO(Order order, Map<Integer, Queue<ProductOrderResponseDTO>> cart){
+    public OrderReportDTO(Order order){
         id =  order.getId();
         userNames = order.getUser().getFirstName()+" "+order.getUser().getLastName();
         address = order.getAddress();

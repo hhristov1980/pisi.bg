@@ -18,6 +18,7 @@ import pisibg.model.repository.UserRepository;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,21 +36,40 @@ public class UserService {
     private static final String PASSWORD_REGEX = "^(?!.*[\\s])(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$";
 
 
-
     public List<UserRegisterResponseDTO> getAllUsers(UserReportRequestDTO dto) throws SQLException {
-        return userDAO.getAllUsers(dto);
+        List<User> users = userDAO.getAllUsers(dto);
+        List<UserRegisterResponseDTO> usersDto = new ArrayList<>();
+        for (User u : users) {
+            usersDto.add(new UserRegisterResponseDTO(u));
+        }
+        return usersDto;
     }
 
     public List<OrderReportDTO> getDailyOrders(LocalDateTime from, LocalDateTime to, OrderDailyReportRequestDTO dto) throws SQLException {
-        return userDAO.dailyOrders(from, to, dto);
+        List<Order> orders = userDAO.dailyOrders(from, to, dto);
+        List<OrderReportDTO> usersDto = new ArrayList<>();
+        for (Order o : orders) {
+            usersDto.add(new OrderReportDTO(o));
+        }
+        return usersDto;
     }
 
     public List<OrderReportDTO> getMonhlyOrders(OrderMonthlyReportRequestDTO dto) throws SQLException {
-        return userDAO.monthlyOrders(dto);
+        List<Order> orders = userDAO.monthlyOrders(dto);
+        List<OrderReportDTO> usersDto = new ArrayList<>();
+        for (Order o : orders) {
+            usersDto.add(new OrderReportDTO(o));
+        }
+        return usersDto;
     }
 
     public List<OrderReportDTO> getYearlyOrders(OrderYearlyReportRequestDTO dto) throws SQLException {
-        return userDAO.yearlyOrders(dto);
+        List<Order> orders = userDAO.yearlyOrders(dto);
+        List<OrderReportDTO> usersDto = new ArrayList<>();
+        for (Order o : orders) {
+            usersDto.add(new OrderReportDTO(o));
+        }
+        return usersDto;
     }
 
     public UserRegisterResponseDTO addUser(UserRegisterRequestDTO userDTO) {
@@ -103,19 +123,27 @@ public class UserService {
         }
     }
 
-    public void softDelete(int id) throws SQLException {
+    public UserEditResponseDTO softDelete(int id) throws SQLException {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             User u = user.get();
             if (!u.isAdmin()) {
-                userDAO.deleteUser(id);
+
+                return new UserEditResponseDTO(userDAO.deleteUser(id));
             } else {
                 if (userDAO.countAdmin() > 1) {
-                    userDAO.deleteUser(id);
+                    return new UserEditResponseDTO(userDAO.deleteUser(id));
+                }
+                else {
+                    throw new DeniedPermissionException("You can't delete last one admin");
                 }
             }
         }
+        else {
+            throw new NotFoundException("User not found!");
+        }
     }
+
 
    /* public UserWithoutPassDTO subscribe(int id) {
         Optional<User> u = userRepository.findById(id);
@@ -238,7 +266,7 @@ public class UserService {
             User admin = a.get();
             User user = u.get();
             if (admin.isAdmin()) {
-                return userDAO.deleteUser(user_id);
+                return new UserEditResponseDTO(userDAO.deleteUser(user_id));
             } else {
                 throw new DeniedPermissionException("You don't have permission for that!");
             }

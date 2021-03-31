@@ -19,7 +19,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 
 @RestController
-public class ImageController {
+public class ImageController extends AbstractController{
 
     @Value("${file.path}")
     private String filePath;

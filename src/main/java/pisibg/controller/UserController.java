@@ -211,7 +211,7 @@ public class UserController extends AbstractController {
     }
 
     @DeleteMapping("/users/{id}")
-    public void softDelete(@PathVariable int id, HttpSession ses) {
+    public UserEditResponseDTO softDelete(@PathVariable int id, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -220,10 +220,9 @@ public class UserController extends AbstractController {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             try {
-                userService.softDelete(id);
-                ses.invalidate();
+                return userService.softDelete(id);
             } catch (SQLException throwables) {
-                System.out.println(throwables.getMessage());
+                throw new MySQLException("Something get wrong!");
             }
         }
     }
