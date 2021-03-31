@@ -4,13 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.NotFoundException;
+import pisibg.model.dao.ProductDAO;
 import pisibg.model.dto.productDTO.*;
 import pisibg.model.pojo.*;
 import pisibg.model.repository.DiscountRepository;
 import pisibg.model.repository.ManufacturerRepository;
 import pisibg.model.repository.ProductRepository;
 import pisibg.model.repository.SubCategoryRepository;
+import pisibg.utility.Constants;
 import pisibg.utility.Validator;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProductService {
@@ -22,6 +28,8 @@ public class ProductService {
     DiscountRepository discountRepository;
     @Autowired
     ManufacturerRepository manufacturerRepository;
+    @Autowired
+    private ProductDAO productDAO;
 
     public ProductResponseDTO add(ProductRequestDTO productRequestDTO) {
 
@@ -138,7 +146,7 @@ public class ProductService {
         Product product = productRepository.findById(productDeleteRequestDTO.getId());
         ProductDeleteResponseDTO productDeleteResponseDTO = new ProductDeleteResponseDTO();
         productDeleteResponseDTO.setId(product.getId());
-        productDeleteResponseDTO.setDescription("Deleted");
+        productDeleteResponseDTO.setDescription(Constants.DELETE);
         product.setQuantity(0);
         product.setPrice(0);
         product.setDiscount(null);
@@ -162,15 +170,51 @@ public class ProductService {
 //            return productResponseDTOList;
 //        }
 //    }
+    public ProductResponseDTO getByIdAdmin(int productId) {
+        Product product = productRepository.findById(productId);
+        if (product == null) {
+            throw new NotFoundException("Product not found!");
+        } else {
+            return new ProductResponseDTO(product);
+        }
+    }
+
     public ProductResponseDTO getById(int productId) {
         Product product = productRepository.findById(productId);
         if (product == null) {
-            throw new NotFoundException("Product not found");
+            throw new NotFoundException("Product not found!");
         } else {
             ProductResponseDTO productResponseDTO = new ProductResponseDTO(product);
-            return productResponseDTO;
+            productResponseDTO.setQuantity(null);
+            return new ProductResponseDTO(product);
         }
     }
+
+    public List<ProductResponseDTO> getFilterAndSearchProducts(ProductFilterRequestDTO productFilterRequestDTO) throws SQLException {
+        List<Product> products = productDAO.getFilterSearchProducts(productFilterRequestDTO);
+        List<ProductResponseDTO> productResponseDTOList = new ArrayList<>();
+        for(Product p: products){
+            ProductResponseDTO productResponseDTO = new ProductResponseDTO(p);
+            productResponseDTO.setQuantity(null);
+            if(!productResponseDTO.getDescription().equals(Constants.DELETE)) {
+                productResponseDTOList.add(productResponseDTO);
+            }
+        }
+            return productResponseDTOList;
+    }
+
+    public List<ProductResponseDTO> getFilterAndSearchProductsAdmin(ProductFilterRequestDTO productFilterRequestDTO) throws SQLException {
+        List<Product> products = productDAO.getFilterSearchProducts(productFilterRequestDTO);
+        List<ProductResponseDTO> productResponseDTOList = new ArrayList<>();
+        for(Product p: products){
+            ProductResponseDTO productResponseDTO = new ProductResponseDTO(p);
+            if(!productResponseDTO.getDescription().equals(Constants.DELETE)) {
+                productResponseDTOList.add(productResponseDTO);
+            }
+        }
+        return productResponseDTOList;
+    }
+
 
 
     private boolean isValidSubcategory(ProductRequestDTO productRequestDTO) {
