@@ -25,8 +25,7 @@ public class ProductController extends AbstractController {
     private ProductService productService;
     @Autowired
     private SessionManager sessionManager;
-    @Autowired
-    private ProductDAO productDAO;
+
 
 
     @PostMapping("/products")
@@ -69,15 +68,11 @@ public class ProductController extends AbstractController {
 
     }
 
-//    @GetMapping("/products")
-//    public List<ProductResponseDTO> getAll() {
-//        return productService.getAll();
-//    }
-
     @GetMapping("/products/{id}")
     public ProductResponseDTO getById(@PathVariable(name = "id") int productId) {
         return productService.getById(productId);
     }
+<<<<<<< HEAD
 
     @PostMapping("/products/filter")
     public List<ProductFilterResponseDTO> getAll(@RequestBody ProductFilterRequestDTO productFilterRequestDTO) {
@@ -91,33 +86,47 @@ public class ProductController extends AbstractController {
 
     @PostMapping("/products/filter/admin")
     public List<ProductAdminFilterResponseDTO> getAll(HttpSession ses,@RequestBody ProductAdminFilterRequestDTO productAdminFilterRequestDTO) {
+=======
+    @GetMapping("/products/{id}/admin")
+    public ProductResponseDTO getById(@PathVariable(name = "id") int productId, HttpSession ses) {
+>>>>>>> 70c99cf5b32df66de0e173b9cc1e346480b167dc
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
+
         User user = sessionManager.getLoggedUser(ses);
         if (!user.isAdmin()) {
             throw new DeniedPermissionException("You don't have permission for that!");
         }
+<<<<<<< HEAD
         try {
             return productDAO.getAdminInfoProducts(productAdminFilterRequestDTO);
         } catch (SQLException throwables) {
             log.log(Level.ALL,throwables.getMessage());
             throw new MySQLException("Something get wrong!");
         }
+=======
+        return productService.getById(productId);
+>>>>>>> 70c99cf5b32df66de0e173b9cc1e346480b167dc
     }
 
-    @PostMapping("/products/search")
-    public List<ProductFilterResponseDTO> searchProduct(@RequestBody ProductSearchRequestDTO productSearchRequestDTO) {
+    @PostMapping("/products/filter")
+    public List<ProductResponseDTO> getAll(@RequestBody ProductFilterRequestDTO productFilterRequestDTO) {
         try {
-            return productDAO.searchProducts(productSearchRequestDTO);
+            return productService.getFilterAndSearchProducts(productFilterRequestDTO);
         } catch (SQLException throwables) {
             log.log(Level.ALL,throwables.getMessage());
             throw new MySQLException("Something get wrong!");
         }
     }
 
+<<<<<<< HEAD
     @PostMapping("/products/search/admin")
     public List<ProductAdminFilterResponseDTO> searchAdminProducts(HttpSession ses,@RequestBody ProductSearchRequestDTO productSearchRequestDTO) {
+=======
+    @PostMapping("/products/filter/admin")
+    public List<ProductResponseDTO> getAllAdmin(HttpSession ses, @RequestBody ProductFilterRequestDTO productFilterRequestDTO) {
+>>>>>>> 70c99cf5b32df66de0e173b9cc1e346480b167dc
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -126,11 +135,10 @@ public class ProductController extends AbstractController {
             throw new DeniedPermissionException("You don't have permission for that!");
         }
         try {
-            return productDAO.searchAdminProducts(productSearchRequestDTO);
+            return productService.getFilterAndSearchProductsAdmin(productFilterRequestDTO);
         } catch (SQLException throwables) {
             log.log(Level.ALL,throwables.getMessage());
             throw new MySQLException("Something get wrong!");
         }
     }
-
 }
