@@ -11,6 +11,7 @@ import pisibg.model.pojo.User;
 import pisibg.service.SubCategoryService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class SubCategoryController extends AbstractController {
     private SessionManager sessionManager;
 
     @PostMapping("subcategories")
-    public SubcategoryResponseDTO addNewSubcategory(HttpSession ses, @RequestBody SubCategoryRequestDTO subCategoryRequestDTO) {
+    public SubcategoryResponseDTO addNewSubcategory(HttpSession ses,@Valid @RequestBody SubCategoryRequestDTO subCategoryRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -36,7 +37,7 @@ public class SubCategoryController extends AbstractController {
     }
 
     @PutMapping("subcategories")
-    public SubcategoryResponseDTO edit(HttpSession ses, @RequestBody SubCategoryEditRequestDTO subCategoryEditRequestDTO) {
+    public SubcategoryResponseDTO edit(HttpSession ses,@Valid @RequestBody SubCategoryEditRequestDTO subCategoryEditRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {

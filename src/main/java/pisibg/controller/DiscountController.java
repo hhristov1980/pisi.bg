@@ -13,6 +13,7 @@ import pisibg.service.DiscountService;
 import pisibg.utility.EmailServiceImpl;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class DiscountController extends AbstractController {
 
 
     @PostMapping("/discounts")
-    public DiscountResponseDTO add(HttpSession ses, @RequestBody DiscountRequestDTO discountRequestDTO) {
+    public DiscountResponseDTO add(HttpSession ses,@Valid @RequestBody DiscountRequestDTO discountRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -43,7 +44,7 @@ public class DiscountController extends AbstractController {
     }
 
     @PutMapping("/discounts")
-    public DiscountResponseDTO edit(HttpSession ses, @RequestBody DiscountEditRequestDTO discountEditRequestDTO) {
+    public DiscountResponseDTO edit(HttpSession ses,@Valid @RequestBody DiscountEditRequestDTO discountEditRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {

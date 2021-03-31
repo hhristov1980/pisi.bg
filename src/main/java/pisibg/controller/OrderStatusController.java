@@ -11,6 +11,7 @@ import pisibg.model.pojo.User;
 import pisibg.service.OrderStatusService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,7 +24,7 @@ public class OrderStatusController extends AbstractController {
 
 
     @PostMapping("/users/orderstatus")
-    public OrderStatusResponseDTO add(HttpSession ses, @RequestBody OrderStatusRequestDTO statusDTO) {
+    public OrderStatusResponseDTO add(HttpSession ses,@Valid @RequestBody OrderStatusRequestDTO statusDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {

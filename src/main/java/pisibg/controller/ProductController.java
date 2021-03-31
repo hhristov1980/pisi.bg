@@ -12,12 +12,15 @@ import pisibg.model.pojo.User;
 import pisibg.service.ProductService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 public class ProductController extends AbstractController {
-
+    static Logger log = Logger.getLogger(ProductController.class.getName());
     @Autowired
     private ProductService productService;
     @Autowired
@@ -27,7 +30,7 @@ public class ProductController extends AbstractController {
 
 
     @PostMapping("/products")
-    public ProductResponseDTO add(HttpSession ses, @RequestBody ProductRequestDTO productRequestDTO) {
+    public ProductResponseDTO add(HttpSession ses,@Valid @RequestBody ProductRequestDTO productRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -39,7 +42,7 @@ public class ProductController extends AbstractController {
     }
 
     @PutMapping("/products")
-    public ProductResponseDTO changeQuantity(HttpSession ses, @RequestBody ProductEditRequestDTO productEditRequestDTO) {
+    public ProductResponseDTO changeQuantity(HttpSession ses,@Valid @RequestBody ProductEditRequestDTO productEditRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -53,7 +56,7 @@ public class ProductController extends AbstractController {
     }
 
     @DeleteMapping("/products")
-    public ProductDeleteResponseDTO deleteProduct(HttpSession ses, @RequestBody ProductDeleteRequestDTO productDeleteRequestDTO) {
+    public ProductDeleteResponseDTO deleteProduct(HttpSession ses,@Valid @RequestBody ProductDeleteRequestDTO productDeleteRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -81,12 +84,13 @@ public class ProductController extends AbstractController {
         try {
             return productDAO.getProducts(productFilterRequestDTO);
         } catch (SQLException throwables) {
+            log.log(Level.ALL,throwables.getMessage());
             throw new MySQLException("Something get wrong!");
         }
     }
 
     @PostMapping("/products/filter/admin")
-    public List<ProductAdminFilterResponseDTO> getAll(HttpSession ses, @RequestBody ProductAdminFilterRequestDTO productAdminFilterRequestDTO) {
+    public List<ProductAdminFilterResponseDTO> getAll(HttpSession ses,@RequestBody ProductAdminFilterRequestDTO productAdminFilterRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -97,6 +101,7 @@ public class ProductController extends AbstractController {
         try {
             return productDAO.getAdminInfoProducts(productAdminFilterRequestDTO);
         } catch (SQLException throwables) {
+            log.log(Level.ALL,throwables.getMessage());
             throw new MySQLException("Something get wrong!");
         }
     }
@@ -106,12 +111,13 @@ public class ProductController extends AbstractController {
         try {
             return productDAO.searchProducts(productSearchRequestDTO);
         } catch (SQLException throwables) {
+            log.log(Level.ALL,throwables.getMessage());
             throw new MySQLException("Something get wrong!");
         }
     }
 
     @PostMapping("/products/search/admin")
-    public List<ProductAdminFilterResponseDTO> searchAdminProducts(HttpSession ses, @RequestBody ProductSearchRequestDTO productSearchRequestDTO) {
+    public List<ProductAdminFilterResponseDTO> searchAdminProducts(HttpSession ses,@RequestBody ProductSearchRequestDTO productSearchRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -122,6 +128,7 @@ public class ProductController extends AbstractController {
         try {
             return productDAO.searchAdminProducts(productSearchRequestDTO);
         } catch (SQLException throwables) {
+            log.log(Level.ALL,throwables.getMessage());
             throw new MySQLException("Something get wrong!");
         }
     }

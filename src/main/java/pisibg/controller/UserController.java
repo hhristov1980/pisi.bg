@@ -1,7 +1,9 @@
+
 package pisibg.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNullFields;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.DeniedPermissionException;
@@ -13,12 +15,17 @@ import pisibg.model.pojo.User;
 import pisibg.service.UserService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 public class UserController extends AbstractController {
+    static Logger log = Logger.getLogger(ProductController.class.getName());
+
     @Autowired
     private UserService userService;
 
@@ -27,12 +34,12 @@ public class UserController extends AbstractController {
 
 
     @PostMapping("/users")
-    public UserRegisterResponseDTO register(@RequestBody UserRegisterRequestDTO userDTO) {
+    public UserRegisterResponseDTO register(@Valid @RequestBody UserRegisterRequestDTO userDTO) {
         return userService.addUser(userDTO);
     }
 
     @PutMapping("/users")
-    public UserWithoutPassDTO login(@RequestBody UserLoginDTO dto, HttpSession ses) {
+    public UserWithoutPassDTO login(@Valid @RequestBody UserLoginDTO dto, HttpSession ses) {
         UserWithoutPassDTO responseDto = userService.login(dto);
         sessionManager.loginUser(ses, responseDto.getId());
         return responseDto;
@@ -45,7 +52,7 @@ public class UserController extends AbstractController {
 
 
     @PutMapping("/users/edit")
-    public UserEditResponseDTO editUser(@RequestBody UserEditRequestDTO userDto, HttpSession ses) {
+    public UserEditResponseDTO editUser(@Valid @RequestBody UserEditRequestDTO userDto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -56,7 +63,7 @@ public class UserController extends AbstractController {
     }
 
     @PostMapping("/users/edit")
-    public String editPasswordUser(@RequestBody UserEditPasswordDTO userDto, HttpSession ses) {
+    public String editPasswordUser(@Valid @RequestBody UserEditPasswordDTO userDto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -107,13 +114,14 @@ public class UserController extends AbstractController {
             try {
                 return userService.deleteUser(admin_id, user_id);
             } catch (SQLException throwables) {
+                log.log(Level.ALL,throwables.getMessage());
                 throw new MySQLException("Something get wrong!");
             }
         }
     }
 
     @PostMapping("/admin/users")
-    public List<UserRegisterResponseDTO> getAllUsers(@RequestBody UserReportRequestDTO dto, HttpSession ses) {
+    public List<UserRegisterResponseDTO> getAllUsers(@Valid @RequestBody UserReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -124,6 +132,7 @@ public class UserController extends AbstractController {
             try {
                 return userService.getAllUsers(dto);
             } catch (SQLException throwables) {
+                log.log(Level.ALL,throwables.getMessage());
                 throw new MySQLException("Something get wrong!");
             }
         }
@@ -131,7 +140,7 @@ public class UserController extends AbstractController {
 
 
     @PostMapping("/admin/daily")
-    public List<OrderReportDTO> getDailyOrders(@RequestBody OrderDailyReportRequestDTO dto, HttpSession ses) {
+    public List<OrderReportDTO> getDailyOrders(@Valid @RequestBody OrderDailyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -144,13 +153,14 @@ public class UserController extends AbstractController {
                 LocalDateTime to = dto.getToDate();
                 return userService.getDailyOrders(from, to, dto);
             } catch (SQLException throwables) {
+                log.log(Level.ALL,throwables.getMessage());
                 throw new MySQLException("Something get wrong!");
             }
         }
     }
 
     @PostMapping("/admin/monthly")
-    public List<OrderReportDTO> getMonthlyOrders(@RequestBody OrderMonthlyReportRequestDTO dto, HttpSession ses) {
+    public List<OrderReportDTO> getMonthlyOrders(@Valid @RequestBody OrderMonthlyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -161,13 +171,14 @@ public class UserController extends AbstractController {
             try {
                 return userService.getMonhlyOrders(dto);
             } catch (SQLException throwables) {
+                log.log(Level.ALL,throwables.getMessage());
                 throw new MySQLException("Something get wrong!");
             }
         }
     }
 
     @PostMapping("/admin/yearly")
-    public List<OrderReportDTO> getYearlyOrders(@RequestBody OrderYearlyReportRequestDTO dto, HttpSession ses) {
+    public List<OrderReportDTO> getYearlyOrders(@Valid @RequestBody OrderYearlyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -178,13 +189,14 @@ public class UserController extends AbstractController {
             try {
                 return userService.getYearlyOrders(dto);
             } catch (SQLException throwables) {
+                log.log(Level.ALL,throwables.getMessage());
                 throw new MySQLException("Something get wrong!");
             }
         }
     }
 
     @PutMapping("/users/order/{order_id}")
-    public OrderEditResponseDTO editOrder(@PathVariable int order_id, @RequestBody OrderEditRequestDTO orderDto, HttpSession ses) {
+    public OrderEditResponseDTO editOrder(@PathVariable int order_id,@Valid @RequestBody OrderEditRequestDTO orderDto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -222,6 +234,7 @@ public class UserController extends AbstractController {
             try {
                 return userService.softDelete(id);
             } catch (SQLException throwables) {
+                log.log(Level.ALL,throwables.getMessage());
                 throw new MySQLException("Something get wrong!");
             }
         }

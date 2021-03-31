@@ -12,6 +12,7 @@ import pisibg.model.repository.UserRepository;
 import pisibg.service.CategoryService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -26,7 +27,7 @@ public class CategoryController extends AbstractController {
     private SessionManager sessionManager;
 
     @PostMapping("/categories")
-    public CategoryResponseDTO add(HttpSession ses, @RequestBody CategoryRequestDTO categoryRequestDTO) {
+    public CategoryResponseDTO add(HttpSession ses,@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -40,7 +41,7 @@ public class CategoryController extends AbstractController {
 
 
     @PutMapping("/categories")
-    public CategoryResponseDTO edit(HttpSession ses, @RequestBody CategoryEditRequestDTO categoryEditRequestDTO) {
+    public CategoryResponseDTO edit(HttpSession ses,@Valid @RequestBody CategoryEditRequestDTO categoryEditRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {

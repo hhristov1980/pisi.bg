@@ -17,10 +17,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 public class ImageController extends AbstractController{
 
+    static Logger log = Logger.getLogger(ImageController.class.getName());
     @Value("${file.path}")
     private String filePath;
     @Autowired
@@ -42,7 +45,7 @@ public class ImageController extends AbstractController{
             try {
                 return imageService.upload(file, productId);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.log(Level.ALL,e.getMessage());
             }
         }
         return null;

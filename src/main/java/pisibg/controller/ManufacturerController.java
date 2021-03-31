@@ -11,6 +11,7 @@ import pisibg.model.pojo.User;
 import pisibg.service.ManufacturerService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class ManufacturerController extends AbstractController{
 
 
     @PostMapping("/manufacturers")
-    public ManufacturerResponseDTO add(@RequestBody ManufacturerRequestDTO manufacturerRequestDTO, HttpSession ses) {
+    public ManufacturerResponseDTO add(@Valid @RequestBody ManufacturerRequestDTO manufacturerRequestDTO, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -34,7 +35,7 @@ public class ManufacturerController extends AbstractController{
     }
 
     @PutMapping("/manufacturers")
-    public ManufacturerResponseDTO editManufacturer(HttpSession ses, @RequestBody ManufacturerEditRequestDTO manufacturerEditRequestDTO) {
+    public ManufacturerResponseDTO editManufacturer(HttpSession ses,@Valid @RequestBody ManufacturerEditRequestDTO manufacturerEditRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {

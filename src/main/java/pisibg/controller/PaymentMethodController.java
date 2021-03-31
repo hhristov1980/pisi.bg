@@ -11,6 +11,7 @@ import pisibg.model.pojo.User;
 import pisibg.service.PaymentMethodService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class PaymentMethodController extends AbstractController {
     private PaymentMethodService paymentService;
 
     @PostMapping("/paymentmethod")
-    public PaymentMethodResponseDTO addPaymentMethod(HttpSession ses, @RequestBody PaymentMethodRequestDTO methodDTO) {
+    public PaymentMethodResponseDTO addPaymentMethod(HttpSession ses,@Valid @RequestBody PaymentMethodRequestDTO methodDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -35,7 +36,7 @@ public class PaymentMethodController extends AbstractController {
     }
 
     @PutMapping("/paymentmethod")
-    public PaymentMethodResponseDTO edit(HttpSession ses, @RequestBody PaymentMethodEditDTO methodDTO) {
+    public PaymentMethodResponseDTO edit(HttpSession ses,@Valid @RequestBody PaymentMethodEditDTO methodDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }

@@ -11,6 +11,7 @@ import pisibg.model.pojo.User;
 import pisibg.service.CartService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -25,7 +26,7 @@ public class CartController extends AbstractController {
 
 
     @PutMapping("/cart")
-    public ProductOrderResponseDTO addProduct(@RequestBody ProductOrderRequestDTO orderDto, HttpSession ses) {
+    public ProductOrderResponseDTO addProduct(@Valid @RequestBody ProductOrderRequestDTO orderDto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -40,7 +41,7 @@ public class CartController extends AbstractController {
     }
 
     @DeleteMapping("/cart")
-    public ProductOrderResponseDTO removeProduct(@RequestBody ProductOrderRequestDTO orderDto, HttpSession ses) {
+    public ProductOrderResponseDTO removeProduct(@Valid @RequestBody ProductOrderRequestDTO orderDto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {

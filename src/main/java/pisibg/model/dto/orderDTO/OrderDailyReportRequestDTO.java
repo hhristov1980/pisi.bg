@@ -29,7 +29,4 @@ public class OrderDailyReportRequestDTO {
     private LocalDateTime toDate;
     int page;
     int ordersPerPage;
-    OrderDailyReportRequestDTO(Order order){
-
-    }
 }

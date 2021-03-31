@@ -10,6 +10,7 @@ import pisibg.model.pojo.User;
 import pisibg.service.OrderService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -22,7 +23,7 @@ public class OrderController extends AbstractController{
     private OrderService orderService;
 
     @PutMapping("/pay")
-    public OrderResponseDTO pay(HttpSession ses, @RequestBody OrderRequestDTO orderRequestDTO) {
+    public OrderResponseDTO pay(HttpSession ses,@Valid @RequestBody OrderRequestDTO orderRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
