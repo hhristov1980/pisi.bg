@@ -1,12 +1,15 @@
 package pisibg.controller;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pisibg.exceptions.AuthenticationException;
+import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
+import pisibg.exceptions.MyServerException;
 import pisibg.model.pojo.Image;
 import pisibg.model.pojo.User;
 import pisibg.service.ImageService;
@@ -45,10 +48,11 @@ public class ImageController extends AbstractController{
             try {
                 return imageService.upload(file, productId);
             } catch (IOException e) {
-                log.log(Level.ALL,e.getMessage());
+                String stacktrace = ExceptionUtils.getStackTrace(e);
+                log.log(Level.ALL,stacktrace);
+                throw new MyServerException("Something get wrong!");
             }
         }
-        return null;
     }
 
     @GetMapping(value = "/images/{id}", produces = "image/*")

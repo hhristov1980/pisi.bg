@@ -2,12 +2,12 @@
 package pisibg.controller;
 
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNullFields;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
 import pisibg.exceptions.DeniedPermissionException;
-import pisibg.exceptions.MySQLException;
+import pisibg.exceptions.MyServerException;
 //import pisibg.model.pojo.Payment;
 import pisibg.model.dto.orderDTO.*;
 import pisibg.model.dto.userDTO.*;
@@ -114,8 +114,9 @@ public class UserController extends AbstractController {
             try {
                 return userService.deleteUser(admin_id, user_id);
             } catch (SQLException throwables) {
-                log.log(Level.ALL,throwables.getMessage());
-                throw new MySQLException("Something get wrong!");
+                String stacktrace = ExceptionUtils.getStackTrace(throwables);
+                log.log(Level.ALL,stacktrace);
+                throw new MyServerException("Something get wrong!");
             }
         }
     }
@@ -132,8 +133,9 @@ public class UserController extends AbstractController {
             try {
                 return userService.getAllUsers(dto);
             } catch (SQLException throwables) {
-                log.log(Level.ALL,throwables.getMessage());
-                throw new MySQLException("Something get wrong!");
+                String stacktrace = ExceptionUtils.getStackTrace(throwables);
+                log.log(Level.ALL,stacktrace);
+                throw new MyServerException("Something get wrong!");
             }
         }
     }
@@ -153,8 +155,9 @@ public class UserController extends AbstractController {
                 LocalDateTime to = dto.getToDate();
                 return userService.getDailyOrders(from, to, dto);
             } catch (SQLException throwables) {
-                log.log(Level.ALL,throwables.getMessage());
-                throw new MySQLException("Something get wrong!");
+                String stacktrace = ExceptionUtils.getStackTrace(throwables);
+                log.log(Level.ALL,stacktrace);
+                throw new MyServerException("Something get wrong!");
             }
         }
     }
@@ -171,8 +174,9 @@ public class UserController extends AbstractController {
             try {
                 return userService.getMonhlyOrders(dto);
             } catch (SQLException throwables) {
-                log.log(Level.ALL,throwables.getMessage());
-                throw new MySQLException("Something get wrong!");
+                String stacktrace = ExceptionUtils.getStackTrace(throwables);
+                log.log(Level.ALL,stacktrace);
+                throw new MyServerException("Something get wrong!");
             }
         }
     }
@@ -189,8 +193,9 @@ public class UserController extends AbstractController {
             try {
                 return userService.getYearlyOrders(dto);
             } catch (SQLException throwables) {
-                log.log(Level.ALL,throwables.getMessage());
-                throw new MySQLException("Something get wrong!");
+                String stacktrace = ExceptionUtils.getStackTrace(throwables);
+                log.log(Level.ALL,stacktrace);
+                throw new MyServerException("Something get wrong!");
             }
         }
     }
@@ -234,8 +239,9 @@ public class UserController extends AbstractController {
             try {
                 return userService.softDelete(id);
             } catch (SQLException throwables) {
-                log.log(Level.ALL,throwables.getMessage());
-                throw new MySQLException("Something get wrong!");
+                String stacktrace = ExceptionUtils.getStackTrace(throwables);
+                log.log(Level.ALL,stacktrace);
+                throw new MyServerException("Something get wrong!");
             }
         }
     }
