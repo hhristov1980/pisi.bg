@@ -200,8 +200,8 @@ public class UserController extends AbstractController {
         }
     }
 
-    @PutMapping("/users/order/{order_id}")
-    public OrderEditResponseDTO editOrder(@PathVariable int order_id,@Valid @RequestBody OrderEditRequestDTO orderDto, HttpSession ses) {
+    @PutMapping("/users/order")
+    public OrderEditResponseDTO editOrder(@Valid @RequestBody OrderEditRequestDTO orderDto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -210,7 +210,7 @@ public class UserController extends AbstractController {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             int admin_id = user.getId();
-            return userService.editOrder(admin_id, order_id, orderDto);
+            return userService.editOrder(admin_id, orderDto);
         }
     }
 

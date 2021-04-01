@@ -6,11 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
+import pisibg.model.pojo.OrderStatus;
+
+import javax.persistence.JoinColumn;
+
 @Setter
 @Getter
 @NoArgsConstructor
 @Component
 public class OrderEditRequestDTO {
+    private int id;
+    private int orderStatusId;
     private String address;
     private double grossValue;
     @Nullable

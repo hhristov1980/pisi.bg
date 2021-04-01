@@ -14,8 +14,10 @@ import pisibg.model.dto.userDTO.*;
 import pisibg.model.pojo.Order;
 import pisibg.model.pojo.User;
 import pisibg.model.repository.OrderRepository;
+import pisibg.model.repository.OrderStatusRepository;
 import pisibg.model.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +31,9 @@ public class UserService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderStatusRepository orderStatusRepository;
 
     @Autowired
     private UserDAO userDAO;
@@ -275,22 +280,39 @@ public class UserService {
         }
     }
 
-    public OrderEditResponseDTO editOrder(int admin_id, int order_id, OrderEditRequestDTO orderDto) {
+    @Transactional
+    public OrderEditResponseDTO editOrder(int admin_id, OrderEditRequestDTO orderDto) {
         Optional<User> a = userRepository.findById(admin_id);
-        Optional<Order> o = orderRepository.findById(order_id);
+        Optional<Order> o = orderRepository.findById(orderDto.getId());
         Optional<User> u = userRepository.findById(o.get().getUser().getId());
         if (o.isPresent() && a.isPresent()) {
             User admin = a.get();
             Order order = o.get();
             User user = u.get();
             if (admin.isAdmin()) {
-                order.setAddress(orderDto.getAddress());
-                order.setGrossValue(orderDto.getGrossValue());
-                order.setNetValue(orderDto.getNetValue());
+                if(orderDto.getAddress()!=null) {
+                    order.setAddress(orderDto.getAddress());
+                }
+                if(orderDto.getGrossValue()>=0) {
+                    order.setGrossValue(orderDto.getGrossValue());
+                }else {
+                    throw new BadRequestException("Price can't be negative value");
+                }
+                if(orderDto.getNetValue()>=0) {
+                    order.setNetValue(orderDto.getNetValue());
+                }else {
+                    throw new BadRequestException("Price can't be negative value");
+                }
+                if(orderDto.getDiscount()>=0) {
+                    order.setDiscount(orderDto.getDiscount());
+                }else {
+                    throw new BadRequestException("Price can't be negative value");
+                }
                 order.setPaid(orderDto.isPaid());
-                order.setDiscount(orderDto.getDiscount());
+                order.setOrderStatus(orderStatusRepository.getOne(orderDto.getOrderStatusId()));
                 orderRepository.save(order);
                 user.setTurnover(user.getTurnover() - order.getNetValue());
+                userRepository.save(user);
                 return new OrderEditResponseDTO(order);
             } else {
                 throw new DeniedPermissionException("You don't have permission for that!");
