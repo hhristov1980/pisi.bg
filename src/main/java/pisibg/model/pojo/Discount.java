@@ -33,7 +33,7 @@ public class Discount {
         percent = discountRequestDTO.getPercent();
         fromDate = discountRequestDTO.getFromDate();
         toDate = discountRequestDTO.getToDate();
-        isActive = discountRequestDTO.isActive();
+        isActive = discountRequestDTO.getIsActive();
     }
 
 }

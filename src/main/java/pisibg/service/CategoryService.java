@@ -22,9 +22,9 @@ public class CategoryService {
     public CategoryResponseDTO add(CategoryRequestDTO categoryRequestDTO) {
 
         String name = categoryRequestDTO.getName();
-        if (!Validator.isValidString(name)) {
-            throw new BadRequestException("You have entered empty text!");
-        }
+//        if (!Validator.isValidString(name)) {
+//            throw new BadRequestException("You have entered empty text!");
+//        }
         if (categoryRepository.findByName(name) != null) {
             throw new BadRequestException("Category already exists");
         }
@@ -35,16 +35,16 @@ public class CategoryService {
 
     public CategoryResponseDTO edit(CategoryEditRequestDTO categoryEditRequestDTO) {
 
-        if (!Validator.isValidString(categoryEditRequestDTO.getNewCategoryName())) {
-            throw new BadRequestException("You have entered empty text!");
-        }
+//        if (!Validator.isValidString(categoryEditRequestDTO.getNewCategoryName())) {
+//            throw new BadRequestException("You have entered empty text!");
+//        }
         if (categoryEditRequestDTO.getCurrentCategoryName().equals(categoryEditRequestDTO.getNewCategoryName())) {
             throw new BadRequestException("You didn't make any change!");
         }
-        if (!Validator.isValidInteger(categoryEditRequestDTO.getId())) {
-            throw new BadRequestException("Please put number greater than 0!");
-        }
-        if (categoryRepository.findById(categoryEditRequestDTO.getId()) == null) {
+//        if (!Validator.isValidInteger(categoryEditRequestDTO.getId())) {
+//            throw new BadRequestException("Please put number greater than 0!");
+//        }
+        if (categoryRepository.findById(categoryEditRequestDTO.getId()).isEmpty()) {
             throw new NotFoundException("Category not found");
         }
         if (categoryRepository.findByName(categoryEditRequestDTO.getNewCategoryName()) != null) {
@@ -54,6 +54,7 @@ public class CategoryService {
         Category category = new Category();
         category.setId(categoryEditRequestDTO.getId());
         category.setName(categoryEditRequestDTO.getNewCategoryName());
+        category.setSubcategories(categoryRepository.findById(categoryEditRequestDTO.getId()).get().getSubcategories());
         categoryRepository.save(category);
         return new CategoryResponseDTO(category);
     }
@@ -71,7 +72,7 @@ public class CategoryService {
     }
 
     public CategoryResponseDTO getById(int category_id) {
-        Category category = categoryRepository.findById(category_id);
+        Category category = categoryRepository.getById(category_id);
         if (category == null) {
             throw new NotFoundException("Category not found");
         }

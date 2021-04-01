@@ -12,6 +12,7 @@ import pisibg.model.pojo.Product;
 import pisibg.model.repository.DiscountRepository;
 import pisibg.model.repository.ProductRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -37,16 +38,25 @@ public class SaleDiscountsAutomaticallyDeactivation extends Thread{
             } catch (InterruptedException e) {
                 e.printStackTrace(); //TODO HIDE STACK TRACE
             }
-            List<Discount> discounts = discountRepository.findAll();
-            for(Discount d: discounts){
-                if(d.isActive()&&d.getToDate().isBefore(LocalDateTime.now())){
-                    d.setActive(false);
-                    List<Product> products = productRepository.findByDiscountId(d.getId());
-                    for(Product p: products){
-                        p.setDiscount(null); //Automatically deactivates expired promotions
-                    }
+            discountChecker();
+
+        }
+    }
+
+    @Transactional
+    protected void discountChecker(){
+        List<Discount> discounts = discountRepository.findAll();
+        for(Discount d: discounts){
+            if(d.isActive()&&d.getToDate().isBefore(LocalDateTime.now())){
+                d.setActive(false);
+                discountRepository.save(d);
+                List<Product> products = productRepository.findByDiscountId(d.getId());
+                for(Product p: products){
+                    p.setDiscount(null); //Automatically deactivates expired promotions
+                    productRepository.save(p);
                 }
             }
         }
     }
+
 }

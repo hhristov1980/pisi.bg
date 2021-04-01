@@ -38,7 +38,7 @@ public class OrderStatusController extends AbstractController {
     }
 
     @PutMapping("/users/orderstatus")
-    public OrderStatusResponseDTO edit(HttpSession ses, @RequestBody OrderStatusEditDTO statusDTO) {
+    public OrderStatusResponseDTO edit(HttpSession ses, @Valid @RequestBody OrderStatusEditDTO statusDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {

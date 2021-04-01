@@ -11,5 +11,5 @@ public interface ManufacturerRepository extends JpaRepository<Manufacturer, Inte
 
     Manufacturer findByProducerName(String producerName);
 
-    Manufacturer findById(int manufacturerId);
+    Manufacturer getById(Integer manufacturerId);
 }

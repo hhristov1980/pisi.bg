@@ -98,7 +98,7 @@ public class ProductDAO extends AbstractDAO{
             }
         }
         if (discountId > 0) {
-            Discount discount = discountRepository.findById(discountId);
+            Discount discount = discountRepository.getById(discountId);
             if (discount == null || !discount.isActive()) {
                 throw new NotFoundException("No active discount with this id!");
             } else {

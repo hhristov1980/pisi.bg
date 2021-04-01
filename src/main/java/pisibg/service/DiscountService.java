@@ -28,19 +28,18 @@ public class DiscountService {
     @Autowired
     private EmailServiceImpl emailService;
 
-
     public DiscountResponseDTO add(DiscountRequestDTO discountRequestDTO) {
 
         String description = discountRequestDTO.getDescription();
-        if (!Validator.isValidString(description)) {
-            throw new BadRequestException("You have entered empty text!");
-        }
+//        if (!Validator.isValidString(description)) {
+//            throw new BadRequestException("You have entered empty text!");
+//        }
         if (discountRepository.findByDescription(description) != null) {
             throw new BadRequestException("Discount already exists");
         }
-        if (!Validator.isValidInteger(discountRequestDTO.getPercent())) {
-            throw new BadRequestException("You put wrong percent!");
-        }
+//        if (!Validator.isValidInteger(discountRequestDTO.getPercent())) {
+//            throw new BadRequestException("You put wrong percent!");
+//        }
         if (!Validator.isValidDate(discountRequestDTO.getFromDate()) && !Validator.isValidDate(discountRequestDTO.getToDate())) {
             throw new BadRequestException("You put invalid data!");
         }
@@ -53,7 +52,11 @@ public class DiscountService {
         for (int i = 0; i < list.size(); i++) {
             Optional<User> u = userRepository.findById(i);
             if (u.isPresent()) {
-                emailService.sendSimpleMessage(u.get().getEmail(), "New discount", discount.getDescription());
+                User user = u.get();
+                String email = user.getEmail();
+                if (email.matches(UserService.REGEX_EMAIL)) {
+                    emailService.sendSimpleMessage(user.getEmail(), "Edited discount", discount.getDescription());
+                }
             }
         }
         return new DiscountResponseDTO(discount);
@@ -62,26 +65,26 @@ public class DiscountService {
     public DiscountResponseDTO edit(DiscountEditRequestDTO discountEditRequestDTO) {
 
         if (discountEditRequestDTO.getCurrentDescription().equals(discountEditRequestDTO.getNewDescription())
-                && discountEditRequestDTO.getCurrentPercent() == discountEditRequestDTO.getNewPercent()
+                && discountEditRequestDTO.getCurrentPercent().equals(discountEditRequestDTO.getNewPercent())
                 && discountEditRequestDTO.getCurrentFromDate().isEqual(discountEditRequestDTO.getNewFromDate())
                 && discountEditRequestDTO.getNewFromDate().isEqual(discountEditRequestDTO.getNewFromDate())
                 && discountEditRequestDTO.getCurrentToDate().isEqual(discountEditRequestDTO.getNewToDate())
-                && discountEditRequestDTO.isCurrentIsActive() == discountEditRequestDTO.isNewIsActive()) {
+                && discountEditRequestDTO.getCurrentIsActive() == discountEditRequestDTO.getNewIsActive()) {
             throw new BadRequestException("You didn't make any change!");
         }
-        if (!Validator.isValidInteger(discountEditRequestDTO.getId())) {
-            throw new BadRequestException("Please put number greater than 0!");
-        }
-        if (discountRepository.findById(discountEditRequestDTO.getId()) == null) {
+//        if (!Validator.isValidInteger(discountEditRequestDTO.getId())) {
+//            throw new BadRequestException("Please put number greater than 0!");
+//        }
+        if (discountRepository.getById(discountEditRequestDTO.getId()) == null) {
             throw new NotFoundException("Discount not found");
         }
         String description = discountEditRequestDTO.getNewDescription();
-        if (!Validator.isValidString(description)) {
-            throw new BadRequestException("You have entered empty text!");
-        }
-        if (!Validator.isValidInteger(discountEditRequestDTO.getNewPercent())) {
-            throw new BadRequestException("You put wrong percent!");
-        }
+//        if (!Validator.isValidString(description)) {
+//            throw new BadRequestException("You have entered empty text!");
+//        }
+//        if (!Validator.isValidInteger(discountEditRequestDTO.getNewPercent())) {
+//            throw new BadRequestException("You put wrong percent!");
+//        }
         if (!Validator.isValidDate(discountEditRequestDTO.getNewFromDate()) && !Validator.isValidDate(discountEditRequestDTO.getNewToDate())) {
             throw new BadRequestException("You put invalid data!");
         }
@@ -94,13 +97,17 @@ public class DiscountService {
         discount.setPercent(discountEditRequestDTO.getNewPercent());
         discount.setFromDate(discountEditRequestDTO.getNewFromDate());
         discount.setToDate(discountEditRequestDTO.getNewToDate());
-        discount.setActive(discountEditRequestDTO.isNewIsActive());
+        discount.setActive(discountEditRequestDTO.getNewIsActive());
         discountRepository.save(discount);
         List<User> list = userRepository.findAll();
         for (int i = 0; i < list.size(); i++) {
             Optional<User> u = userRepository.findById(i);
             if (u.isPresent()) {
-                emailService.sendSimpleMessage(u.get().getEmail(), "Edited discount", discount.getDescription());
+                User user = u.get();
+                String email = user.getEmail();
+                if (email.matches(UserService.REGEX_EMAIL)) {
+                    emailService.sendSimpleMessage(user.getEmail(), "Edited discount", discount.getDescription());
+                }
             }
         }
         return new DiscountResponseDTO(discount);
@@ -126,7 +133,7 @@ public class DiscountService {
     }
 
     public DiscountResponseDTO getById(int discount_id) {
-        Discount discount = discountRepository.findById(discount_id);
+        Discount discount = discountRepository.getById(discount_id);
         if (discount == null) {
             throw new NotFoundException("Discount not found");
         } else {

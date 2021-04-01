@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 public class OrderEditRequestDTO {
     private String address;
     private double grossValue;
-    @Nullable
     private double discount;
     private double netValue;
     @JsonProperty(value = "isPaid")

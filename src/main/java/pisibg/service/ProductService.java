@@ -34,9 +34,9 @@ public class ProductService {
     public ProductResponseDTO add(ProductRequestDTO productRequestDTO) {
 
         String name = productRequestDTO.getName();
-        if (!Validator.isValidString(name)) {
-            throw new BadRequestException("You have entered empty text!");
-        }
+//        if (!Validator.isValidString(name)) {
+//            throw new BadRequestException("You have entered empty text!");
+//        }
         if (productRepository.findByName(name) != null) {
             throw new BadRequestException("Product already exists");
         }
@@ -49,11 +49,11 @@ public class ProductService {
         if (!isValidDiscount(productRequestDTO)) {
             throw new BadRequestException("Invalid discount id!");
         }
-        if (!Validator.isValidString(productRequestDTO.getDescription())) {
-            throw new BadRequestException("You have entered and empty product's description!");
-        }
+//        if (!Validator.isValidString(productRequestDTO.getDescription())) {
+//            throw new BadRequestException("You have entered and empty product's description!");
+//        }
         if (!isValidQuantity(productRequestDTO.getQuantity())) {
-            throw new BadRequestException("Please enter quantity greater than 0!");
+            throw new BadRequestException("Please enter quantity equal or greater than 0!");
         }
         if (!isValidPrice(productRequestDTO.getPrice())) {
             throw new BadRequestException("Please enter price greater than 0!");
@@ -63,8 +63,8 @@ public class ProductService {
         product.setDescription(productRequestDTO.getDescription());
         product.setQuantity(productRequestDTO.getQuantity());
         product.setPrice(productRequestDTO.getPrice());
-        product.setDiscount(discountRepository.findById(productRequestDTO.getDiscountId()));
-        product.setManufacturer(manufacturerRepository.findById(productRequestDTO.getManufacturerId()));
+        product.setDiscount(discountRepository.getById(productRequestDTO.getDiscountId()));
+        product.setManufacturer(manufacturerRepository.getOne(productRequestDTO.getManufacturerId()));
         product.setSubcategory(subCategoryRepository.getById(productRequestDTO.getSubcategoryId()));
         product = productRepository.save(product);
         return new ProductResponseDTO(product);
@@ -72,15 +72,15 @@ public class ProductService {
 
     public ProductResponseDTO edit(ProductEditRequestDTO productEditRequestDTO) {
 
-        if (!Validator.isValidInteger(productEditRequestDTO.getId())) {
-            throw new BadRequestException("Please enter id greater than 0!");
-        }
-        if (productRepository.findById(productEditRequestDTO.getId()) == null) {
-            throw new BadRequestException("Product with this id doesn't exists");
-        }
-        if (!Validator.isValidString(productEditRequestDTO.getNewName())) {
-            throw new BadRequestException("You put and empty name!");
-        }
+//        if (!Validator.isValidInteger(productEditRequestDTO.getId())) {
+//            throw new BadRequestException("Please enter id greater than 0!");
+//        }
+//        if (productRepository.getById(productEditRequestDTO.getId()) == null) {
+//            throw new BadRequestException("Product with this id doesn't exists");
+//        }
+//        if (!Validator.isValidString(productEditRequestDTO.getNewName())) {
+//            throw new BadRequestException("You put and empty name!");
+//        }
         if (!productEditRequestDTO.getCurrentName().equals(productEditRequestDTO.getNewName()) && productRepository.findByName(productEditRequestDTO.getNewName()) != null) {
             throw new BadRequestException("This name already exists!");
         }
@@ -90,10 +90,10 @@ public class ProductService {
         if (!isValidPrice(productEditRequestDTO.getNewPrice())) {
             throw new BadRequestException("Please enter price greater than 0!");
         }
-        if (!Validator.isValidInteger(productEditRequestDTO.getNewManufacturerId()) || !Validator.isValidInteger(productEditRequestDTO.getNewSubcategoryId())) {
-            throw new BadRequestException("Please number greater than 0!");
-        }
-        if (manufacturerRepository.findById(productEditRequestDTO.getNewManufacturerId()) == null) {
+//        if (!Validator.isValidInteger(productEditRequestDTO.getNewManufacturerId()) || !Validator.isValidInteger(productEditRequestDTO.getNewSubcategoryId())) {
+//            throw new BadRequestException("Please number greater than 0!");
+//        }
+        if (manufacturerRepository.getById(productEditRequestDTO.getNewManufacturerId()) == null) {
             throw new NotFoundException("No manufacturer with this Id");
         }
         if (subCategoryRepository.getById(productEditRequestDTO.getNewSubcategoryId()) == null) {
@@ -103,20 +103,20 @@ public class ProductService {
             throw new BadRequestException("Please number greater than 0 for new or 0 to delete discount!");
         }
         if (productEditRequestDTO.getNewDiscountId() > 0) {
-            if (discountRepository.findById(productEditRequestDTO.getNewDiscountId()) == null) {
+            if (discountRepository.getById(productEditRequestDTO.getNewDiscountId()) == null) {
                 throw new NotFoundException("No discount with this Id");
             }
-            if (!Validator.isValidString(productEditRequestDTO.getNewDescription())) {
-                throw new BadRequestException("You put and empty name!");
-            }
+//            if (!Validator.isValidString(productEditRequestDTO.getNewDescription())) {
+//                throw new BadRequestException("You put and empty name!");
+//            }
             Product product = new Product();
             product.setId(productEditRequestDTO.getId());
             product.setName(productEditRequestDTO.getNewName());
             product.setDescription(productEditRequestDTO.getNewDescription());
             product.setQuantity(productEditRequestDTO.getNewQuantity());
             product.setPrice(productEditRequestDTO.getNewPrice());
-            product.setDiscount(discountRepository.findById(productEditRequestDTO.getNewDiscountId()));
-            product.setManufacturer(manufacturerRepository.findById(productEditRequestDTO.getNewManufacturerId()));
+            product.setDiscount(discountRepository.getById(productEditRequestDTO.getNewDiscountId()));
+            product.setManufacturer(manufacturerRepository.getOne(productEditRequestDTO.getNewManufacturerId()));
             product.setSubcategory(subCategoryRepository.getById(productEditRequestDTO.getNewSubcategoryId()));
             product = productRepository.save(product);
             return new ProductResponseDTO(product);
@@ -128,7 +128,7 @@ public class ProductService {
             product.setQuantity(productEditRequestDTO.getNewQuantity());
             product.setPrice(productEditRequestDTO.getNewPrice());
             product.setDiscount(null);
-            product.setManufacturer(manufacturerRepository.findById(productEditRequestDTO.getNewManufacturerId()));
+            product.setManufacturer(manufacturerRepository.getOne(productEditRequestDTO.getNewManufacturerId()));
             product.setSubcategory(subCategoryRepository.getById(productEditRequestDTO.getNewSubcategoryId()));
             product = productRepository.save(product);
             return new ProductResponseDTO(product);
@@ -137,20 +137,20 @@ public class ProductService {
 
     public ProductDeleteResponseDTO delete(ProductDeleteRequestDTO productDeleteRequestDTO) {
         int id = productDeleteRequestDTO.getId();
-        if (!Validator.isValidInteger(productDeleteRequestDTO.getId())) {
-            throw new BadRequestException("Please enter id greater than 0!");
-        }
-        if (productRepository.findById(productDeleteRequestDTO.getId()) == null) {
+//        if (!Validator.isValidInteger(productDeleteRequestDTO.getId())) {
+//            throw new BadRequestException("Please enter id greater than 0!");
+//        }
+        if (productRepository.getById(id) == null) {
             throw new BadRequestException("Product with this id doesn't exists");
         }
-        Product product = productRepository.findById(productDeleteRequestDTO.getId());
+        Product product = productRepository.getOne(productDeleteRequestDTO.getId());
         ProductDeleteResponseDTO productDeleteResponseDTO = new ProductDeleteResponseDTO();
         productDeleteResponseDTO.setId(product.getId());
         productDeleteResponseDTO.setDescription(Constants.DELETE);
         product.setQuantity(0);
         product.setPrice(0);
         product.setDiscount(null);
-        product.setDescription("Deleted");
+        product.setDescription(Constants.DELETE);
         //Other fields will stay for history
         productRepository.save(product);
         return productDeleteResponseDTO;
@@ -171,7 +171,7 @@ public class ProductService {
 //        }
 //    }
     public ProductResponseDTO getByIdAdmin(int productId) {
-        Product product = productRepository.findById(productId);
+        Product product = productRepository.getById(productId);
         if (product == null) {
             throw new NotFoundException("Product not found!");
         } else {
@@ -180,7 +180,7 @@ public class ProductService {
     }
 
     public ProductResponseDTO getById(int productId) {
-        Product product = productRepository.findById(productId);
+        Product product = productRepository.getById(productId);
         if (product == null) {
             throw new NotFoundException("Product not found!");
         } else {
@@ -227,22 +227,24 @@ public class ProductService {
     }
 
     private boolean isValidDiscount(ProductRequestDTO productRequestDTO) {
-        int discountId = productRequestDTO.getDiscountId();
-        if (discountId > 0) {
-            Discount discount = discountRepository.findById(discountId);
-            return discount != null;
-        } else {
-            if (discountId == 0) {
-                return true;
+        Integer discountId = productRequestDTO.getDiscountId();
+        if(discountId==null){
+            return true;
+        }
+        else {
+            if (discountId > 0) {
+                Discount discount = discountRepository.getById(discountId);
+                return discount != null;
+            } else {
+                return false;
             }
         }
-        return false;
     }
 
     private boolean isValidManufacturer(ProductRequestDTO productRequestDTO) {
         int manufacturerId = productRequestDTO.getManufacturerId();
         if (manufacturerId > 0) {
-            Manufacturer manufacturer = manufacturerRepository.findById(manufacturerId);
+            Manufacturer manufacturer = manufacturerRepository.getById(manufacturerId);
             return manufacturer != null;
         }
         return false;

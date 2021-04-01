@@ -74,7 +74,7 @@ public class ManufacturerService {
 
     //TODO FIX EXCEPTION
     public ManufacturerResponseDTO getById(int manufacturer_id) {
-        Manufacturer manufacturer = manufacturerRepository.findById(manufacturer_id);
+        Manufacturer manufacturer = manufacturerRepository.getById(manufacturer_id);
         if (manufacturer == null) {
             throw new NotFoundException("Manufacturer not found");
         }

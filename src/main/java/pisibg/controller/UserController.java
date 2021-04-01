@@ -28,7 +28,6 @@ public class UserController extends AbstractController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private SessionManager sessionManager;
 

@@ -29,7 +29,7 @@ public class ManufacturerController extends AbstractController{
         }
         User user = sessionManager.getLoggedUser(ses);
         if (!user.isAdmin()) {
-            throw new DeniedPermissionException("You dont have permission for that!");
+            throw new DeniedPermissionException("You don't have permission for that!");
         }
         return manufacturerService.add(manufacturerRequestDTO);
     }
@@ -41,7 +41,7 @@ public class ManufacturerController extends AbstractController{
         } else {
             User user = sessionManager.getLoggedUser(ses);
             if (!user.isAdmin()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
             }
             return manufacturerService.edit(manufacturerEditRequestDTO);
         }
