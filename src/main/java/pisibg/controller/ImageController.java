@@ -15,6 +15,7 @@ import pisibg.model.pojo.User;
 import pisibg.service.ImageService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class ImageController extends AbstractController{
 
     @ResponseBody
     @PostMapping("/images/product/{product_id}")
-    public Image upload(@PathVariable(name = "product_id") int productId, HttpSession ses, @RequestPart MultipartFile file) {
+    public Image upload(@PathVariable(name = "product_id") int productId, HttpSession ses, @Valid @RequestPart MultipartFile file) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -57,7 +58,7 @@ public class ImageController extends AbstractController{
 
     @GetMapping(value = "/images/{id}", produces = "image/*")
     public @ResponseBody
-    byte[] download(@PathVariable int id) throws IOException {
+    byte[] download(@Valid @PathVariable int id) throws IOException {
         return imageService.download(id);
     }
 

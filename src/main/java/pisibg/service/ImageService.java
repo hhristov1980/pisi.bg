@@ -37,7 +37,7 @@ public class ImageService {
             os.write(file.getBytes());
             Image image = new Image();
             image.setUrl(imageFile.getAbsolutePath());
-            image.setProduct(productRepository.findById(productId));
+            image.setProduct(productRepository.getById(productId));
             imageRepository.save(image);
             return image;
         }

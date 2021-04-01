@@ -1,28 +1,33 @@
 package pisibg.model.dto.productDTO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
-import pisibg.model.pojo.*;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.Set;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 
 @Setter
 @Getter
 @NoArgsConstructor
 @Component
 public class ProductRequestDTO {
+    @NotBlank(message = "Product name is mandatory!")
     private String name;
+    @NotBlank(message = "Product description is mandatory!")
     private String description;
-    private int manufacturerId;
-    private int subcategoryId;
-    private int quantity;
-    private double price;
-    private int discountId;
+    @NotNull(message = "Manufacturer id cannot be null!")
+    @Min(value=1, message="Manufacturer product id should be 1")
+    private Integer manufacturerId;
+    @NotNull(message = "Subcategory id cannot be null!")
+    @Min(value=1, message="Minimum Subcategory id should be 1")
+    private Integer subcategoryId;
+    @NotNull(message = "Quantity cannot be null!")
+    private Integer quantity;
+    @NotNull(message = "Price cannot be null!")
+    private Double price;
+    private Integer discountId;
 }

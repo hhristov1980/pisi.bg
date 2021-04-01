@@ -92,7 +92,7 @@ public class OrderService {
         for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {
             int quantity = products.getValue().size();
             if (quantity > 0) {
-                Product product = productRepository.findById(products.getValue().peek().getId());
+                Product product = productRepository.getById(products.getValue().peek().getId());
                 double productPrice = product.getPrice();
                 price += RoundFloat.round(quantity * productPrice, Constants.TWO_DECIMAL_PLACES);
             }
@@ -106,14 +106,14 @@ public class OrderService {
         for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {
             int quantity = products.getValue().size();
             if (quantity > 0) {
-                Product product = productRepository.findById(products.getValue().peek().getId());
+                Product product = productRepository.getById(products.getValue().peek().getId());
                 double productPrice = product.getPrice();
                 Discount discount = product.getDiscount();
                 int discountPercent = 0;
                 if (discount == null) {
                     discountPercent = user.getPersonalDiscount();
                 } else {
-                    discountPercent = discountRepository.findById(discount.getId()).getPercent();
+                    discountPercent = discountRepository.getById(discount.getId()).getPercent();
                 }
                 priceWithoutDiscount += RoundFloat.round((productPrice * quantity), Constants.TWO_DECIMAL_PLACES);
                 discountAmount += RoundFloat.round(productPrice * quantity * (discountPercent * 1.0 / 100), Constants.TWO_DECIMAL_PLACES);

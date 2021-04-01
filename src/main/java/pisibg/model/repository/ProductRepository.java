@@ -14,7 +14,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     Product findByName(String productName);
 
-    Product findById(int productId);
+    Product getById(Integer productId);
 
     List<Product> findByDiscountId(int discountId);
 }

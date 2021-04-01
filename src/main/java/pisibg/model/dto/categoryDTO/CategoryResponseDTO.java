@@ -17,15 +17,15 @@ import java.util.TreeSet;
 @Getter
 @Component
 public class CategoryResponseDTO {
-
+    private int id;
     private String name;
     private TreeSet<Subcategory> subcategories;
 
     public  CategoryResponseDTO(Category category){
+        id = category.getId();
         name = category.getName();
         subcategories = new TreeSet<>(((o1, o2) -> o1.getName().compareTo(o2.getName())));
         subcategories.addAll(category.getSubcategories());
-
     }
 
 }

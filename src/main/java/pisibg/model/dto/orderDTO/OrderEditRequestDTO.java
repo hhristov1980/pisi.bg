@@ -19,7 +19,6 @@ public class OrderEditRequestDTO {
     private int orderStatusId;
     private String address;
     private double grossValue;
-    @Nullable
     private double discount;
     private double netValue;
     @JsonProperty(value = "isPaid")

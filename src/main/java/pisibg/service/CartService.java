@@ -34,7 +34,7 @@ public class CartService {
 
 
     public ProductOrderResponseDTO addProd(ProductOrderRequestDTO orderDto, Map<Integer, Queue<ProductOrderResponseDTO>> cart) {
-        Product product = productRepository.findById(orderDto.getId());
+        Product product = productRepository.getById(orderDto.getId());
         if (product != null) {
             if (product.getQuantity() >= orderDto.getQuantity()) {
                 for (int i = 0; i < orderDto.getQuantity(); i++) {
@@ -59,7 +59,7 @@ public class CartService {
                     for (int i = 0; i < orderDto.getQuantity(); i++) {
                         cart.get(orderDto.getId()).poll();
                     }
-                    Product product = productRepository.findById(orderDto.getId());
+                    Product product = productRepository.getById(orderDto.getId());
                     return new ProductOrderResponseDTO(product, orderDto.getQuantity());
                 } else {
                     throw new BadRequestException("You can't remove more item than available in your cart");
@@ -77,7 +77,7 @@ public class CartService {
             for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {
                 int quantity = products.getValue().size();
                 if (quantity > 0) {
-                    Product product = productRepository.findById(products.getValue().peek().getId());
+                    Product product = productRepository.getById(products.getValue().peek().getId());
                     product.setQuantity(product.getQuantity() + quantity);
                     productRepository.save(product);
                 }
@@ -97,16 +97,16 @@ public class CartService {
             for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {
                 int quantity = products.getValue().size();
                 if (quantity > 0) {
-                    Product product = productRepository.findById(products.getValue().peek().getId());
+                    Product product = productRepository.getById(products.getValue().peek().getId());
                     product.setQuantity(quantity);
                     allProducts.add(product);
                     double productPrice = product.getPrice();
-                    Discount discount = productRepository.findById(products.getValue().peek().getId()).getDiscount();
+                    Discount discount = productRepository.getById(products.getValue().peek().getId()).getDiscount();
                     int discountPercent = 0;
                     if (discount == null) {
                         discountPercent = user.getPersonalDiscount();
                     } else {
-                        discountPercent = discountRepository.findById(discount.getId()).getPercent();
+                        discountPercent = discountRepository.getById(discount.getId()).getPercent();
                     }
                     priceWithoutDiscount += RoundFloat.round((productPrice * quantity), Constants.TWO_DECIMAL_PLACES);
                     discountAmount += RoundFloat.round(productPrice * quantity * (discountPercent * 1.0 / 100), Constants.TWO_DECIMAL_PLACES);
@@ -131,7 +131,7 @@ public class CartService {
                 int orderQuantity = products.getValue().size();
                 System.out.println("Order quantity" + orderQuantity);
                 if (orderQuantity > 0) {
-                    Product product = productRepository.findById(products.getValue().peek().getId());
+                    Product product = productRepository.getById(products.getValue().peek().getId());
                     int quantityDB = product.getQuantity();
                     System.out.println("quantity in DB  = " + quantityDB);
                     if (orderQuantity <= quantityDB) {

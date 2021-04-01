@@ -10,8 +10,8 @@ import pisibg.exceptions.MyServerException;
 import pisibg.model.dto.productDTO.*;
 import pisibg.model.pojo.User;
 import pisibg.service.ProductService;
-
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,7 +27,7 @@ public class ProductController extends AbstractController {
 
 
     @PostMapping("/products")
-    public ProductResponseDTO add(HttpSession ses, @RequestBody ProductRequestDTO productRequestDTO) {
+    public ProductResponseDTO add(HttpSession ses, @Valid @RequestBody ProductRequestDTO productRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -39,7 +39,7 @@ public class ProductController extends AbstractController {
     }
 
     @PutMapping("/products")
-    public ProductResponseDTO changeQuantity(HttpSession ses, @RequestBody ProductEditRequestDTO productEditRequestDTO) {
+    public ProductResponseDTO edit(HttpSession ses,@Valid @RequestBody ProductEditRequestDTO productEditRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -53,7 +53,7 @@ public class ProductController extends AbstractController {
     }
 
     @DeleteMapping("/products")
-    public ProductDeleteResponseDTO deleteProduct(HttpSession ses, @RequestBody ProductDeleteRequestDTO productDeleteRequestDTO) {
+    public ProductDeleteResponseDTO deleteProduct(HttpSession ses, @Valid @RequestBody ProductDeleteRequestDTO productDeleteRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
@@ -67,35 +67,36 @@ public class ProductController extends AbstractController {
     }
 
     @GetMapping("/products/{id}")
-    public ProductResponseDTO getById(@PathVariable(name = "id") int productId) {
+    public ProductResponseDTO getById(@Valid @PathVariable(name = "id") int productId) {
         return productService.getById(productId);
     }
     @GetMapping("/products/{id}/admin")
-    public ProductResponseDTO getById(@PathVariable(name = "id") int productId, HttpSession ses) {
+    public ProductResponseDTO getById(@Valid @PathVariable(name = "id") int productId, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
 
         User user = sessionManager.getLoggedUser(ses);
         if (!user.isAdmin()) {
+
             throw new DeniedPermissionException("You don't have permission for that!");
         }
         return productService.getById(productId);
     }
 
     @PostMapping("/products/filter")
-    public List<ProductResponseDTO> getAll(@RequestBody ProductFilterRequestDTO productFilterRequestDTO) {
+    public List<ProductResponseDTO> getAll(@Valid @RequestBody ProductFilterRequestDTO productFilterRequestDTO) {
         try {
             return productService.getFilterAndSearchProducts(productFilterRequestDTO);
         } catch (SQLException throwables) {
             String stacktrace = ExceptionUtils.getStackTrace(throwables);
-            log.log(Level.ALL,stacktrace);
+            log.log(Level.ALL,stacktrace,throwables);
             throw new MyServerException("Something get wrong!");
         }
     }
 
     @PostMapping("/products/filter/admin")
-    public List<ProductResponseDTO> getAllAdmin(HttpSession ses, @RequestBody ProductFilterRequestDTO productFilterRequestDTO) {
+    public List<ProductResponseDTO> getAllAdmin(@Valid HttpSession ses, @RequestBody ProductFilterRequestDTO productFilterRequestDTO) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         }
