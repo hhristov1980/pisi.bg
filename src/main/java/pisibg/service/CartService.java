@@ -74,24 +74,16 @@ public class CartService {
 
     public void emptyCart(Map<Integer, Queue<ProductOrderResponseDTO>> cart) {
         if (!cart.isEmpty()) {
-            for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {
-                int quantity = products.getValue().size();
-                if (quantity > 0) {
-                    Product product = productRepository.getById(products.getValue().peek().getId());
-                    product.setQuantity(product.getQuantity() + quantity);
-                    productRepository.save(product);
-                }
-            }
             cart.clear();
         } else {
-            throw new NotFoundException("Cart not found!");
+            throw new NotFoundException("Cart not found or already empty!");
         }
     }
 
     public CartPriceResponseDTO checkout(Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) {
-        double priceWithoutDiscount = 0.0;
-        double priceAfterDiscount = 0.0;
-        double discountAmount = 0.0;
+        double priceWithoutDiscount = RoundFloat.round(0.0,Constants.TWO_DECIMAL_PLACES);
+        double priceAfterDiscount = RoundFloat.round(0.0,Constants.TWO_DECIMAL_PLACES);
+        double discountAmount = RoundFloat.round(0.0,Constants.TWO_DECIMAL_PLACES);
         if (!cart.isEmpty()) {
             Set<Product> allProducts = new HashSet<>();
             for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {

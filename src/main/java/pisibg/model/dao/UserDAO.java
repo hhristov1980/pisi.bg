@@ -19,6 +19,7 @@ import pisibg.model.pojo.User;
 import pisibg.model.repository.OrderStatusRepository;
 import pisibg.model.repository.PaymentMethodRepository;
 import pisibg.model.repository.UserRepository;
+import pisibg.utility.Constants;
 import pisibg.utility.OffsetPageCalculator;
 
 import java.sql.*;
@@ -220,6 +221,35 @@ public class UserDAO extends AbstractDAO {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);) {
             return statement.executeUpdate();
+        }
+    }
+
+    public void updateTurnoverAndPersonalDiscountPercent(double orderAmount, int userId) throws SQLException {
+        String query1 = "SELECT turnover, personal_discount FROM users WHERE id = ?;";
+        String query2 = "UPDATE users SET turnover = ?, personal_discount = ? WHERE id = ?;";
+        double currentTurnover = 0.0;
+        int currentPersonalDiscountPercent = 0;
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection();
+             PreparedStatement ps = connection.prepareStatement(query1)) {
+            ps.setInt(1, userId);
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                currentTurnover = resultSet.getDouble(1);
+                currentPersonalDiscountPercent = resultSet.getInt(2);
+            }
+            double newTurnover = currentTurnover + orderAmount;
+            int newPersonalDiscountPercent = 0;
+            int coefficientTurnoverToIncreaseStep = (int) (newTurnover / Constants.DISCOUNT_INCREASE_TURNOVER_STEP);
+            if (currentPersonalDiscountPercent + coefficientTurnoverToIncreaseStep <= Constants.MAX_PERSONAL_DISCOUNT_PERCENT) {
+                newPersonalDiscountPercent = currentPersonalDiscountPercent + coefficientTurnoverToIncreaseStep;
+            }
+            try (Connection connection1 = jdbcTemplate.getDataSource().getConnection();
+                 PreparedStatement ps1 = connection.prepareStatement(query2)) {
+                ps1.setDouble(1, newTurnover);
+                ps1.setInt(1, newPersonalDiscountPercent);
+                ps1.setInt(2, userId);
+                ps1.executeUpdate();
+            }
         }
     }
 }

@@ -11,22 +11,18 @@ import pisibg.model.pojo.Discount;
 import pisibg.model.pojo.Product;
 import pisibg.model.repository.DiscountRepository;
 import pisibg.model.repository.ProductRepository;
-
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@NoArgsConstructor
-@Setter
-@Getter
 @Component
 public class SaleDiscountsAutomaticallyDeactivation extends Thread{
     @Autowired
     private DiscountRepository discountRepository;
     @Autowired
     private ProductRepository productRepository;
-    private static final int DISCOUNT_CHECKER_INTERVAL = 1000*60*60; //1 hour
+    private static final int DISCOUNT_CHECKER_INTERVAL = 1000; //1 hour
 
 
     @Override

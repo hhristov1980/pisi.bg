@@ -1,0 +1,126 @@
+2021-04-02 22:37:01 [restartedMain] INFO  pisibg.PisibgApplication - Starting PisibgApplication using Java 15.0.2 on MacBook-Pro.local with PID 2789 (/Users/admin/Documents/IT Talents/pisi_bg/target/classes started by admin in /Users/admin/Documents/IT Talents/pisi_bg)
+2021-04-02 22:37:01 [restartedMain] INFO  pisibg.PisibgApplication - No active profile set, falling back to default profiles: default
+2021-04-02 22:37:01 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2021-04-02 22:37:01 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2021-04-02 22:37:02 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-04-02 22:37:02 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 60 ms. Found 11 JPA repository interfaces.
+2021-04-02 22:37:03 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8888 (http)
+2021-04-02 22:37:03 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2021-04-02 22:37:03 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.44]
+2021-04-02 22:37:03 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2021-04-02 22:37:03 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1579 ms
+2021-04-02 22:37:03 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2021-04-02 22:37:03 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2021-04-02 22:37:03 [restartedMain] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:mysql://84.238.145.199:7777/pisibg'
+2021-04-02 22:37:04 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-04-02 22:37:05 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	p.c.CartController:
+	{DELETE [/cart/all]}: emptyCart(HttpSession)
+	{GET [/cart]}: checkout(HttpSession)
+	{PUT [/cart]}: addProduct(ProductOrderRequestDTO,HttpSession)
+	{DELETE [/cart]}: removeProduct(ProductOrderRequestDTO,HttpSession)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	p.c.CategoryController:
+	{POST [/categories]}: add(HttpSession,CategoryRequestDTO)
+	{GET [/categories]}: getAll()
+	{PUT [/categories]}: edit(HttpSession,CategoryEditRequestDTO)
+	{GET [/categories/{id}]}: getById(int)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	p.c.DiscountController:
+	{POST [/discounts]}: add(HttpSession,DiscountRequestDTO)
+	{GET [/discounts]}: getAll()
+	{PUT [/discounts]}: edit(HttpSession,DiscountEditRequestDTO)
+	{GET [/discounts/{id}]}: getById(int)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	p.c.ImageController:
+	{POST [/images/product/{product_id}]}: upload(int,HttpSession,MultipartFile)
+	{GET [/images/{id}], produces [image/*]}: download(int)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	p.c.ManufacturerController:
+	{POST [/manufacturers]}: add(ManufacturerRequestDTO,HttpSession)
+	{GET [/manufacturers]}: getAll()
+	{GET [/manufacturers/{id}]}: getById(int)
+	{PUT [/manufacturers]}: editManufacturer(HttpSession,ManufacturerEditRequestDTO)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	p.c.OrderController:
+	{PUT [/pay]}: pay(HttpSession,OrderRequestDTO)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	p.c.OrderStatusController:
+	{POST [/users/orderstatus]}: add(HttpSession,OrderStatusRequestDTO)
+	{GET [/users/orderstatus]}: getAll(HttpSession)
+	{PUT [/users/orderstatus]}: edit(HttpSession,OrderStatusEditDTO)
+	{GET [/users/orderstatus/{order_id}]}: getById(int,HttpSession)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	p.c.PaymentMethodController:
+	{GET [/paymentmethod]}: getAll(HttpSession)
+	{PUT [/paymentmethod]}: edit(HttpSession,PaymentMethodEditDTO)
+	{GET [/paymentmethod/{id}]}: getById(int,HttpSession)
+	{POST [/paymentmethod]}: addPaymentMethod(HttpSession,PaymentMethodRequestDTO)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	p.c.ProductController:
+	{POST [/products]}: add(HttpSession,ProductRequestDTO)
+	{POST [/products/filter]}: getAll(ProductFilterRequestDTO)
+	{PUT [/products]}: edit(HttpSession,ProductEditRequestDTO)
+	{GET [/products/{id}/admin]}: getById(int,HttpSession)
+	{GET [/products/{id}]}: getById(int)
+	{DELETE [/products]}: deleteProduct(HttpSession,ProductDeleteRequestDTO)
+	{POST [/products/filter/admin]}: getAllAdmin(HttpSession,ProductFilterRequestDTO)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	p.c.SubCategoryController:
+	{GET [/subcategories]}: getAll()
+	{PUT [/subcategories]}: edit(HttpSession,SubCategoryEditRequestDTO)
+	{GET [/subcategories/{id}]}: getById(int)
+	{POST [/subcategories]}: addNewSubcategory(HttpSession,SubCategoryRequestDTO)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	p.c.UserController:
+	{POST [/users]}: register(UserRegisterRequestDTO)
+	{GET [/users/{id}]}: getById(int,HttpSession)
+	{PUT [/users]}: login(UserLoginDTO,HttpSession)
+	{POST [/admins/{id_user}]}: makeAdmin(int,HttpSession)
+	{PUT [/admins/{id_user}]}: removeAdmin(int,HttpSession)
+	{DELETE [/admins/{user_id}]}: deleteUser(int,HttpSession)
+	{POST [/admins/users]}: getAllUsers(UserReportRequestDTO,HttpSession)
+	{POST [/admins/daily]}: getDailyOrders(OrderDailyReportRequestDTO,HttpSession)
+	{POST [/admins/yearly]}: getYearlyOrders(OrderYearlyReportRequestDTO,HttpSession)
+	{PUT [/users/order]}: editOrder(OrderEditRequestDTO,HttpSession)
+	{DELETE [/users/{id}]}: softDelete(int,HttpSession)
+	{POST [/logout]}: logout(HttpSession)
+	{PUT [/users/edit]}: editUser(UserEditRequestDTO,HttpSession)
+	{POST [/users/edit]}: editPasswordUser(UserEditPasswordDTO,HttpSession)
+	{POST [/admins/monthly]}: getMonthlyOrders(OrderMonthlyReportRequestDTO,HttpSession)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	s.d.s.w.Swagger2ControllerWebMvc:
+	{GET [/v2/api-docs], produces [application/json || application/hal+json]}: getDocumentation(String,HttpServletRequest)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	s.d.s.w.ApiResourceController:
+	{GET [/swagger-resources/configuration/security], produces [application/json]}: securityConfiguration()
+	{GET [/swagger-resources/configuration/ui], produces [application/json]}: uiConfiguration()
+	{GET [/swagger-resources], produces [application/json]}: swaggerResources()
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	s.d.o.w.OpenApiControllerWebMvc:
+	{GET [/v3/api-docs], produces [application/json || application/hal+json]}: getDocumentation(String,HttpServletRequest)
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.m.m.a.RequestMappingHandlerMapping - 
+	o.s.b.a.w.s.e.BasicErrorController:
+	{ [/error]}: error(HttpServletRequest)
+	{ [/error], produces [text/html]}: errorHtml(HttpServletRequest,HttpServletResponse)
+2021-04-02 22:37:05 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 60 mappings in 'requestMappingHandlerMapping'
+2021-04-02 22:37:05 [restartedMain] INFO  o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2021-04-02 22:37:05 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2021-04-02 22:37:05 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.h.SimpleUrlHandlerMapping - Mapped [/swagger-ui/] onto ParameterizableViewController [view="forward:/swagger-ui/index.html"]
+2021-04-02 22:37:05 [restartedMain] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/swagger-ui/] in 'viewControllerHandlerMapping'
+2021-04-02 22:37:05 [restartedMain] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Detected 0 mappings in 'beanNameHandlerMapping'
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.f.s.RouterFunctionMapping - 0 RouterFunction(s) in 'routerFunctionMapping'
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.h.SimpleUrlHandlerMapping - Mapped [/explorer/**] onto ResourceHttpRequestHandler [Classpath [META-INF/spring-data-rest/hal-explorer/]]
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.h.SimpleUrlHandlerMapping - Mapped [/swagger-ui/**] onto ResourceHttpRequestHandler [Classpath [META-INF/resources/webjars/springfox-swagger-ui/]]
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.h.SimpleUrlHandlerMapping - Mapped [/webjars/**] onto ResourceHttpRequestHandler [Classpath [META-INF/resources/webjars/]]
+2021-04-02 22:37:05 [restartedMain] TRACE o.s.w.s.h.SimpleUrlHandlerMapping - Mapped [/**] onto ResourceHttpRequestHandler [Classpath [META-INF/resources/], Classpath [resources/], Classpath [static/], Classpath [public/], ServletContext [/]]
+2021-04-02 22:37:05 [restartedMain] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/explorer/**, /swagger-ui/**, /webjars/**, /**] in 'resourceHandlerMapping'
+2021-04-02 22:37:05 [restartedMain] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2021-04-02 22:37:06 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8888 (http) with context path ''
+2021-04-02 22:37:08 [restartedMain] INFO  pisibg.PisibgApplication - Started PisibgApplication in 6.585 seconds (JVM running for 7.533)
+2021-04-02 22:39:06 [SpringContextShutdownHook] INFO  o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2021-04-02 22:39:06 [SpringContextShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2021-04-02 22:39:06 [SpringContextShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2021-04-02 22:39:06 [SpringContextShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

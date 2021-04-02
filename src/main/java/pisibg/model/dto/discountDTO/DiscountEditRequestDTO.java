@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,9 +31,11 @@ public class DiscountEditRequestDTO {
     private String newDescription;
     @NotNull(message = "Percent cannot be null!")
     @Min(value=1, message="Minimum percent should be 1")
+    @Max(value=50, message="Maximum percent should be 50")
     private Integer currentPercent;
     @NotNull(message = "New percent cannot be null!")
     @Min(value=1, message="New minimum percent should be 1")
+    @Max(value=50, message="Maximum percent should be 50")
     private Integer newPercent;
     @NotNull(message = "Current fromDate field cannot be null!")
     @JsonSerialize(using = LocalDateTimeSerializer.class)

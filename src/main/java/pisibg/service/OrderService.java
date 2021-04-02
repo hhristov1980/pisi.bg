@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.NotFoundException;
 import pisibg.exceptions.PaymentFailedException;
+import pisibg.model.dao.UserDAO;
 import pisibg.model.dto.orderDTO.OrderRequestDTO;
 import pisibg.model.dto.orderDTO.OrderResponseDTO;
 import pisibg.model.dto.productDTO.ProductOrderResponseDTO;
@@ -16,6 +17,7 @@ import pisibg.utility.RoundFloat;
 import pisibg.utility.Validator;
 
 import javax.transaction.Transactional;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -38,9 +40,11 @@ public class OrderService {
     private ProductRepository productRepository;
     @Autowired
     private DiscountRepository discountRepository;
+    @Autowired
+    private UserDAO userDAO;
 
     @Transactional
-    public OrderResponseDTO pay(OrderRequestDTO orderRequestDTO, Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) {
+    public OrderResponseDTO pay(OrderRequestDTO orderRequestDTO, Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) throws SQLException {
         if (new Random().nextInt(100) < SUCCESS_CHANCE) {
             if (!paymentMethodRepository.existsById(orderRequestDTO.getPaymentMethodId())) {
                 throw new NotFoundException("Payment method not found!");
@@ -60,7 +64,7 @@ public class OrderService {
                 order.setNetValue(order.getGrossValue() - order.getDiscount());
                 Payment payment = addPayment(order, user.getId());
                 order.setPaid(true);
-                updateTurnoverAndPersonalDiscountPercent(order.getNetValue(), user.getId());
+                userDAO.updateTurnoverAndPersonalDiscountPercent(order.getNetValue(), user.getId());
                 OrderStatus orderStatus = orderStatusRepository.getOne(Constants.FIRST_ORDER_STATUS);
                 order.setOrderStatus(orderStatus);
                 Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(orderRequestDTO.getPaymentMethodId());
@@ -134,22 +138,6 @@ public class OrderService {
         payment.setStatus("OK");
         payment.setTransactionId(payment.transactionIdGenerator());
         return payment;
-    }
-
-    private void updateTurnoverAndPersonalDiscountPercent(double orderAmount, int userId) {
-        User user = userRepository.getOne(userId);
-        double currentTurnover = user.getTurnover();
-        double newTurnover = currentTurnover + orderAmount;
-        user.setTurnover(newTurnover);
-        //put comment here
-        int coefficientTurnoverToIncreaseStep = (int) (newTurnover / Constants.DISCOUNT_INCREASE_TURNOVER_STEP);
-        int currentPersonalDiscountPercent = user.getPersonalDiscount();
-        if (currentPersonalDiscountPercent + coefficientTurnoverToIncreaseStep <= Constants.MAX_PERSONAL_DISCOUNT_PERCENT) {
-            int newPersonalDiscountPercent = currentPersonalDiscountPercent + coefficientTurnoverToIncreaseStep;
-            user.setPersonalDiscount(newPersonalDiscountPercent);
-        }
-        userRepository.save(user);
-
     }
 
     private Set<Product> createProductSet(Map<Integer, Queue<ProductOrderResponseDTO>> cartSet) {
