@@ -12,6 +12,9 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 import pisibg.model.pojo.Order;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Setter
@@ -19,14 +22,22 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Component
 public class OrderDailyReportRequestDTO {
+    @NotNull(message = "From date cannot be null!")
+    @NotBlank(message ="From date is mandatory!")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("fromDate")
     private LocalDateTime fromDate;
+    @NotNull(message = "To date cannot be null!")
+    @NotBlank(message ="To date is mandatory!")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("toDate")
     private LocalDateTime toDate;
+    @NotNull(message = "Page cannot be null!")
+    @Min(value=1, message="Min page value should be 1")
     int page;
+    @NotNull(message = "Orders per page cannot be null!")
+    @Min(value=1, message="Min orders per page value should be 1")
     int ordersPerPage;
 }

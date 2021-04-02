@@ -8,7 +8,7 @@ import pisibg.utility.SaleDiscountsAutomaticallyDeactivation;
 public class PisibgApplication {
 
     public static void main(String[] args) {
-        
+
     }
 
 }

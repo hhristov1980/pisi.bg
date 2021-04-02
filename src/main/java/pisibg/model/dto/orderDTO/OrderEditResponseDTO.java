@@ -5,10 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
+import pisibg.model.dto.productDTO.ProductOrderResponseDTO;
 import pisibg.model.pojo.Order;
 import pisibg.model.pojo.Product;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 @Setter
@@ -27,17 +30,18 @@ public class OrderEditResponseDTO {
     private double netValue;
     @JsonProperty(value = "isPaid")
     private boolean isPaid;
-    private Set<Product> products;
 
     public OrderEditResponseDTO(Order order){
         id =  order.getId();
         userNames = order.getUser().getFirstName()+" "+order.getUser().getLastName();
         address = order.getAddress();
+        orderStatus=order.getOrderStatus().getType();
         paymentMethodType = order.getPaymentMethod().getType();
         createdAt = order.getCreatedAt();
         grossValue = order.getGrossValue();
         discount = order.getDiscount();
         netValue = order.getNetValue();
         isPaid = order.isPaid();
+
     }
 }

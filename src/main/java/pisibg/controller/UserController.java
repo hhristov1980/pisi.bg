@@ -10,6 +10,7 @@ import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.MyServerException;
 //import pisibg.model.pojo.Payment;
 import pisibg.model.dto.orderDTO.*;
+import pisibg.model.dto.productDTO.ProductOrderResponseDTO;
 import pisibg.model.dto.userDTO.*;
 import pisibg.model.pojo.User;
 import pisibg.service.UserService;
@@ -18,7 +19,10 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,7 +76,7 @@ public class UserController extends AbstractController {
         }
     }
 
-    @PostMapping("/admin/{id_user}")
+    @PostMapping("/admins/{id_user}")
     public UserRegisterResponseDTO makeAdmin(@PathVariable int id_user, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -86,7 +90,7 @@ public class UserController extends AbstractController {
         }
     }
 
-    @PutMapping("/admin/{id_user}")
+    @PutMapping("/admins/{id_user}")
     public UserRegisterResponseDTO removeAdmin(@PathVariable int id_user, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -100,7 +104,7 @@ public class UserController extends AbstractController {
         }
     }
 
-    @DeleteMapping("/admin/{user_id}")
+    @DeleteMapping("/admins/{user_id}")
     public UserEditResponseDTO deleteUser(@PathVariable int user_id, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -113,14 +117,18 @@ public class UserController extends AbstractController {
             try {
                 return userService.deleteUser(admin_id, user_id);
             } catch (SQLException throwables) {
-                String stacktrace = ExceptionUtils.getStackTrace(throwables);
-                log.log(Level.ALL,stacktrace);
+                StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < stackTraceElements.length; i++) {
+                    str.append(Arrays.toString(stackTraceElements)+" ");
+                }
+                log.log(Level.ALL, String.valueOf(str));
                 throw new MyServerException("Something get wrong!");
             }
         }
     }
 
-    @PostMapping("/admin/users")
+    @PostMapping("/admins/users")
     public List<UserRegisterResponseDTO> getAllUsers(@Valid @RequestBody UserReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -132,15 +140,19 @@ public class UserController extends AbstractController {
             try {
                 return userService.getAllUsers(dto);
             } catch (SQLException throwables) {
-                String stacktrace = ExceptionUtils.getStackTrace(throwables);
-                log.log(Level.ALL,stacktrace);
+                StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < stackTraceElements.length; i++) {
+                    str.append(Arrays.toString(stackTraceElements)+" ");
+                }
+                log.log(Level.ALL, String.valueOf(str));
                 throw new MyServerException("Something get wrong!");
             }
         }
     }
 
 
-    @PostMapping("/admin/daily")
+    @PostMapping("/admins/daily")
     public List<OrderReportDTO> getDailyOrders(@Valid @RequestBody OrderDailyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -154,14 +166,18 @@ public class UserController extends AbstractController {
                 LocalDateTime to = dto.getToDate();
                 return userService.getDailyOrders(from, to, dto);
             } catch (SQLException throwables) {
-                String stacktrace = ExceptionUtils.getStackTrace(throwables);
-                log.log(Level.ALL,stacktrace);
+                StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < stackTraceElements.length; i++) {
+                    str.append(Arrays.toString(stackTraceElements)+" ");
+                }
+                log.log(Level.ALL, String.valueOf(str));
                 throw new MyServerException("Something get wrong!");
             }
         }
     }
 
-    @PostMapping("/admin/monthly")
+    @PostMapping("/admins/monthly")
     public List<OrderReportDTO> getMonthlyOrders(@Valid @RequestBody OrderMonthlyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -173,14 +189,18 @@ public class UserController extends AbstractController {
             try {
                 return userService.getMonhlyOrders(dto);
             } catch (SQLException throwables) {
-                String stacktrace = ExceptionUtils.getStackTrace(throwables);
-                log.log(Level.ALL,stacktrace);
+                StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < stackTraceElements.length; i++) {
+                    str.append(Arrays.toString(stackTraceElements)+" ");
+                }
+                log.log(Level.ALL, String.valueOf(str));
                 throw new MyServerException("Something get wrong!");
             }
         }
     }
 
-    @PostMapping("/admin/yearly")
+    @PostMapping("/admins/yearly")
     public List<OrderReportDTO> getYearlyOrders(@Valid @RequestBody OrderYearlyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -192,15 +212,19 @@ public class UserController extends AbstractController {
             try {
                 return userService.getYearlyOrders(dto);
             } catch (SQLException throwables) {
-                String stacktrace = ExceptionUtils.getStackTrace(throwables);
-                log.log(Level.ALL,stacktrace);
+                StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < stackTraceElements.length; i++) {
+                    str.append(Arrays.toString(stackTraceElements)+" ");
+                }
+                log.log(Level.ALL, String.valueOf(str));
                 throw new MyServerException("Something get wrong!");
             }
         }
     }
 
-    @PutMapping("/users/order/{order_id}")
-    public OrderEditResponseDTO editOrder(@PathVariable int order_id,@Valid @RequestBody OrderEditRequestDTO orderDto, HttpSession ses) {
+    @PutMapping("/users/order")
+    public OrderEditResponseDTO editOrder(@Valid @RequestBody OrderEditRequestDTO orderDto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
         } else {
@@ -209,7 +233,7 @@ public class UserController extends AbstractController {
                 throw new DeniedPermissionException("You dont have permission for that!");
             }
             int admin_id = user.getId();
-            return userService.editOrder(admin_id, order_id, orderDto);
+            return userService.editOrder(admin_id, orderDto);
         }
     }
 

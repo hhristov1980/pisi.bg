@@ -46,9 +46,6 @@ public class OrderService {
     @Transactional
     public OrderResponseDTO pay(OrderRequestDTO orderRequestDTO, Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) throws SQLException {
         if (new Random().nextInt(100) < SUCCESS_CHANCE) {
-            if (!Validator.isValidInteger(orderRequestDTO.getPaymentMethodId())) {
-                throw new BadRequestException("Please enter number greater than 0");
-            }
             if (!paymentMethodRepository.existsById(orderRequestDTO.getPaymentMethodId())) {
                 throw new NotFoundException("Payment method not found!");
             }

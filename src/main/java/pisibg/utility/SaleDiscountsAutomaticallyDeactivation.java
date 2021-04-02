@@ -34,8 +34,6 @@ public class SaleDiscountsAutomaticallyDeactivation extends Thread{
             } catch (InterruptedException e) {
                 e.printStackTrace(); //TODO HIDE STACK TRACE
             }
-
-
         }
     }
 

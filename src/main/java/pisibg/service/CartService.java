@@ -100,12 +100,11 @@ public class CartService {
                     } else {
                         discountPercent = discountRepository.getById(discount.getId()).getPercent();
                     }
-                    priceWithoutDiscount += productPrice * quantity;
-                    discountAmount += productPrice * quantity * (discountPercent * 1.0 / 100);
+                    priceWithoutDiscount += RoundFloat.round((productPrice * quantity), Constants.TWO_DECIMAL_PLACES);
+                    discountAmount += RoundFloat.round(priceWithoutDiscount * discountPercent * 1.0 / 100, Constants.TWO_DECIMAL_PLACES);
                 }
             }
-
-            priceAfterDiscount = priceWithoutDiscount - discountAmount;
+            priceAfterDiscount = RoundFloat.round((priceWithoutDiscount - discountAmount),2);
             CartPriceResponseDTO cartPriceResponseDTO = new CartPriceResponseDTO();
             cartPriceResponseDTO.setProducts(allProducts);
             cartPriceResponseDTO.setPriceWithoutDiscount(priceWithoutDiscount);
