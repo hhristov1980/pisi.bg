@@ -7,7 +7,6 @@ public class RoundFloat {
             divider*=10;
         }
         double sum = (double) Math.round(amount*divider)/divider;
-        System.out.println(sum);
-        return amount;
+        return sum;
     }
 }

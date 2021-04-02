@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,6 +27,7 @@ public class DiscountRequestDTO {
     private String description;
     @NotNull(message = "Percent cannot be null!")
     @Min(value=1, message="Minimum percent should be 1")
+    @Max(value=50, message="Maximum percent should be 50")
     private Integer percent;
     @NotNull(message = "From date field cannot be null!")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
