@@ -21,7 +21,6 @@ import java.util.Optional;
 @Setter
 @Getter
 @Component
-@Service
 public class SaleDiscountsAutomaticallyDeactivation extends Thread{
     @Autowired
     private DiscountRepository discountRepository;
@@ -35,11 +34,10 @@ public class SaleDiscountsAutomaticallyDeactivation extends Thread{
         while (true){
             try {
                 Thread.sleep(DISCOUNT_CHECKER_INTERVAL);
+                discountChecker();
             } catch (InterruptedException e) {
                 e.printStackTrace(); //TODO HIDE STACK TRACE
             }
-            discountChecker();
-
         }
     }
 

@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Queue;
@@ -116,8 +117,12 @@ public class UserController extends AbstractController {
             try {
                 return userService.deleteUser(admin_id, user_id);
             } catch (SQLException throwables) {
-                String stacktrace = ExceptionUtils.getStackTrace(throwables);
-                log.log(Level.ALL,stacktrace);
+                StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < stackTraceElements.length; i++) {
+                    str.append(Arrays.toString(stackTraceElements)+" ");
+                }
+                log.log(Level.ALL, String.valueOf(str));
                 throw new MyServerException("Something get wrong!");
             }
         }
@@ -135,8 +140,12 @@ public class UserController extends AbstractController {
             try {
                 return userService.getAllUsers(dto);
             } catch (SQLException throwables) {
-                String stacktrace = ExceptionUtils.getStackTrace(throwables);
-                log.log(Level.ALL,stacktrace);
+                StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < stackTraceElements.length; i++) {
+                    str.append(Arrays.toString(stackTraceElements)+" ");
+                }
+                log.log(Level.ALL, String.valueOf(str));
                 throw new MyServerException("Something get wrong!");
             }
         }
@@ -157,8 +166,12 @@ public class UserController extends AbstractController {
                 LocalDateTime to = dto.getToDate();
                 return userService.getDailyOrders(from, to, dto);
             } catch (SQLException throwables) {
-                String stacktrace = ExceptionUtils.getStackTrace(throwables);
-                log.log(Level.ALL,stacktrace);
+                StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < stackTraceElements.length; i++) {
+                    str.append(Arrays.toString(stackTraceElements)+" ");
+                }
+                log.log(Level.ALL, String.valueOf(str));
                 throw new MyServerException("Something get wrong!");
             }
         }
@@ -176,8 +189,12 @@ public class UserController extends AbstractController {
             try {
                 return userService.getMonhlyOrders(dto);
             } catch (SQLException throwables) {
-                String stacktrace = ExceptionUtils.getStackTrace(throwables);
-                log.log(Level.ALL,stacktrace);
+                StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < stackTraceElements.length; i++) {
+                    str.append(Arrays.toString(stackTraceElements)+" ");
+                }
+                log.log(Level.ALL, String.valueOf(str));
                 throw new MyServerException("Something get wrong!");
             }
         }
@@ -195,8 +212,12 @@ public class UserController extends AbstractController {
             try {
                 return userService.getYearlyOrders(dto);
             } catch (SQLException throwables) {
-                String stacktrace = ExceptionUtils.getStackTrace(throwables);
-                log.log(Level.ALL,stacktrace);
+                StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < stackTraceElements.length; i++) {
+                    str.append(Arrays.toString(stackTraceElements)+" ");
+                }
+                log.log(Level.ALL, String.valueOf(str));
                 throw new MyServerException("Something get wrong!");
             }
         }
