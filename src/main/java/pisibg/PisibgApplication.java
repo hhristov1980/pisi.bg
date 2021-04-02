@@ -9,9 +9,7 @@ public class PisibgApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(PisibgApplication.class, args);
-        SaleDiscountsAutomaticallyDeactivation saleDiscountsAutomaticallyDeactivation = new SaleDiscountsAutomaticallyDeactivation();
-        saleDiscountsAutomaticallyDeactivation.setDaemon(true);
-        saleDiscountsAutomaticallyDeactivation.start();
+
     }
 
 }
