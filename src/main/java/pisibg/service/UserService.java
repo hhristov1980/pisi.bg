@@ -10,19 +10,19 @@ import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.NotFoundException;
 import pisibg.model.dao.UserDAO;
 import pisibg.model.dto.orderDTO.*;
+import pisibg.model.dto.productDTO.ProductOrderResponseDTO;
 import pisibg.model.dto.userDTO.*;
 import pisibg.model.pojo.Order;
 import pisibg.model.pojo.User;
 import pisibg.model.repository.OrderRepository;
 import pisibg.model.repository.OrderStatusRepository;
 import pisibg.model.repository.UserRepository;
+import pisibg.utility.Validator;
 
 import javax.transaction.Transactional;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -92,6 +92,9 @@ public class UserService {
 
         if (userRepository.findByEmail(userDTO.getEmail()) != null) {
             throw new BadRequestException("Email already exists");
+        }
+        if(userDTO.getPhoneNumber().length()!=10){
+            throw new BadRequestException("Phone is not valid!");
         }
 
         PasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -180,12 +183,20 @@ public class UserService {
             User user = u.get();
             PasswordEncoder encoder = new BCryptPasswordEncoder();
             if (encoder.matches(userDto.getPassword(), user.getPassword())) {
-                user.setAddress(userDto.getAddress());
-                user.setTownName(userDto.getTownName());
-                user.setAddress(userDto.getAddress());
+                if(Validator.isValidString(userDto.getTownName())) {
+                    user.setTownName(userDto.getTownName());
+                }
+                if(Validator.isValidString(userDto.getAddress())) {
+                    user.setAddress(userDto.getAddress());
+                }
                 user.setSubscribed(userDto.isSubscribed());
-                user.setPhoneNumber(userDto.getPhoneNumber());
-                user.setFirstName(userDto.getFirstName());
+                if(userDto.getPhoneNumber()!=null && userDto.getPhoneNumber().length()==10) {
+                    user.setPhoneNumber(userDto.getPhoneNumber());
+                }
+                if(Validator.isValidString(userDto.getFirstName())) {
+                    user.setFirstName(userDto.getFirstName());
+                }
+                if(Validator.isValidString(userDto.getLastName()))
                 user.setLastName(userDto.getLastName());
                 if (userDto.getEmail().matches(REGEX_EMAIL)) {
                     if (userRepository.findByEmail(userDto.getEmail()) == null ||
@@ -194,8 +205,6 @@ public class UserService {
                     } else {
                         throw new BadRequestException("Email is already in use!");
                     }
-                } else {
-                    throw new BadRequestException("Email is not valid!");
                 }
                 userRepository.save(user);
                 return new UserEditResponseDTO(user);
@@ -290,26 +299,23 @@ public class UserService {
             Order order = o.get();
             User user = u.get();
             if (admin.isAdmin()) {
-                if(orderDto.getAddress()!=null) {
+                if(Validator.isValidString(orderDto.getAddress())) {
                     order.setAddress(orderDto.getAddress());
                 }
                 if(orderDto.getGrossValue()>=0) {
                     order.setGrossValue(orderDto.getGrossValue());
-                }else {
-                    throw new BadRequestException("Price can't be negative value");
                 }
                 if(orderDto.getNetValue()>=0) {
                     order.setNetValue(orderDto.getNetValue());
-                }else {
-                    throw new BadRequestException("Price can't be negative value");
                 }
                 if(orderDto.getDiscount()>=0) {
                     order.setDiscount(orderDto.getDiscount());
-                }else {
-                    throw new BadRequestException("Price can't be negative value");
                 }
+
                 order.setPaid(orderDto.isPaid());
-                order.setOrderStatus(orderStatusRepository.getOne(orderDto.getOrderStatusId()));
+                if(Validator.isValidInteger(orderDto.getOrderStatusId())) {
+                    order.setOrderStatus(orderStatusRepository.getOne(orderDto.getOrderStatusId()));
+                }
                 orderRepository.save(order);
                 user.setTurnover(user.getTurnover() - order.getNetValue());
                 userRepository.save(user);

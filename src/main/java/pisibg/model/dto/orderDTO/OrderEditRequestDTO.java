@@ -9,17 +9,26 @@ import org.springframework.stereotype.Component;
 import pisibg.model.pojo.OrderStatus;
 
 import javax.persistence.JoinColumn;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @Component
 public class OrderEditRequestDTO {
+    @NotNull(message = "Id cannot be null!")
+    @Min(value=1, message="Min order id value should be 1")
     private int id;
+    @Min(value=1, message="Min order status id value should be 1")
     private int orderStatusId;
     private String address;
+    @Min(value=1, message="Min gross value value should be 1")
     private double grossValue;
+    @Min(value=1, message="Min discount value should be 1")
     private double discount;
+    @Min(value=1, message="Min net value should be 1")
     private double netValue;
     @JsonProperty(value = "isPaid")
     private boolean isPaid;

@@ -10,6 +10,7 @@ import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.MyServerException;
 //import pisibg.model.pojo.Payment;
 import pisibg.model.dto.orderDTO.*;
+import pisibg.model.dto.productDTO.ProductOrderResponseDTO;
 import pisibg.model.dto.userDTO.*;
 import pisibg.model.pojo.User;
 import pisibg.service.UserService;
@@ -18,7 +19,9 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,7 +75,7 @@ public class UserController extends AbstractController {
         }
     }
 
-    @PostMapping("/admin/{id_user}")
+    @PostMapping("/admins/{id_user}")
     public UserRegisterResponseDTO makeAdmin(@PathVariable int id_user, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -86,7 +89,7 @@ public class UserController extends AbstractController {
         }
     }
 
-    @PutMapping("/admin/{id_user}")
+    @PutMapping("/admins/{id_user}")
     public UserRegisterResponseDTO removeAdmin(@PathVariable int id_user, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -100,7 +103,7 @@ public class UserController extends AbstractController {
         }
     }
 
-    @DeleteMapping("/admin/{user_id}")
+    @DeleteMapping("/admins/{user_id}")
     public UserEditResponseDTO deleteUser(@PathVariable int user_id, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -120,7 +123,7 @@ public class UserController extends AbstractController {
         }
     }
 
-    @PostMapping("/admin/users")
+    @PostMapping("/admins/users")
     public List<UserRegisterResponseDTO> getAllUsers(@Valid @RequestBody UserReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -140,7 +143,7 @@ public class UserController extends AbstractController {
     }
 
 
-    @PostMapping("/admin/daily")
+    @PostMapping("/admins/daily")
     public List<OrderReportDTO> getDailyOrders(@Valid @RequestBody OrderDailyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -161,7 +164,7 @@ public class UserController extends AbstractController {
         }
     }
 
-    @PostMapping("/admin/monthly")
+    @PostMapping("/admins/monthly")
     public List<OrderReportDTO> getMonthlyOrders(@Valid @RequestBody OrderMonthlyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
@@ -180,7 +183,7 @@ public class UserController extends AbstractController {
         }
     }
 
-    @PostMapping("/admin/yearly")
+    @PostMapping("/admins/yearly")
     public List<OrderReportDTO> getYearlyOrders(@Valid @RequestBody OrderYearlyReportRequestDTO dto, HttpSession ses) {
         if (sessionManager.getLoggedUser(ses) == null) {
             throw new AuthenticationException("You have to be logged in!");
