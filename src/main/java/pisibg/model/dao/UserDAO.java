@@ -246,8 +246,8 @@ public class UserDAO extends AbstractDAO {
             try (Connection connection1 = jdbcTemplate.getDataSource().getConnection();
                  PreparedStatement ps1 = connection.prepareStatement(query2)) {
                 ps1.setDouble(1, newTurnover);
-                ps1.setInt(1, newPersonalDiscountPercent);
-                ps1.setInt(2, userId);
+                ps1.setInt(2, newPersonalDiscountPercent);
+                ps1.setInt(3, userId);
                 ps1.executeUpdate();
             }
         }
