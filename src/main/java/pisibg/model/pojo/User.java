@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pisibg.model.dto.userDTO.UserRegisterRequestDTO;
+import pisibg.utility.Constants;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -52,7 +53,8 @@ public class User {
         address = userDTO.getAddress();
         createdAt = LocalDateTime.now();
         isSubscribed = userDTO.isSubscribed();
-        personalDiscount = 5;
+        turnover = Constants.START_TURNOVER;
+        personalDiscount = Constants.START_PERSONAL_DISCOUNT_PERCENT;
         isAdmin = false;
     }
 }
