@@ -19,6 +19,7 @@ import pisibg.model.repository.UserRepository;
 import pisibg.utility.Constants;
 import pisibg.utility.RoundFloat;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -31,6 +32,7 @@ public class CartService {
     private UserRepository userRepository;
     @Autowired
     private DiscountRepository discountRepository;
+    final DecimalFormat df = new DecimalFormat("#.##");
 
 
     public ProductOrderResponseDTO addProd(ProductOrderRequestDTO orderDto, Map<Integer, Queue<ProductOrderResponseDTO>> cart) {
@@ -81,9 +83,9 @@ public class CartService {
     }
 
     public CartPriceResponseDTO checkout(Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) {
-        double priceWithoutDiscount = RoundFloat.round(0.0,Constants.TWO_DECIMAL_PLACES);
-        double priceAfterDiscount = RoundFloat.round(0.0,Constants.TWO_DECIMAL_PLACES);
-        double discountAmount = RoundFloat.round(0.0,Constants.TWO_DECIMAL_PLACES);
+        double priceWithoutDiscount = RoundFloat.round(0.0, Constants.TWO_DECIMAL_PLACES);
+        double priceAfterDiscount = RoundFloat.round(0.0, Constants.TWO_DECIMAL_PLACES);
+        double discountAmount = RoundFloat.round(0.0, Constants.TWO_DECIMAL_PLACES);
         if (!cart.isEmpty()) {
             Set<Product> allProducts = new HashSet<>();
             for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {
@@ -97,24 +99,33 @@ public class CartService {
                     int discountPercent = 0;
                     if (discount == null) {
                         discountPercent = user.getPersonalDiscount();
+                        System.out.println(discountPercent);
                     } else {
                         discountPercent = discountRepository.getById(discount.getId()).getPercent();
+                        System.out.println(discountPercent);
                     }
-                    priceWithoutDiscount += RoundFloat.round((productPrice * quantity), Constants.TWO_DECIMAL_PLACES);
-                    discountAmount += RoundFloat.round(priceWithoutDiscount * discountPercent * 1.0 / 100, Constants.TWO_DECIMAL_PLACES);
+                    System.out.println(discountAmount);
+                    System.out.println(discountPercent);
+                    priceWithoutDiscount+=productPrice*quantity;
+                    discountAmount+=productPrice*discountPercent*quantity/100.0;
+
                 }
             }
-            priceAfterDiscount = RoundFloat.round((priceWithoutDiscount - discountAmount),2);
+            priceAfterDiscount = priceWithoutDiscount-discountAmount;
+            priceWithoutDiscount=RoundFloat.round(priceWithoutDiscount,Constants.TWO_DECIMAL_PLACES);
+            priceAfterDiscount=RoundFloat.round(priceAfterDiscount,Constants.TWO_DECIMAL_PLACES);
+            discountAmount=RoundFloat.round(discountAmount,Constants.TWO_DECIMAL_PLACES);
             CartPriceResponseDTO cartPriceResponseDTO = new CartPriceResponseDTO();
             cartPriceResponseDTO.setProducts(allProducts);
             cartPriceResponseDTO.setPriceWithoutDiscount(priceWithoutDiscount);
             cartPriceResponseDTO.setDiscountAmount(discountAmount);
             cartPriceResponseDTO.setPriceAfterDiscount(priceAfterDiscount);
             return cartPriceResponseDTO;
-        } else {
-            throw new NotFoundException("Cart not found!");
+            } else{
+                throw new NotFoundException("Cart not found!");
+            }
         }
-    }
+
 
     @Transactional
     public boolean checkProductsAndRemoveFromDB(Map<Integer, Queue<ProductOrderResponseDTO>> cart) {

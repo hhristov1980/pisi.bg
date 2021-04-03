@@ -262,8 +262,12 @@ public class UserController extends AbstractController {
             try {
                 return userService.softDelete(id);
             } catch (SQLException throwables) {
-                String stacktrace = ExceptionUtils.getStackTrace(throwables);
-                log.log(Level.ALL,stacktrace);
+                StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < stackTraceElements.length; i++) {
+                    str.append(Arrays.toString(stackTraceElements)+" ");
+                }
+                log.log(Level.ALL, String.valueOf(str));
                 throw new MyServerException("Something get wrong!");
             }
         }
