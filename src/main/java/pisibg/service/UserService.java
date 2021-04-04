@@ -59,7 +59,7 @@ public class UserService {
         return usersDto;
     }
 
-    public List<OrderReportDTO> getMonhlyOrders(OrderMonthlyReportRequestDTO dto) throws SQLException {
+    public List<OrderReportDTO> getMonthlyOrders(OrderMonthlyReportRequestDTO dto) throws SQLException {
         List<Order> orders = userDAO.monthlyOrders(dto);
         List<OrderReportDTO> usersDto = new ArrayList<>();
         for (Order o : orders) {
@@ -106,8 +106,8 @@ public class UserService {
     }
 
 
-    public UserWithoutPassDTO login(UserLoginDTO dto) {
-        User user = userRepository.findByEmail(dto.getEmail());
+    public UserWithoutPassDTO login(UserLoginDTO dto) throws SQLException {
+        User user = userDAO.returnLoginDetails(dto);
         if (user == null) {
             throw new AuthenticationException("Wrong credentials");
         } else {

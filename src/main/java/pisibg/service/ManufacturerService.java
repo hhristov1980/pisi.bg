@@ -22,9 +22,9 @@ public class ManufacturerService {
     public ManufacturerResponseDTO add(ManufacturerRequestDTO manufacturerRequestDTO) {
 
         String name = manufacturerRequestDTO.getProducerName();
-        if (!Validator.isValidString(name)) {
-            throw new BadRequestException("You have entered an empty text!");
-        }
+//        if (!Validator.isValidString(name)) {
+//            throw new BadRequestException("You have entered an empty text!");
+//        }
         if (manufacturerRepository.findByProducerName(name) != null) {
             throw new BadRequestException("Manufacturer already exists");
         }
@@ -34,21 +34,21 @@ public class ManufacturerService {
     }
 
     public ManufacturerResponseDTO edit(ManufacturerEditRequestDTO manufacturerEditRequestDTO) {
-        if (!(Validator.isValidString(manufacturerEditRequestDTO.getCurrentProducerName()) || (!Validator.isValidString(manufacturerEditRequestDTO.getNewProducerName())))) {
-            throw new BadRequestException("You have entered and empty text!");
-        }
+//        if (!(Validator.isValidString(manufacturerEditRequestDTO.getCurrentProducerName()) || (!Validator.isValidString(manufacturerEditRequestDTO.getNewProducerName())))) {
+//            throw new BadRequestException("You have entered and empty text!");
+//        }
         if (manufacturerEditRequestDTO.getCurrentProducerName().equals(manufacturerEditRequestDTO.getNewProducerName())) {
             throw new BadRequestException("You didn't make any change!");
         }
-        if (!Validator.isValidInteger(manufacturerEditRequestDTO.getId())) {
-            throw new BadRequestException("Please put number greater than 0!");
-        }
-        if (manufacturerRepository.findById(manufacturerEditRequestDTO.getId()) == null) {
+//        if (!Validator.isValidInteger(manufacturerEditRequestDTO.getId())) {
+//            throw new BadRequestException("Please put number greater than 0!");
+//        }
+        if (manufacturerRepository.getById(manufacturerEditRequestDTO.getId()) == null) {
             throw new NotFoundException("Manufacturer not found");
         }
-        if (!Validator.isValidString(manufacturerEditRequestDTO.getNewProducerName())) {
-            throw new BadRequestException("You have entered an empty text!");
-        }
+//        if (!Validator.isValidString(manufacturerEditRequestDTO.getNewProducerName())) {
+//            throw new BadRequestException("You have entered an empty text!");
+//        }
         if (manufacturerRepository.findByProducerName(manufacturerEditRequestDTO.getNewProducerName()) != null) {
             throw new NotFoundException("Manufacturer with this name already exists");
         }
@@ -71,8 +71,6 @@ public class ManufacturerService {
         return manufacturerResponseDTOList;
     }
 
-
-    //TODO FIX EXCEPTION
     public ManufacturerResponseDTO getById(int manufacturer_id) {
         Manufacturer manufacturer = manufacturerRepository.getById(manufacturer_id);
         if (manufacturer == null) {

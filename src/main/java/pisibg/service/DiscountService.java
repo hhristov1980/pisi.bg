@@ -55,7 +55,8 @@ public class DiscountService {
                 User user = u.get();
                 String email = user.getEmail();
                 if (email.matches(UserService.REGEX_EMAIL)) {
-                    emailService.sendSimpleMessage(user.getEmail(), "Edited discount", discount.getDescription());
+                    emailService.sendSimpleMessage(user.getEmail(), "We have new discount "+discount.getPercent()+"% valid from "+
+                            discount.getFromDate()+" to "+discount.getToDate(), discount.getDescription());
                 }
             }
         }

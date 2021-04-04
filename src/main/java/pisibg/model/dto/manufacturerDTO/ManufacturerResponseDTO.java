@@ -13,9 +13,11 @@ import pisibg.model.pojo.Manufacturer;
 @Component
 public class ManufacturerResponseDTO {
 
+    private int id;
     private String producerName;
 
     public ManufacturerResponseDTO (Manufacturer manufacturer){
+        id = manufacturer.getId();
         producerName = manufacturer.getProducerName();
     }
 }

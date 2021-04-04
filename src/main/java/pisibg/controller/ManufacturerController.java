@@ -52,7 +52,6 @@ public class ManufacturerController extends AbstractController{
         return manufacturerService.getAll();
     }
 
-    //TODO FIX EXCEPTION
     @GetMapping("/manufacturers/{id}")
     public ManufacturerResponseDTO getById(@PathVariable(name = "id") int manufacturerId) {
         return manufacturerService.getById(manufacturerId);

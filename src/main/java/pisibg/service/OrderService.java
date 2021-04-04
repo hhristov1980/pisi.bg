@@ -44,7 +44,7 @@ public class OrderService {
     private UserDAO userDAO;
 
     @Transactional
-    public OrderResponseDTO pay(OrderRequestDTO orderRequestDTO, Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) throws SQLException {
+    public OrderResponseDTO pay(OrderRequestDTO orderRequestDTO, Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) throws SQLException, InterruptedException {
         if (new Random().nextInt(100) < SUCCESS_CHANCE) {
             if (!paymentMethodRepository.existsById(orderRequestDTO.getPaymentMethodId())) {
                 throw new NotFoundException("Payment method not found!");
@@ -123,17 +123,13 @@ public class OrderService {
         return discountAmount;
     }
 
-    public Payment addPayment(Order order, int userId) {
+    public Payment addPayment(Order order, int userId) throws InterruptedException {
         Payment payment = new Payment();
         payment.setCreatedAt(LocalDateTime.now());
         payment.setOrder(order);
         payment.setUser(userRepository.getOne(userId));
         payment.setAmount(order.getNetValue());
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            System.out.println("Thread sleep interupted!");
-        }
+        Thread.sleep(2000);
         payment.setProcessedAt(LocalDateTime.now());
         payment.setStatus("OK");
         payment.setTransactionId(payment.transactionIdGenerator());

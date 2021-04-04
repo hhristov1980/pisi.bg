@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 import pisibg.model.pojo.Order;
 
@@ -23,12 +24,14 @@ import java.time.LocalDateTime;
 @Component
 public class OrderDailyReportRequestDTO {
     @NotNull(message = "From date cannot be null!")
-    @NotBlank(message ="From date is mandatory!")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("fromDate")
     private LocalDateTime fromDate;
     @NotNull(message = "To date cannot be null!")
-    @NotBlank(message ="To date is mandatory!")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -45,7 +45,6 @@ public class ImageController extends AbstractController{
             if (!user.isAdmin()) {
                 throw new DeniedPermissionException("You don't have permission for that!");
             }
-            //TODO fix exceptions
             try {
                 return imageService.upload(file, productId);
             } catch (IOException e) {

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pisibg.exceptions.AuthenticationException;
+import pisibg.exceptions.BadRequestException;
 import pisibg.exceptions.DeniedPermissionException;
 import pisibg.exceptions.MyServerException;
 //import pisibg.model.pojo.Payment;
@@ -43,9 +44,22 @@ public class UserController extends AbstractController {
 
     @PutMapping("/users")
     public UserWithoutPassDTO login(@Valid @RequestBody UserLoginDTO dto, HttpSession ses) {
-        UserWithoutPassDTO responseDto = userService.login(dto);
+        
+        UserWithoutPassDTO responseDto = null;
+        try {
+            responseDto = userService.login(dto);
+        } catch (SQLException throwables) {
+            StackTraceElement[] stackTraceElements = throwables.getStackTrace();
+            StringBuilder str = new StringBuilder();
+            for (int i = 0; i < stackTraceElements.length; i++) {
+                str.append(Arrays.toString(stackTraceElements) + " ");
+            }
+            log.log(Level.ALL, String.valueOf(str));
+            throw new MyServerException("Something get wrong!");
+        }
         sessionManager.loginUser(ses, responseDto.getId());
         return responseDto;
+
     }
 
     @PostMapping("/logout")
@@ -97,7 +111,7 @@ public class UserController extends AbstractController {
         } else {
             User user = sessionManager.getLoggedUser(ses);
             if (!user.isAdmin()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
             }
             int admin_id = user.getId();
             return userService.removeAdmin(admin_id, id_user);
@@ -111,7 +125,7 @@ public class UserController extends AbstractController {
         } else {
             User user = sessionManager.getLoggedUser(ses);
             if (!user.isAdmin()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
             }
             int admin_id = user.getId();
             try {
@@ -135,7 +149,7 @@ public class UserController extends AbstractController {
         } else {
             User user = sessionManager.getLoggedUser(ses);
             if (!user.isAdmin()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
             }
             try {
                 return userService.getAllUsers(dto);
@@ -159,7 +173,7 @@ public class UserController extends AbstractController {
         } else {
             User user = sessionManager.getLoggedUser(ses);
             if (!user.isAdmin()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
             }
             try {
                 LocalDateTime from = dto.getFromDate();
@@ -184,10 +198,10 @@ public class UserController extends AbstractController {
         } else {
             User user = sessionManager.getLoggedUser(ses);
             if (!user.isAdmin()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
             }
             try {
-                return userService.getMonhlyOrders(dto);
+                return userService.getMonthlyOrders(dto);
             } catch (SQLException throwables) {
                 StackTraceElement[] stackTraceElements = throwables.getStackTrace();
                 StringBuilder str = new StringBuilder();
@@ -207,7 +221,7 @@ public class UserController extends AbstractController {
         } else {
             User user = sessionManager.getLoggedUser(ses);
             if (!user.isAdmin()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
             }
             try {
                 return userService.getYearlyOrders(dto);
@@ -230,7 +244,7 @@ public class UserController extends AbstractController {
         } else {
             User user = sessionManager.getLoggedUser(ses);
             if (!user.isAdmin()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
             }
             int admin_id = user.getId();
             return userService.editOrder(admin_id, orderDto);
@@ -244,7 +258,7 @@ public class UserController extends AbstractController {
         } else {
             User user = sessionManager.getLoggedUser(ses);
             if (id != user.getId()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
             }
             return userService.getById(id);
         }
@@ -257,7 +271,7 @@ public class UserController extends AbstractController {
         } else {
             User user = sessionManager.getLoggedUser(ses);
             if (id != user.getId()) {
-                throw new DeniedPermissionException("You dont have permission for that!");
+                throw new DeniedPermissionException("You don't have permission for that!");
             }
             try {
                 return userService.softDelete(id);

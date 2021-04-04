@@ -10,6 +10,7 @@ import pisibg.model.dto.orderDTO.OrderMonthlyReportRequestDTO;
 import pisibg.model.dto.orderDTO.OrderReportDTO;
 import pisibg.model.dto.orderDTO.OrderYearlyReportRequestDTO;
 import pisibg.model.dto.userDTO.UserEditResponseDTO;
+import pisibg.model.dto.userDTO.UserLoginDTO;
 import pisibg.model.dto.userDTO.UserRegisterResponseDTO;
 import pisibg.model.dto.userDTO.UserReportRequestDTO;
 import pisibg.model.pojo.Order;
@@ -251,5 +252,32 @@ public class UserDAO extends AbstractDAO {
                 ps1.executeUpdate();
             }
         }
+    }
+    public User returnLoginDetails(UserLoginDTO userLoginDTO) throws SQLException {
+        String query = "SELECT * FROM users WHERE email = ?;";
+        String email = userLoginDTO.getEmail();
+        try(Connection connection = jdbcTemplate.getDataSource().getConnection();
+        PreparedStatement ps = connection.prepareStatement(query)){
+            ps.setString(1,email);
+            ResultSet resultSet = ps.executeQuery();
+            if(resultSet.next()){
+                User user = new User();
+                user.setId(resultSet.getInt(1));
+                user.setEmail(resultSet.getString(2));
+                user.setPassword(resultSet.getString(3));
+                user.setFirstName(resultSet.getString(4));
+                user.setLastName(resultSet.getString(5));
+                user.setPhoneNumber(resultSet.getString(6));
+                user.setTurnover(resultSet.getDouble(7));
+                user.setPersonalDiscount(resultSet.getInt(8));
+                user.setTownName(resultSet.getString(9));
+                user.setAddress(resultSet.getString(10));
+                user.setCreatedAt(resultSet.getTimestamp(11).toLocalDateTime());
+                user.setAdmin(resultSet.getBoolean(13));
+                user.setSubscribed(resultSet.getBoolean(14));
+                return user;
+            }
+        }
+        return null;
     }
 }

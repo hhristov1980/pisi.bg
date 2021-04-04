@@ -41,7 +41,7 @@ public class OrderController extends AbstractController{
 
             try {
                 return orderService.pay(orderRequestDTO, cart, user);
-            } catch (SQLException throwables) {
+            } catch (SQLException | InterruptedException throwables) {
                 String stacktrace = ExceptionUtils.getStackTrace(throwables);
                 log.log(Level.ALL,stacktrace);
                 throw new MyServerException("Something get wrong!");
