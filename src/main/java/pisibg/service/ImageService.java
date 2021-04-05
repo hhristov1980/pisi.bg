@@ -12,6 +12,7 @@ import pisibg.model.repository.ImageRepository;
 import pisibg.model.repository.ProductRepository;
 import pisibg.utility.Validator;
 
+import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
 import java.nio.file.Files;
 
@@ -32,15 +33,21 @@ public class ImageService {
         if (!productRepository.existsById(productId)) {
             throw new NotFoundException("Product not found! Wrong product_id!");
         }
-        File imageFile = new File(filePath + File.separator + productId + "_" + System.nanoTime() + ".jpg");
-        try (OutputStream os = new FileOutputStream(imageFile)) {
-            os.write(file.getBytes());
-            Image image = new Image();
-            image.setUrl(imageFile.getAbsolutePath());
-            image.setProduct(productRepository.getById(productId));
-            imageRepository.save(image);
-            return image;
+        if(checker(file)){
+            File imageFile = new File(filePath + File.separator + productId + "_" + System.nanoTime() + ".jpg");
+            try (OutputStream os = new FileOutputStream(imageFile)) {
+                os.write(file.getBytes());
+                Image image = new Image();
+                image.setUrl(imageFile.getAbsolutePath());
+                image.setProduct(productRepository.getById(productId));
+                imageRepository.save(image);
+                return image;
+            }
         }
+        else {
+            throw new BadRequestException("The file you try to upload is not an image file");
+        }
+
     }
 
     public byte[] download(int imageId) throws IOException {
@@ -51,5 +58,17 @@ public class ImageService {
         String url = image.getUrl();
         File pFile = new File(url);
         return Files.readAllBytes(pFile.toPath());
+    }
+
+    private boolean checker(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        if(extension.equals("jpg")||extension.equals("png")|| extension.equals("jpeg")){
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 }
