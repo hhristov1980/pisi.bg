@@ -62,13 +62,16 @@ public class ImageService {
 
     private boolean checker(MultipartFile file) {
         String fileName = file.getOriginalFilename();
-        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-        if(extension.equals("jpg")||extension.equals("png")|| extension.equals("jpeg")){
-            return true;
+        if(fileName!=null && fileName.contains(".")) {
+            String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+            if (extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg")) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        else {
-            return false;
+        else{
+            throw new BadRequestException("Wrong filename");
         }
-
     }
 }

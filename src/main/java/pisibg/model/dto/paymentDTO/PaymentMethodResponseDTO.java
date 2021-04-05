@@ -12,9 +12,11 @@ import pisibg.model.pojo.PaymentMethod;
 @Component
 public class PaymentMethodResponseDTO {
 
+    private int id;
     private String type;
 
     public PaymentMethodResponseDTO(PaymentMethod method){
+        this.id = method.getId();
         this.type = method.getType();
     }
 }

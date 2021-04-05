@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Component
 public class DiscountResponseDTO {
+    private int id;
     private String description;
     private int percent;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -35,6 +36,7 @@ public class DiscountResponseDTO {
     private boolean isActive;
 
     public DiscountResponseDTO(Discount discount){
+        id = discount.getId();
         description = discount.getDescription();
         percent = discount.getPercent();
         fromDate = discount.getFromDate();

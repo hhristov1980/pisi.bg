@@ -257,8 +257,10 @@ public class UserController extends AbstractController {
             throw new AuthenticationException("You have to be logged in!");
         } else {
             User user = sessionManager.getLoggedUser(ses);
-            if (id != user.getId()) {
-                throw new DeniedPermissionException("You don't have permission for that!");
+            if(!user.isAdmin()) {
+                if (id != user.getId()) {
+                    throw new DeniedPermissionException("You don't have permission for that!");
+                }
             }
             return userService.getById(id);
         }
