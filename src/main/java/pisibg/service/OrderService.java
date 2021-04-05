@@ -17,6 +17,7 @@ import pisibg.utility.RoundFloat;
 import pisibg.utility.Validator;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -61,7 +62,7 @@ public class OrderService {
                 order.setCreatedAt(LocalDateTime.now());
                 order.setGrossValue(calculateGrossPrice(cart));
                 order.setDiscount(calculateDiscountPrice(cart, user));
-                order.setNetValue(order.getGrossValue() - order.getDiscount());
+                order.setNetValue(order.getGrossValue().subtract(order.getDiscount()).setScale(2,BigDecimal.ROUND_UP));
                 Payment payment = addPayment(order, user.getId());
                 order.setPaid(true);
                 userDAO.updateTurnoverAndPersonalDiscountPercent(order.getNetValue(), user.getId());
@@ -87,28 +88,28 @@ public class OrderService {
         }
     }
 
-    private double calculateGrossPrice(Map<Integer, Queue<ProductOrderResponseDTO>> cart) {
-
-        double price = 0;
+    private BigDecimal calculateGrossPrice(Map<Integer, Queue<ProductOrderResponseDTO>> cart) {
+        BigDecimal price = new BigDecimal(0);
         for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {
             int quantity = products.getValue().size();
             if (quantity > 0) {
                 Product product = productRepository.getById(products.getValue().peek().getId());
-                double productPrice = product.getPrice();
-                price += RoundFloat.round(quantity * productPrice, Constants.TWO_DECIMAL_PLACES);
+                BigDecimal productPrice = new BigDecimal(0);
+                productPrice = BigDecimal.valueOf(product.getPrice());
+                price = productPrice.multiply(BigDecimal.valueOf(quantity)).setScale(2,BigDecimal.ROUND_UP);
             }
         }
         return price;
     }
 
-    private double calculateDiscountPrice(Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) {
-        double priceWithoutDiscount = 0;
-        double discountAmount = 0;
+    private BigDecimal calculateDiscountPrice(Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) {
+        BigDecimal priceWithoutDiscount = new BigDecimal(0);
+        BigDecimal discountAmount = new BigDecimal(0);
         for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {
             int quantity = products.getValue().size();
             if (quantity > 0) {
                 Product product = productRepository.getById(products.getValue().peek().getId());
-                double productPrice = product.getPrice();
+                BigDecimal productPrice = BigDecimal.valueOf(product.getPrice());
                 Discount discount = product.getDiscount();
                 int discountPercent = 0;
                 if (discount == null) {
@@ -116,8 +117,9 @@ public class OrderService {
                 } else {
                     discountPercent = discountRepository.getById(discount.getId()).getPercent();
                 }
-                priceWithoutDiscount += RoundFloat.round((productPrice * quantity), Constants.TWO_DECIMAL_PLACES);
-                discountAmount += RoundFloat.round(productPrice * quantity * (discountPercent * 1.0 / 100), Constants.TWO_DECIMAL_PLACES);
+                priceWithoutDiscount = priceWithoutDiscount.add(productPrice.multiply(BigDecimal.valueOf(quantity)));
+                discountAmount = (discountAmount.add(productPrice.multiply(BigDecimal.valueOf(discountPercent))
+                        .multiply(BigDecimal.valueOf(quantity/100.0)))).setScale(2,BigDecimal.ROUND_UP);
             }
         }
         return discountAmount;

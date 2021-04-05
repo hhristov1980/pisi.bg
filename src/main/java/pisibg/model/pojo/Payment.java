@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Random;
@@ -25,7 +26,7 @@ public class Payment {
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
     private LocalDateTime createdAt;
-    private double amount;
+    private BigDecimal amount;
     private String transactionId;
     private LocalDateTime processedAt;
     private String status;

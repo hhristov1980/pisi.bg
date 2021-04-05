@@ -63,7 +63,7 @@ public class ProductDAO extends AbstractDAO{
             throw new BadRequestException("Please enter number greater than 0 or null!");
         }
         if (manufacturerId > 0) {
-            if (manufacturerRepository.findById(manufacturerId) == null) {
+            if (manufacturerRepository.getById(manufacturerId) == null) {
                 throw new NotFoundException("Manufacturer with this id doesn't exists!");
             } else {
                 foundValid = true;
@@ -72,7 +72,7 @@ public class ProductDAO extends AbstractDAO{
             }
         }
         if (categoryId > 0) {
-            if (categoryRepository.findById(categoryId) == null) {
+            if (categoryRepository.getById(categoryId) == null) {
                 throw new NotFoundException("Category with this id doesn't exists!");
             } else {
                 validCategory = true;

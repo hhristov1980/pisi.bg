@@ -20,6 +20,7 @@ import pisibg.model.repository.UserRepository;
 import pisibg.utility.Validator;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -37,7 +38,7 @@ public class UserService {
 
     @Autowired
     private UserDAO userDAO;
-    protected static final String REGEX_EMAIL = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+    public static final String REGEX_EMAIL = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
     private static final String PASSWORD_REGEX = "^(?!.*[\\s])(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$";
 
 
@@ -151,31 +152,6 @@ public class UserService {
             throw new NotFoundException("User not found!");
         }
     }
-
-
-   /* public UserWithoutPassDTO subscribe(int id) {
-        Optional<User> u = userRepository.findById(id);
-        if(u.isPresent()){
-            User user = u.get();
-            user.setSubscribed(true);
-           return new UserWithoutPassDTO(userRepository.save(user));
-        }
-        else {
-            throw new NotFoundException("Not found user!");
-        }
-    }
-
-    public UserWithoutPassDTO unsubscribe(int id) {
-        Optional<User> u = userRepository.findById(id);
-        if(u.isPresent()){
-            User user = u.get();
-            user.setSubscribed(false);
-            return new UserWithoutPassDTO(userRepository.save(user));
-        }
-        else {
-            throw new NotFoundException("Not found user!");
-        }
-    }*/
 
     public UserEditResponseDTO edit(UserEditRequestDTO userDto, int id) {
         Optional<User> u = userRepository.findById(id);
@@ -302,13 +278,13 @@ public class UserService {
                 if(Validator.isValidString(orderDto.getAddress())) {
                     order.setAddress(orderDto.getAddress());
                 }
-                if(orderDto.getGrossValue()>=0) {
+                if(orderDto.getGrossValue().compareTo(BigDecimal.valueOf(0))>=0) {
                     order.setGrossValue(orderDto.getGrossValue());
                 }
-                if(orderDto.getNetValue()>=0) {
+                if(orderDto.getNetValue().compareTo(BigDecimal.valueOf(0))>=0) {
                     order.setNetValue(orderDto.getNetValue());
                 }
-                if(orderDto.getDiscount()>=0) {
+                if(orderDto.getDiscount().compareTo(BigDecimal.valueOf(0))>=0) {
                     order.setDiscount(orderDto.getDiscount());
                 }
 
@@ -317,7 +293,8 @@ public class UserService {
                     order.setOrderStatus(orderStatusRepository.getOne(orderDto.getOrderStatusId()));
                 }
                 orderRepository.save(order);
-                user.setTurnover(user.getTurnover() - order.getNetValue());
+
+                user.setTurnover(user.getTurnover().subtract(order.getNetValue()));
                 userRepository.save(user);
                 return new OrderEditResponseDTO(order);
             } else {

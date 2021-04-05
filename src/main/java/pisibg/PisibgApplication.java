@@ -8,6 +8,10 @@ public class PisibgApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(PisibgApplication.class, args);
+//        NotifyChecker nt = new NotifyChecker();
+//        Thread t = new Thread(nt.getR());
+//        t.setDaemon(true);
+//        t.start();
 
     }
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import pisibg.model.dto.productDTO.ProductOrderResponseDTO;
 import pisibg.model.pojo.Order;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Queue;
@@ -25,9 +26,9 @@ public class OrderReportDTO {
     private String address;
     private String paymentMethodType;
     private LocalDateTime createdAt;
-    private double grossValue;
-    private double discount;
-    private double netValue;
+    private BigDecimal grossValue;
+    private BigDecimal discount;
+    private BigDecimal netValue;
     @JsonProperty(value = "isPaid")
     private boolean isPaid;
 

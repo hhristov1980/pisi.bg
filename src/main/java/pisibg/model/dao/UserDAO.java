@@ -13,16 +13,14 @@ import pisibg.model.dto.userDTO.UserEditResponseDTO;
 import pisibg.model.dto.userDTO.UserLoginDTO;
 import pisibg.model.dto.userDTO.UserRegisterResponseDTO;
 import pisibg.model.dto.userDTO.UserReportRequestDTO;
-import pisibg.model.pojo.Order;
-import pisibg.model.pojo.OrderStatus;
-import pisibg.model.pojo.PaymentMethod;
-import pisibg.model.pojo.User;
+import pisibg.model.pojo.*;
 import pisibg.model.repository.OrderStatusRepository;
 import pisibg.model.repository.PaymentMethodRepository;
 import pisibg.model.repository.UserRepository;
 import pisibg.utility.Constants;
 import pisibg.utility.OffsetPageCalculator;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -92,9 +90,9 @@ public class UserDAO extends AbstractDAO {
                 order.setPaymentMethod(methodRepository.getOne(resultSet.getInt(4)));
                 order.setAddress(resultSet.getString(5));
                 order.setCreatedAt(resultSet.getTimestamp(6).toLocalDateTime());
-                order.setGrossValue(resultSet.getInt(7));
-                order.setDiscount(resultSet.getInt(8));
-                order.setNetValue(resultSet.getInt(9));
+                order.setGrossValue(resultSet.getBigDecimal(7));
+                order.setDiscount(resultSet.getBigDecimal(8));
+                order.setNetValue(resultSet.getBigDecimal(9));
                 order.setPaid(resultSet.getBoolean(10));
                 orders.add(order);
             }
@@ -128,9 +126,9 @@ public class UserDAO extends AbstractDAO {
                 order.setPaymentMethod(methodRepository.getOne(resultSet.getInt(4)));
                 order.setAddress(resultSet.getString(5));
                 order.setCreatedAt(resultSet.getTimestamp(6).toLocalDateTime());
-                order.setGrossValue(resultSet.getInt(7));
-                order.setDiscount(resultSet.getInt(8));
-                order.setNetValue(resultSet.getInt(9));
+                order.setGrossValue(resultSet.getBigDecimal(7));
+                order.setDiscount(resultSet.getBigDecimal(8));
+                order.setNetValue(resultSet.getBigDecimal(9));
                 order.setPaid(resultSet.getBoolean(10));
                 orders.add(order);
             }
@@ -164,7 +162,7 @@ public class UserDAO extends AbstractDAO {
                 user.setFirstName(resultSet.getString(3));
                 user.setLastName(resultSet.getString(4));
                 user.setPhoneNumber(resultSet.getString(5));
-                user.setTurnover(resultSet.getDouble(6));
+                user.setTurnover(resultSet.getBigDecimal(6));
                 user.setPersonalDiscount(resultSet.getInt(7));
                 user.setTownName(resultSet.getString(8));
                 user.setAddress(resultSet.getString(9));
@@ -206,9 +204,9 @@ public class UserDAO extends AbstractDAO {
                 order.setPaymentMethod(methodRepository.getOne(resultSet.getInt(4)));
                 order.setAddress(resultSet.getString(5));
                 order.setCreatedAt(resultSet.getTimestamp(6).toLocalDateTime());
-                order.setGrossValue(resultSet.getInt(7));
-                order.setDiscount(resultSet.getInt(8));
-                order.setNetValue(resultSet.getInt(9));
+                order.setGrossValue(resultSet.getBigDecimal(7));
+                order.setDiscount(resultSet.getBigDecimal(8));
+                order.setNetValue(resultSet.getBigDecimal(9));
                 order.setPaid(resultSet.getBoolean(10));
                 orders.add(order);
             }
@@ -225,28 +223,28 @@ public class UserDAO extends AbstractDAO {
         }
     }
 
-    public void updateTurnoverAndPersonalDiscountPercent(double orderAmount, int userId) throws SQLException {
+    public void updateTurnoverAndPersonalDiscountPercent(BigDecimal orderAmount, int userId) throws SQLException {
         String query1 = "SELECT turnover, personal_discount FROM users WHERE id = ?;";
         String query2 = "UPDATE users SET turnover = ?, personal_discount = ? WHERE id = ?;";
-        double currentTurnover = 0.0;
+        BigDecimal currentTurnover = new BigDecimal(0);
         int currentPersonalDiscountPercent = 0;
         try (Connection connection = jdbcTemplate.getDataSource().getConnection();
              PreparedStatement ps = connection.prepareStatement(query1)) {
             ps.setInt(1, userId);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
-                currentTurnover = resultSet.getDouble(1);
+                currentTurnover = resultSet.getBigDecimal(1);
                 currentPersonalDiscountPercent = resultSet.getInt(2);
             }
-            double newTurnover = currentTurnover + orderAmount;
+            BigDecimal newTurnover = currentTurnover.add(orderAmount);
             int newPersonalDiscountPercent = 0;
-            int coefficientTurnoverToIncreaseStep = (int) (newTurnover / Constants.DISCOUNT_INCREASE_TURNOVER_STEP);
+            int coefficientTurnoverToIncreaseStep = newTurnover.intValue()/Constants.DISCOUNT_INCREASE_TURNOVER_STEP;
             if (currentPersonalDiscountPercent + coefficientTurnoverToIncreaseStep <= Constants.MAX_PERSONAL_DISCOUNT_PERCENT) {
                 newPersonalDiscountPercent = currentPersonalDiscountPercent + coefficientTurnoverToIncreaseStep;
             }
             try (Connection connection1 = jdbcTemplate.getDataSource().getConnection();
                  PreparedStatement ps1 = connection.prepareStatement(query2)) {
-                ps1.setDouble(1, newTurnover);
+                ps1.setBigDecimal(1, newTurnover);
                 ps1.setInt(2, newPersonalDiscountPercent);
                 ps1.setInt(3, userId);
                 ps1.executeUpdate();
@@ -268,7 +266,7 @@ public class UserDAO extends AbstractDAO {
                 user.setFirstName(resultSet.getString(4));
                 user.setLastName(resultSet.getString(5));
                 user.setPhoneNumber(resultSet.getString(6));
-                user.setTurnover(resultSet.getDouble(7));
+                user.setTurnover(resultSet.getBigDecimal(7));
                 user.setPersonalDiscount(resultSet.getInt(8));
                 user.setTownName(resultSet.getString(9));
                 user.setAddress(resultSet.getString(10));

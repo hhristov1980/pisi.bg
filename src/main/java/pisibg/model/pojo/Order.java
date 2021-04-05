@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
@@ -36,10 +37,10 @@ public class Order {
     private PaymentMethod paymentMethod;
     private String address;
     private LocalDateTime createdAt;
-    private double grossValue;
+    private BigDecimal grossValue;
     @Column(name = "discount_amount")
-    private double discount;
-    private double netValue;
+    private BigDecimal discount;
+    private BigDecimal netValue;
     private boolean isPaid;
     @ManyToMany
     @JoinTable(

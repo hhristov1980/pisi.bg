@@ -19,6 +19,8 @@ import pisibg.model.repository.UserRepository;
 import pisibg.utility.Constants;
 import pisibg.utility.RoundFloat;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -27,12 +29,7 @@ public class CartService {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
-    private SessionManager sessionManager;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private DiscountRepository discountRepository;
-    final DecimalFormat df = new DecimalFormat("#.##");
 
 
     public ProductOrderResponseDTO addProd(ProductOrderRequestDTO orderDto, Map<Integer, Queue<ProductOrderResponseDTO>> cart) {
@@ -83,9 +80,9 @@ public class CartService {
     }
 
     public CartPriceResponseDTO checkout(Map<Integer, Queue<ProductOrderResponseDTO>> cart, User user) {
-        double priceWithoutDiscount = RoundFloat.round(0.0, Constants.TWO_DECIMAL_PLACES);
-        double priceAfterDiscount = RoundFloat.round(0.0, Constants.TWO_DECIMAL_PLACES);
-        double discountAmount = RoundFloat.round(0.0, Constants.TWO_DECIMAL_PLACES);
+        BigDecimal priceWithoutDiscount = new BigDecimal(0);
+        BigDecimal priceAfterDiscount = new BigDecimal(0);
+        BigDecimal discountAmount = new BigDecimal(0);
         if (!cart.isEmpty()) {
             Set<Product> allProducts = new HashSet<>();
             for (Map.Entry<Integer, Queue<ProductOrderResponseDTO>> products : cart.entrySet()) {
@@ -94,32 +91,29 @@ public class CartService {
                     Product product = productRepository.getById(products.getValue().peek().getId());
                     product.setQuantity(quantity);
                     allProducts.add(product);
-                    double productPrice = product.getPrice();
+                    BigDecimal productPrice = BigDecimal.valueOf(product.getPrice());
                     Discount discount = productRepository.getById(products.getValue().peek().getId()).getDiscount();
                     int discountPercent = 0;
                     if (discount == null) {
                         discountPercent = user.getPersonalDiscount();
-                        System.out.println(discountPercent);
                     } else {
                         discountPercent = discountRepository.getById(discount.getId()).getPercent();
-                        System.out.println(discountPercent);
                     }
-                    System.out.println(discountAmount);
-                    System.out.println(discountPercent);
-                    priceWithoutDiscount+=productPrice*quantity;
-                    discountAmount+=productPrice*discountPercent*quantity/100.0;
+                    priceWithoutDiscount = priceWithoutDiscount.add(productPrice.multiply(BigDecimal.valueOf(quantity)));
+                    discountAmount = discountAmount.add(productPrice.multiply(BigDecimal.valueOf(discountPercent))
+                            .multiply(BigDecimal.valueOf(quantity/100.0)));
 
                 }
             }
-            priceAfterDiscount = priceWithoutDiscount-discountAmount;
-            priceWithoutDiscount=RoundFloat.round(priceWithoutDiscount,Constants.TWO_DECIMAL_PLACES);
-            priceAfterDiscount=RoundFloat.round(priceAfterDiscount,Constants.TWO_DECIMAL_PLACES);
-            discountAmount=RoundFloat.round(discountAmount,Constants.TWO_DECIMAL_PLACES);
+            priceAfterDiscount = priceWithoutDiscount.subtract(discountAmount);
+            System.out.println(priceWithoutDiscount);
+            System.out.println(discountAmount);
+            System.out.println(priceAfterDiscount);
             CartPriceResponseDTO cartPriceResponseDTO = new CartPriceResponseDTO();
             cartPriceResponseDTO.setProducts(allProducts);
-            cartPriceResponseDTO.setPriceWithoutDiscount(priceWithoutDiscount);
-            cartPriceResponseDTO.setDiscountAmount(discountAmount);
-            cartPriceResponseDTO.setPriceAfterDiscount(priceAfterDiscount);
+            cartPriceResponseDTO.setPriceWithoutDiscount(priceWithoutDiscount.setScale(2,BigDecimal.ROUND_UP));
+            cartPriceResponseDTO.setDiscountAmount(discountAmount.setScale(2,BigDecimal.ROUND_UP));
+            cartPriceResponseDTO.setPriceAfterDiscount(priceAfterDiscount.setScale(2,BigDecimal.ROUND_UP));
             return cartPriceResponseDTO;
             } else{
                 throw new NotFoundException("Cart not found!");

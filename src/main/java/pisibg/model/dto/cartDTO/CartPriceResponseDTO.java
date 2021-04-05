@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 import pisibg.model.pojo.Product;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Setter
@@ -14,8 +15,10 @@ import java.util.Set;
 @Component
 public class CartPriceResponseDTO {
     private Set<Product> products;
-    private double priceWithoutDiscount;
-    private double discountAmount;
-    private double priceAfterDiscount;
-
+//    private double priceWithoutDiscount;
+//    private double discountAmount;
+//    private double priceAfterDiscount;
+    private BigDecimal priceWithoutDiscount;
+    private BigDecimal discountAmount;
+    private BigDecimal priceAfterDiscount;
 }

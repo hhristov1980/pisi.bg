@@ -14,6 +14,7 @@ import pisibg.model.repository.UserRepository;
 import pisibg.utility.EmailServiceImpl;
 import pisibg.utility.Validator;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,8 +56,17 @@ public class DiscountService {
                 User user = u.get();
                 String email = user.getEmail();
                 if (email.matches(UserService.REGEX_EMAIL)) {
-                    emailService.sendSimpleMessage(user.getEmail(), "We have new discount "+discount.getPercent()+"% valid from "+
-                            discount.getFromDate()+" to "+discount.getToDate(), discount.getDescription());
+                    Discount finalDiscount = discount;
+                    Runnable r = new Runnable() {
+
+                        @Override
+                        public void run() {
+                            emailService.sendSimpleMessage(user.getEmail(), "We have new discount "+ finalDiscount.getPercent()+"% valid from "+
+                                    finalDiscount.getFromDate()+" to "+ finalDiscount.getToDate(), finalDiscount.getDescription());
+                        }
+                    };
+                    Thread t = new Thread(r);
+                    t.start();
                 }
             }
         }
@@ -107,7 +117,17 @@ public class DiscountService {
                 User user = u.get();
                 String email = user.getEmail();
                 if (email.matches(UserService.REGEX_EMAIL)) {
-                    emailService.sendSimpleMessage(user.getEmail(), "Edited discount", discount.getDescription());
+                    Discount finalDiscount = discount;
+                    Runnable r = new Runnable() {
+
+                        @Override
+                        public void run() {
+                            emailService.sendSimpleMessage(user.getEmail(), "Edited new discount "+ finalDiscount.getPercent()+"% valid from "+
+                                    finalDiscount.getFromDate()+" to "+ finalDiscount.getToDate(), finalDiscount.getDescription());
+                        }
+                    };
+                    Thread t = new Thread(r);
+                    t.start();
                 }
             }
         }

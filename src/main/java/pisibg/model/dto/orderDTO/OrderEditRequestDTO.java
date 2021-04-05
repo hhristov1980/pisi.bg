@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Setter
 @Getter
@@ -25,11 +26,11 @@ public class OrderEditRequestDTO {
     private int orderStatusId;
     private String address;
     @Min(value=1, message="Min gross value value should be 1")
-    private double grossValue;
+    private BigDecimal grossValue;
     @Min(value=1, message="Min discount value should be 1")
-    private double discount;
+    private BigDecimal discount;
     @Min(value=1, message="Min net value should be 1")
-    private double netValue;
+    private BigDecimal netValue;
     @JsonProperty(value = "isPaid")
     private boolean isPaid;
 }

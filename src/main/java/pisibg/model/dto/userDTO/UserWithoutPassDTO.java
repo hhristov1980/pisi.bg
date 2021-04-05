@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 import pisibg.model.pojo.User;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -19,7 +20,7 @@ public class UserWithoutPassDTO {
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private double turnover;
+    private BigDecimal turnover;
     private int personalDiscount;
     private String townName;
     private String address;
