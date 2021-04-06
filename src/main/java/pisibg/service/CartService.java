@@ -100,8 +100,10 @@ public class CartService {
                         discountPercent = discountRepository.getById(discount.getId()).getPercent();
                     }
                     priceWithoutDiscount = priceWithoutDiscount.add(productPrice.multiply(BigDecimal.valueOf(quantity)));
-                    discountAmount = discountAmount.add(productPrice.multiply(BigDecimal.valueOf(discountPercent))
-                            .multiply(BigDecimal.valueOf(quantity/100.0)));
+//                    discountAmount = discountAmount.add(productPrice.multiply(BigDecimal.valueOf(discountPercent))
+//                            .multiply(BigDecimal.valueOf(quantity/100.0)));
+                    discountAmount = discountAmount.add(productPrice.multiply(BigDecimal.valueOf(quantity))
+                            .multiply(BigDecimal.valueOf(discountPercent/100.0)));
 
                 }
             }

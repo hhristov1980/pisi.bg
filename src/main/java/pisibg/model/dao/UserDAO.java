@@ -227,6 +227,7 @@ public class UserDAO extends AbstractDAO {
         String query1 = "SELECT turnover, personal_discount FROM users WHERE id = ?;";
         String query2 = "UPDATE users SET turnover = ?, personal_discount = ? WHERE id = ?;";
         BigDecimal currentTurnover = new BigDecimal(0);
+        int startPersonalDiscountPercent = Constants.START_PERSONAL_DISCOUNT_PERCENT;
         int currentPersonalDiscountPercent = 0;
         try (Connection connection = jdbcTemplate.getDataSource().getConnection();
              PreparedStatement ps = connection.prepareStatement(query1)) {
@@ -239,15 +240,15 @@ public class UserDAO extends AbstractDAO {
             BigDecimal newTurnover = currentTurnover.add(orderAmount);
             int newPersonalDiscountPercent = 0;
             int coefficientTurnoverToIncreaseStep = newTurnover.intValue()/Constants.DISCOUNT_INCREASE_TURNOVER_STEP;
-            if (currentPersonalDiscountPercent + coefficientTurnoverToIncreaseStep <= Constants.MAX_PERSONAL_DISCOUNT_PERCENT) {
-                newPersonalDiscountPercent = currentPersonalDiscountPercent + coefficientTurnoverToIncreaseStep;
-            }
-            try (Connection connection1 = jdbcTemplate.getDataSource().getConnection();
-                 PreparedStatement ps1 = connection.prepareStatement(query2)) {
-                ps1.setBigDecimal(1, newTurnover);
-                ps1.setInt(2, newPersonalDiscountPercent);
-                ps1.setInt(3, userId);
-                ps1.executeUpdate();
+            if (startPersonalDiscountPercent + coefficientTurnoverToIncreaseStep <= Constants.MAX_PERSONAL_DISCOUNT_PERCENT) {
+                newPersonalDiscountPercent = startPersonalDiscountPercent + coefficientTurnoverToIncreaseStep;
+                try (Connection connection1 = jdbcTemplate.getDataSource().getConnection();
+                     PreparedStatement ps1 = connection.prepareStatement(query2)) {
+                    ps1.setBigDecimal(1, newTurnover);
+                    ps1.setInt(2, newPersonalDiscountPercent);
+                    ps1.setInt(3, userId);
+                    ps1.executeUpdate();
+                }
             }
         }
     }
